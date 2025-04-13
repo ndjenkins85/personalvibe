@@ -1,0 +1,15 @@
+# Used stackoverflow to help diagose folder structure under volumes
+# https://stackoverflow.com/questions/38546755/docker-compose-keep-container-running
+# can use `docker exec -i -t personalvibe_web_server_1 bash` to investigate
+version: '3'
+services:
+  web_server:
+    build: .
+    image: personalvibe
+    ports:
+      - 5000:5000
+    working_dir: /
+    volumes:
+      - ./local:/local
+      - ./personalvibe:/personalvibe
+    command: gunicorn -b 0.0.0.0:5000 -k gevent --worker-connections 1000 --timeout 120 personalvibe:app

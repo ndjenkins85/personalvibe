@@ -1,0 +1,132 @@
+[tool.poetry]
+name = "personalvibe"
+packages = [
+    {include = "personalvibe"}
+]
+version = "0.1.0"
+description = "My personal vibecoding."
+license = "MIT"
+authors = ["Nick Jenkins"]
+readme = "README.md"
+homepage = "https://www.ndjenkins.com/"
+repository = "https://github.com/ndjenkins85/personalvibe/"
+documentation = "https://ndjenkins85.github.io/personalvibe/"
+keywords = [
+    "flask",
+    "personalvibe",
+    "python_packaging",
+    ]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Education",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Utilities",
+]
+include = ["LICENSE", "README.md"]
+
+[tool.poetry.dependencies]
+python = ">=3.12,<4"
+
+python-dotenv = "^1.0"
+pyyaml = "^6.0"
+tqdm = "^4.67"
+tenacity = "^9.0"
+requests = "^2.32"
+
+Flask = "^3.1"
+Flask-Cors = "^5.0"
+Flask-SSLify = "^0.1.5"
+
+Markdown = "^3.7"
+MarkupSafe = "^3.0"
+pytz = "^2025.1"
+
+eventlet = "^0.39"
+gevent = "^24.11"
+gunicorn = "^23.0"
+
+
+[tool.poetry.group.dev.dependencies]
+jupyter = "^1.1"
+nox = "^2025.2"
+nox-poetry = "^1.1"
+pre-commit = "^4.1"
+
+[tool.poetry.group.tests.dependencies]
+pytest = "^7.4"
+
+[tool.poetry.group.lint.dependencies]
+black = "^25.1"
+darglint = "^1.8"
+flake8 = "^7.1"
+mypy = "^1.15"
+safety = "^3.2"
+xdoctest = "^1.2"
+flake8-annotations = "^3.1"
+flake8-bandit = "^4.1"
+flake8-bugbear = "^24.12"
+flake8-builtins = "^2.5"
+flake8-docstrings = "^1.7"
+types-pyyaml = "^6.0"
+types-requests = "^2.32.0"
+types-Markdown = "^3.7"
+types-pytz = "^2025.1"
+
+[tool.poetry.group.docs.dependencies]
+sphinx = "^8.2"
+sphinx-rtd-theme = "^3.0"
+sphinx-autodoc-typehints = "^3.1"
+myst-parser = "^4.0"
+
+[tool.poetry.scripts]
+personalvibe = 'run:app'
+
+[tool.poetry-version-plugin]
+source = "init"
+
+[build-system]
+# Keep poetry version same as in github actions and Dockerfile
+requires = ["setuptools", "poetry>=1.8.4"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+known_local_folder = ["personalvibe"]
+skip_glob = [
+    "personalvibe/__init__.py",
+    "personalvibe/views.py",
+    ]
+
+[tool.mypy]
+python_version = 3.8
+
+[[tool.mypy.overrides]]
+module = [
+    'flask_cors',
+    'flask_sslify',
+    'sphinx_rtd_theme',
+    'nox.*',
+    'pytest',
+    ]
+ignore_missing_imports = true
+
+[tool.coverage.run]
+parallel = true
+source = [
+    "personalvibe",
+    "tests",
+    "noxfile.py",
+    "docs/conf.py"
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "@overload",
+    'if __name__ == "__main__":',
+    "if TYPE_CHECKING:",
+]
