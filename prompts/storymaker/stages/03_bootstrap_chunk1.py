@@ -19,6 +19,10 @@ with the new, backwards-compatible versions.
 
 Nothing outside *Domain & Config* is touched.
 """
+import os
+
+# Force script to operate as if run from your PWD
+os.chdir(os.getcwd())
 
 from __future__ import annotations
 
