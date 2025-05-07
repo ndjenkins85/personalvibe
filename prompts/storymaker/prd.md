@@ -12,6 +12,7 @@ You will be provided the following information
 
 * Project background
 * Code style guidelines
+* Code context
 * Example character
 * Example story data
 * Example code
@@ -27,12 +28,20 @@ Storymaker is a hobby project to automate the creation of children's books based
 It is a python project within the 'personalvibe' megaproject.
 The 'personalvibe' megaproject contains helpful utilities, scaffolding, and shared code between other AI based hobby projects.
 
+## Code context
+
+The following is the relevant existing code context, including file names and file contents, for use in your deliberations.
+
+<code_context>
+{code_context}
+</code_context>
+
 ## Code style guidelines
 
 The following is a markdown document containing recommended code style guidelines.
-<Code style guide>
+<code_style_guide>
 {code_style_guide}
-</Code style guide>
+</code_style_guide>
 
 ## Example character
 

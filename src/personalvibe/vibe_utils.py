@@ -1,5 +1,4 @@
 # Copyright © 2025 by Nick Jenkins. All rights reserved
-
 import hashlib
 import logging
 import os
@@ -71,3 +70,27 @@ def get_vibed(prompt: str, contexts: List[Path]) -> None:
 
     base_input_path = Path("data/storymaker/prompt_outputs/")
     _ = save_prompt(response, base_input_path, input_hash=input_hash)
+
+
+def get_context(filenames: List[str], extension: str = ".txt") -> str:
+    """Pulls in many file contexts."""
+    big_string = ""
+
+    for name in filenames:
+        file_path = Path(name)
+
+        if not file_path.exists():
+            print(f"Warning: {file_path} does not exist.")
+            continue
+
+        # Read, deduplicate lines, and save back
+        lines = file_path.read_text(encoding="utf-8").splitlines()
+        unique_lines = sorted(set(lines))  # Optional: sort for consistency
+        file_path.write_text("\n".join(unique_lines) + "\n", encoding="utf-8")
+
+        for line in unique_lines:
+            # Append to big string
+            big_string += f"## {str(line)}\n"
+            big_string += Path(line).read_text()
+
+    return big_string
