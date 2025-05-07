@@ -1,3 +1,4 @@
+personalvibe/src/personalvibe/vibe_utils.py
 prompts/storymaker/_README.md
 src/personalvibe/_README.md
 src/personalvibe/__init__.py

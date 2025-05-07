@@ -100,7 +100,8 @@ def get_context(filenames: List[str], extension: str = ".txt") -> str:
     return big_string
 
 
-def get_base_path(base="personalvibe"):
+def get_base_path(base: str = "personalvibe") -> Path:
+    """Returns the base folder directory for the entire github project."""
     new_parts = []
     for part in Path(os.getcwd()).parts:
         new_parts.append(part)
