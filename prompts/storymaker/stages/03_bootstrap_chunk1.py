@@ -25,9 +25,7 @@ import os
 import textwrap
 from pathlib import Path
 
-from src.personalvibe import vibe_utils
-
-os.chdir(vibe_utils.get_base_path())
+from personalvibe import vibe_utils
 
 
 def write(path: Path, content: str) -> None:
@@ -40,9 +38,10 @@ def write(path: Path, content: str) -> None:
 # -----------------------------------------------------------------------------#
 #  Locate repo root (assumes script lives anywhere under repo)
 # -----------------------------------------------------------------------------#
-REPO = Path(__file__).resolve().parent
-while REPO.name not in {"storymaker", "personalvibe"} and REPO.parent != REPO:
-    REPO = REPO.parent
+REPO = os.chdir(vibe_utils.get_base_path())
+# REPO = Path(__file__).resolve().parent
+# while REPO.name not in {"storymaker", "personalvibe"} and REPO.parent != REPO:
+#     REPO = REPO.parent
 SRC = REPO / "src"
 
 # -----------------------------------------------------------------------------#
