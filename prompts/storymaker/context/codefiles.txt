@@ -1,7 +1,7 @@
-src/personalvibe/vibe_utils.py
 prompts/storymaker/_README.md
 src/personalvibe/_README.md
 src/personalvibe/__init__.py
+src/personalvibe/vibe_utils.py
 src/storymaker/_README.md
 src/storymaker/api/_README.md
 src/storymaker/api/app.py
