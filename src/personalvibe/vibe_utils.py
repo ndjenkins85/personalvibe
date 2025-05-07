@@ -98,3 +98,12 @@ def get_context(filenames: List[str], extension: str = ".txt") -> str:
             big_string += Path(line).read_text()
 
     return big_string
+
+
+def get_base_path(base="personalvibe"):
+    new_parts = []
+    for part in Path(os.getcwd()).parts:
+        new_parts.append(part)
+        if part == base:
+            break
+    return Path(*new_parts)

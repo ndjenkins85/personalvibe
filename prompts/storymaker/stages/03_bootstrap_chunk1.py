@@ -25,8 +25,9 @@ import os
 import textwrap
 from pathlib import Path
 
-# Force script to operate as if run from your PWD
-os.chdir(os.getcwd())
+from src.personalvibe import vibe_utils
+
+os.chdir(vibe_utils.get_base_path())
 
 
 def write(path: Path, content: str) -> None:
