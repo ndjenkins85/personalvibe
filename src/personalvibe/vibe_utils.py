@@ -49,9 +49,9 @@ def save_prompt(prompt: str, root_dir: Path, input_hash: str = "") -> None:
     logging.info(f"Prompt saved to: {filepath}")
 
 
-def get_vibed(prompt: str, contexts: List[Path], max_completion_tokens=100_000) -> None:
+def get_vibed(prompt: str, contexts: List[Path], project_name=str, max_completion_tokens=100_000) -> None:
     """Wrapper for O3 vibecoding to manage history and file interface"""
-    base_input_path = Path("data/storymaker/prompt_inputs/")
+    base_input_path = Path("data", project_name, "prompt_inputs")
     input_hash = save_prompt(prompt, base_input_path)
 
     messages = []
