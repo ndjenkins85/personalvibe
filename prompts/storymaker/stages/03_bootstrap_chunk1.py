@@ -19,15 +19,14 @@ with the new, backwards-compatible versions.
 
 Nothing outside *Domain & Config* is touched.
 """
+from __future__ import annotations
+
 import os
+import textwrap
+from pathlib import Path
 
 # Force script to operate as if run from your PWD
 os.chdir(os.getcwd())
-
-from __future__ import annotations
-
-import textwrap
-from pathlib import Path
 
 
 def write(path: Path, content: str) -> None:
