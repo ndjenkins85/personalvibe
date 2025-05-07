@@ -45,6 +45,8 @@ pytz = "^2025.1"
 eventlet = "^0.39"
 gevent = "^24.11"
 gunicorn = "^23.0"
+openai = "^1.77.0"
+pandas = "^2.2.3"
 
 
 [tool.poetry.group.dev.dependencies]
