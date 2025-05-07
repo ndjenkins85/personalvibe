@@ -38,7 +38,7 @@ def write(path: Path, content: str) -> None:
 # -----------------------------------------------------------------------------#
 #  Locate repo root (assumes script lives anywhere under repo)
 # -----------------------------------------------------------------------------#
-REPO = os.chdir(vibe_utils.get_base_path())
+REPO = vibe_utils.get_base_path()
 # REPO = Path(__file__).resolve().parent
 # while REPO.name not in {"storymaker", "personalvibe"} and REPO.parent != REPO:
 #     REPO = REPO.parent
