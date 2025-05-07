@@ -49,7 +49,7 @@ def save_prompt(prompt: str, root_dir: Path, input_hash: str = "") -> None:
     logging.info(f"Prompt saved to: {filepath}")
 
 
-def get_vibed(prompt: str, contexts: List[Path]) -> None:
+def get_vibed(prompt: str, contexts: List[Path], max_completion_tokens=100_000) -> None:
     """Wrapper for O3 vibecoding to manage history and file interface"""
     base_input_path = Path("data/storymaker/prompt_inputs/")
     input_hash = save_prompt(prompt, base_input_path)
@@ -64,10 +64,14 @@ def get_vibed(prompt: str, contexts: List[Path]) -> None:
 
     c = {"role": "user", "content": [{"type": "text", "text": prompt}]}
     messages.append(c)
+    logging.info(f"Prompt input size: {len(str(messages))}")
 
-    response = client.chat.completions.create(model="o3", messages=messages)
+    response = client.chat.completions.create(
+        model="o3", messages=messages, max_completion_tokens=max_completion_tokens
+    )
     response = response.choices[0].message.content
 
+    logging.info(f"Prompt output size: {len(str(response))}")
     base_input_path = Path("data/storymaker/prompt_outputs/")
     _ = save_prompt(response, base_input_path, input_hash=input_hash)
 

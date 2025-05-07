@@ -150,3 +150,11 @@ The website must have the following pages
 
 Has a section for login / logout
 Has an account image, which defaults to a placeholder, and can be created through the avatar process
+
+## Chunking plan
+
+The following is the project chunking plan, so as to work around large language model input/output limits.
+
+<chunking_plan>
+{chunking_plan}
+</chunking_plan>
