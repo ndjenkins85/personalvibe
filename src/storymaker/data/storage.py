@@ -11,6 +11,8 @@ backend) rather than hard-coding `LocalStorage`.
 
 from __future__ import annotations
 
+import datetime as _dt
+import enum
 import json
 import logging
 import shutil
@@ -75,7 +77,14 @@ class LocalStorage(StorageBackend):
     def save_json(self, obj: Any, path: Path) -> Path:
         path = path.with_suffix(self.SUFFIX)
         tmp = path.with_suffix(".tmp")
-        tmp.write_text(json.dumps(obj, indent=2, ensure_ascii=False))
+        tmp.write_text(
+            json.dumps(
+                obj,
+                indent=2,
+                ensure_ascii=False,
+                default=self._json_default,  # ← NEW
+            )
+        )
         tmp.replace(path)  # atomic-ish on POSIX
         log.debug("Saved %s (%s bytes)", path.name, path.stat().st_size)
         return path
@@ -106,6 +115,23 @@ class LocalStorage(StorageBackend):
         shutil.rmtree(self.base_dir)
         self.base_dir.mkdir(parents=True, exist_ok=True)
         log.warning("🧹 LocalStorage wiped %s", self.base_dir)
+
+    # ---------------- Internal helpers -----------------
+    @staticmethod
+    def _json_default(o: Any):  # noqa: ANN001
+        """Fallback encoder for json.dumps().
+
+        • datetime / date   → ISO-8601 string
+        • pathlib.Path      → str
+        • Enum              → enum.value
+        """
+        if isinstance(o, (_dt.datetime, _dt.date)):
+            return o.isoformat()
+        if isinstance(o, Path):
+            return str(o)
+        if isinstance(o, enum.Enum):
+            return o.value
+        raise TypeError(f"Object of type {o.__class__.__name__} is not JSON serializable")
 
 
 # ──────────────────────────────────────────────────────────────────────────────

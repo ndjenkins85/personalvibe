@@ -1,4 +1,5 @@
 prompts/storymaker/_README.md
+prompts/storymaker/stages/06_testing.md
 pyproject.toml
 src/personalvibe/_README.md
 src/personalvibe/__init__.py
