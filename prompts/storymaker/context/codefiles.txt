@@ -1,5 +1,6 @@
 prompts/storymaker/_README.md
 prompts/storymaker/stages/06_testing.md
+prompts/storymaker/stages/08_testing.md
 pyproject.toml
 src/personalvibe/_README.md
 src/personalvibe/__init__.py
@@ -28,6 +29,20 @@ src/storymaker/web/_README.md
 src/storymaker/web/__init__.py
 src/storymaker/web/static/_README.md
 src/storymaker/web/templates/_README.md
+storymaker_spa/README.md
+storymaker_spa/index.html
+storymaker_spa/package.json
+storymaker_spa/src/App.tsx
+storymaker_spa/src/api/client.ts
+storymaker_spa/src/components/NavBar.tsx
+storymaker_spa/src/main.tsx
+storymaker_spa/src/pages/AccountPage.tsx
+storymaker_spa/src/pages/BooksPage.tsx
+storymaker_spa/src/pages/CharactersPage.tsx
+storymaker_spa/src/pages/IndexPage.tsx
+storymaker_spa/src/pages/StudioPage.tsx
+storymaker_spa/tsconfig.json
+storymaker_spa/vite.config.ts
 tests/_README.md
 tests/test_auth.py
 tests/test_storage.py
