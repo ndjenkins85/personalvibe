@@ -41,6 +41,10 @@ def create_app() -> Flask:
     # app.register_blueprint(spec_bp)
     register_error_handlers(app)
 
+    from storymaker.api.jobs import bp as jobs_bp
+
+    app.register_blueprint(jobs_bp)
+
     @app.route("/api/spec")
     def _spec():
         """Very light-weight *poor-man’s* spec until proper OpenAPI."""
