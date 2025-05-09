@@ -10,10 +10,18 @@ from __future__ import annotations
 
 import datetime as _dt
 import enum
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from uuid import uuid4
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator, validator
+
+
+def _parse_date(value: str) -> datetime:
+    try:
+        return parsedate_to_datetime(value)
+    except Exception:
+        return value  # fallback for regular pydantic parsing
 
 
 class CharacterType(str, enum.Enum):
@@ -34,3 +42,9 @@ class Character(BaseModel):
     @validator("avatar_path", pre=True, always=True)
     def _expand_home(cls, v):
         return Path(v).expanduser() if v else None
+
+    @field_validator("created_at", mode="before")
+    def _flexible_date(cls, v):
+        if isinstance(v, str) and "GMT" in v:
+            return _parse_date(v)
+        return v
