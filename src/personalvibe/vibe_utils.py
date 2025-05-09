@@ -8,6 +8,7 @@ from typing import List
 
 import dotenv
 import requests
+import tiktoken
 from openai import OpenAI
 
 dotenv.load_dotenv()
@@ -49,9 +50,14 @@ def save_prompt(prompt: str, root_dir: Path, input_hash: str = "") -> None:
     logging.info(f"Prompt saved to: {filepath}")
 
 
-def get_vibed(prompt: str, contexts: List[Path], project_name=str, max_completion_tokens=100_000) -> None:
+def get_vibed(
+    prompt: str, contexts: List[Path], project_name=str, model: str = "o3", max_completion_tokens=100_000
+) -> None:
     """Wrapper for O3 vibecoding to manage history and file interface"""
     base_input_path = Path("data", project_name, "prompt_inputs")
+    if not base_input_path.exists():
+        logging.info(f"Creating {base_input_path}")
+        base_input_path.mkdir(parents=True)
     input_hash = save_prompt(prompt, base_input_path)
 
     messages = []
@@ -64,16 +70,25 @@ def get_vibed(prompt: str, contexts: List[Path], project_name=str, max_completio
 
     c = {"role": "user", "content": [{"type": "text", "text": prompt}]}
     messages.append(c)
-    logging.info(f"Prompt input size: {len(str(messages))}")
+
+    message_chars = len(str(messages))
+    message_tokens = num_tokens(str(messages), model=model)
+    logging.info(f"Prompt input size - Tokens: {message_tokens}, Chars: {message_chars}")
 
     response = client.chat.completions.create(
-        model="o3", messages=messages, max_completion_tokens=max_completion_tokens
+        model=model, messages=messages, max_completion_tokens=max_completion_tokens
     )
     response = response.choices[0].message.content
 
-    logging.info(f"Prompt output size: {len(str(response))}")
-    base_input_path = Path("data/storymaker/prompt_outputs/")
-    _ = save_prompt(response, base_input_path, input_hash=input_hash)
+    message_chars = len(str(response))
+    message_tokens = num_tokens(str(response), model=model)
+    logging.info(f"Response output size - Tokens: {message_tokens}, Chars: {message_chars}")
+
+    base_output_path = Path("data", project_name, "prompt_outputs")
+    if not base_output_path.exists():
+        logging.info(f"Creating {base_output_path}")
+        base_output_path.mkdir(parents=True)
+    _ = save_prompt(response, base_output_path, input_hash=input_hash)
 
 
 def get_context(filenames: List[str], extension: str = ".txt") -> str:
@@ -81,10 +96,10 @@ def get_context(filenames: List[str], extension: str = ".txt") -> str:
     big_string = ""
 
     for name in filenames:
-        file_path = Path(name)
+        file_path = Path(get_base_path(), name)
 
         if not file_path.exists():
-            print(f"Warning: {file_path} does not exist.")
+            print(f"Warning: {file_path} does not exist. {os.getcwd()}")
             continue
 
         # Read, deduplicate lines, and save back
@@ -95,7 +110,12 @@ def get_context(filenames: List[str], extension: str = ".txt") -> str:
         for line in unique_lines:
             # Append to big string
             big_string += f"## {str(line)}\n"
-            big_string += Path(line).read_text()
+            line_path = Path(line)
+            if not line_path.exists():
+                message = f"Warning: {line_path} does not exist. {os.getcwd()}"
+                logging.error(message)
+                raise ValueError(message)
+            big_string += Path(line_path).read_text()
 
     return big_string
 
@@ -108,3 +128,8 @@ def get_base_path(base: str = "personalvibe") -> Path:
         if part == base:
             break
     return Path(*new_parts)
+
+
+def num_tokens(text: str, model: str = "o3") -> int:
+    enc = tiktoken.encoding_for_model(model)
+    return len(enc.encode(text))
