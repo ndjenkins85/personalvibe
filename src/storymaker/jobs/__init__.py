@@ -135,6 +135,7 @@ class LocalJobQueue:
 
     def _persist(self, job: Job):
         path = self._JOBS_DIR / f"job_{job.id}.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(job.model_dump_json(indent=2, exclude_none=True), encoding="utf-8")
         log.debug("💾 persisted job %s (%s)", job.id, job.status)
 

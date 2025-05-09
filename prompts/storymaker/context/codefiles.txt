@@ -1,6 +1,11 @@
 .flake8
 .pre-commit-config.yaml
+data/storymaker/**/*
 noxfile.py
+prompts/design/dndassist.md
+prompts/design/improvisor.md
+prompts/design/personalvibe.md
+prompts/design/relmirror.md
 prompts/storymaker/_README.md
 prompts/storymaker/generate_chapter.md
 prompts/storymaker/generate_story.md
@@ -9,12 +14,14 @@ prompts/storymaker/stages/08_testing.md
 pyproject.toml
 src/personalvibe/_README.md
 src/personalvibe/__init__.py
+src/personalvibe/utils.py
 src/personalvibe/vibe_utils.py
 src/storymaker/_README.md
 src/storymaker/api/_README.md
 src/storymaker/api/__init__.py
 src/storymaker/api/app.py
 src/storymaker/api/errors.py
+src/storymaker/api/jobs.py
 src/storymaker/api/pagination.py
 src/storymaker/api/routes.py
 src/storymaker/api/schemas.py
@@ -23,6 +30,7 @@ src/storymaker/auth/auth.py
 src/storymaker/config.py
 src/storymaker/data/_README.md
 src/storymaker/data/storage.py
+src/storymaker/jobs/__init__.py
 src/storymaker/logging_config.py
 src/storymaker/models/_README.md
 src/storymaker/models/__init__.py
@@ -39,7 +47,11 @@ storymaker_spa/index.html
 storymaker_spa/package.json
 storymaker_spa/src/App.tsx
 storymaker_spa/src/api/client.ts
+storymaker_spa/src/api/mock.ts
+storymaker_spa/src/api/types.ts
+storymaker_spa/src/components/CharacterSelect.tsx
 storymaker_spa/src/components/NavBar.tsx
+storymaker_spa/src/components/StepProgress.tsx
 storymaker_spa/src/main.tsx
 storymaker_spa/src/pages/AccountPage.tsx
 storymaker_spa/src/pages/BooksPage.tsx
@@ -49,5 +61,9 @@ storymaker_spa/src/pages/StudioPage.tsx
 storymaker_spa/tsconfig.json
 storymaker_spa/vite.config.ts
 tests/_README.md
+tests/conftest.py
+tests/test_api_endpoints.py
+tests/test_api_spec.py
 tests/test_auth.py
+tests/test_jobs.py
 tests/test_storage.py

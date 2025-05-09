@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import logging
 
-from flask import Flask
+from flask import Flask, redirect
 from flask_cors import CORS
 
 from storymaker.api.errors import register_error_handlers
@@ -85,6 +85,14 @@ def create_app() -> Flask:
                 "/api/me": {"get": {"summary": "Current user"}},
             },
         }
+
+    # -----------------------------------------------------------------
+    # Optional root redirect (nice DX instead of 404 on "/")
+    # -----------------------------------------------------------------
+    @app.route("/")
+    def _root():
+        """Redirect bare root → poor-man’s API spec."""
+        return redirect("/api/spec", code=302)
 
     log.info("🚀 Storymaker API up — debug=%s", settings.debug)
     return app

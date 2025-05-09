@@ -92,32 +92,46 @@ def get_vibed(
 
 
 def get_context(filenames: List[str], extension: str = ".txt") -> str:
-    """Pulls in many file contexts."""
+    """Pulls in many file contexts, resolving wildcards only in lines inside the files."""
     big_string = ""
+    base_path = get_base_path()
 
     for name in filenames:
-        file_path = Path(get_base_path(), name)
+        file_path = base_path / name
 
         if not file_path.exists():
             print(f"Warning: {file_path} does not exist. {os.getcwd()}")
             continue
 
-        # Read, deduplicate lines, and save back
         lines = file_path.read_text(encoding="utf-8").splitlines()
-        unique_lines = sorted(set(lines))  # Optional: sort for consistency
+        unique_lines = sorted(set(lines))
         file_path.write_text("\n".join(unique_lines) + "\n", encoding="utf-8")
 
         for line in unique_lines:
-            # Append to big string
-            big_string += f"## {str(line)}\n"
-            line_path = Path(line)
-            if not line_path.exists():
-                message = f"Warning: {line_path} does not exist. {os.getcwd()}"
-                logging.error(message)
-                raise ValueError(message)
-            big_string += Path(line_path).read_text()
+            if not line.strip():
+                continue  # Skip empty lines
+
+            line_path = base_path / line
+            if any(char in line for char in "*?[]"):  # Wildcard detected
+                matches = sorted(base_path.glob(line))
+                if not matches:
+                    logging.warning(f"No matches found for wildcard pattern: {line}")
+                for match in matches:
+                    if match.is_file():
+                        big_string += _process_file(match)
+            else:
+                if not line_path.exists():
+                    message = f"Warning: {line_path} does not exist. {os.getcwd()}"
+                    logging.error(message)
+                    raise ValueError(message)
+                big_string += _process_file(line_path)
 
     return big_string
+
+
+def _process_file(file_path: Path) -> str:
+    """Helper to read and return file content with a header comment."""
+    return f"\n# Start of {file_path}\n" + file_path.read_text(encoding="utf-8") + f"\n# End of {file_path}\n"
 
 
 def get_base_path(base: str = "personalvibe") -> Path:

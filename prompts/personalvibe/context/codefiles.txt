@@ -1,5 +1,6 @@
 .flake8
 .pre-commit-config.yaml
+data/storymaker/**/*
 noxfile.py
 prompts/design/dndassist.md
 prompts/design/improvisor.md
@@ -61,8 +62,8 @@ storymaker_spa/tsconfig.json
 storymaker_spa/vite.config.ts
 tests/_README.md
 tests/conftest.md
+tests/test_api_endpoints.py
 tests/test_api_spec.py
 tests/test_auth.py
 tests/test_jobs.py
 tests/test_storage.py
-tests/test_utils.py
