@@ -18,6 +18,9 @@ my_scripts.md
 # C extensions
 *.so
 
+# Git patching
+.worktrees
+
 # Distribution / packaging
 .Python
 build/

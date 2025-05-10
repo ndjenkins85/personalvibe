@@ -1,10 +1,10 @@
 .flake8
 .pre-commit-config.yaml
+data/storymaker_prompts/diffs/newdiff.patch
 noxfile.py
-prompts/design/personalvibe.md
 pyproject.toml
 src/personalvibe/_README.md
 src/personalvibe/__init__.py
-src/personalvibe/commands/*.py
+src/personalvibe/git_utils.py
 src/personalvibe/vibe_utils.py
 tests/_README.md

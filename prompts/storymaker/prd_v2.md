@@ -7,6 +7,9 @@ You are tasked with {{ execution_task }} related to the storymaker project.
 {% if generate_diff %}
 {% include "personalvibe/generate_diff.md" %}
 {% endif %}
+{% if generate_python_patch %}
+{% include "personalvibe/generate_python_patch.md" %}
+{% endif %}
 {% if generate_milestone %}
 {% include "personalvibe/generate_milestone.md" %}
 {% endif %}
