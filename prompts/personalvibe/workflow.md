@@ -89,6 +89,9 @@ We request that the model outputs executable python code to do the following kin
 - AI performs an assessment as to whether the update was successful, or needs to be iterated based on errors in log or expectations
 - Raises a pull request when code is ready to merge
 
+The file changes may include changes to how the tests and logging is orchestrated.
+
+
 ```python
 def execute_sprint(
 	prd_path: str,
