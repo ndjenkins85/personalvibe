@@ -95,7 +95,7 @@ source = "init"
 
 [build-system]
 # Keep poetry version same as in github actions and Dockerfile
-requires = ["setuptools", "poetry>=1.8.4"]
+requires = ["poetry>=2.1.1"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.black]

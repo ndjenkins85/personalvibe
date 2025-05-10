@@ -14,8 +14,6 @@ import nox
 from nox.sessions import Session
 from nox_poetry import session
 
-from personalvibe.git_utils import apply_diff, validate_diff  # helper we wrote earlier
-
 locations = "personalvibe", "tests", "noxfile.py", "docs/conf.py"
 nox.options.sessions = "lint", "tests"
 package = "personalvibe"
@@ -102,6 +100,7 @@ def vibed(session: Session) -> None:  # noqa: D401
     Usage:
         nox -s vibed -- 0.2.1           # <semver>
         nox -s vibed -- 0.2.1 mypatch.py
+        nox -s vibed -- 3.1.0 data/storymaker/prompt_outputs/mypatch.py
 
     Steps:
       1. git checkout -b vibed/{semver}
@@ -124,6 +123,7 @@ def vibed(session: Session) -> None:  # noqa: D401
         session.run("git", "checkout", "-b", f"vibed/{semver}", external=True)
 
         _print_step(f"Running patch script: {patch}")
+        session.install(".")
         session.run("poetry", "run", "python", patch, external=True)
 
         _print_step("Executing quality-gate (tests/personalvibe.sh)")

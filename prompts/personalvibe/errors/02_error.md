@@ -1,24 +1,22 @@
-I'm trying to get my patchdiff working in noxfile
+(personalvibe-py3.12) bash-3.2$ nox -s vibed -- 3.1.1 data/storymaker/prompt_outputs/mypatch.py
+nox > Running session vibed-3.12
+nox > Re-using existing virtual environment at .nox/vibed-3-12.
+nox > git checkout -b vibed/3.1.1
+Switched to a new branch 'vibed/3.1.1'
 
---------------------
+===========================
+Creating branch vibed/3.1.1
+===========================
 
-(personalvibe-py3.12) bash-3.2$ git apply --check data/storymaker_prompts/diffs/newdiff.patch
-error: unrecognized input
-(personalvibe-py3.12) bash-3.2$
+nox > /Users/nicholasjenkins/Documents/personalvibe/.venv/bin/python -m build /Users/nicholasjenkins/Documents/personalvibe --outdir /Users/nicholasjenkins/Documents/personalvibe/dist --wheel
 
---------------------
 
-(personalvibe-py3.12) bash-3.2$ nox -s sprint -- data/storymaker_prompts/diffs/newdiff.patch  3.1.2
-nox > Running session sprint-3.12
-nox > Creating virtual environment (virtualenv) using python3.12 in .nox/sprint-3-12
-nox > git worktree add .worktrees/vibed_3_1_2 -b vibed/3.1.2
-nox > Session sprint-3.12 aborted: Patch dry-run failed (full trace in /Users/nicholasjenkins/Documents/personalvibe/logs/vibed_3_1_2.log).
-(personalvibe-py3.12) bash-3.2$
 
---------------------
+(hangs at this point)
 
-Preparing worktree (new branch 'vibed/3.1.2')
-HEAD is now at c061fae add patch utils
 
---- PATCH-DRY-RUN ERROR ---
-patch failed
+logs 3.1.1.log
+
+===========================
+Creating branch vibed/3.1.1
+===========================
