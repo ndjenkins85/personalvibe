@@ -54,7 +54,7 @@ def save_prompt(prompt: str, root_dir: Path, input_hash: str = "") -> None:
 
 def get_vibed(
     prompt: str, contexts: List[Path] = None, project_name=str, model: str = "o3", max_completion_tokens=100_000
-) -> None:
+) -> str:
     """Wrapper for O3 vibecoding to manage history and file interface"""
     if not contexts:
         contexts = []
@@ -94,6 +94,7 @@ def get_vibed(
         logging.info(f"Creating {base_output_path}")
         base_output_path.mkdir(parents=True)
     _ = save_prompt(response, base_output_path, input_hash=input_hash)
+    return response
 
 
 def get_context(filenames: List[str], extension: str = ".txt") -> str:
