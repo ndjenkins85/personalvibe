@@ -4,6 +4,13 @@ You are tasked with {{ execution_task }} related to the storymaker project.
 
 {{ execution_details }}
 
+{% if generate_diff %}
+{% include "personalvibe/generate_diff.md" %}
+{% endif %}
+{% if generate_milestone %}
+{% include "personalvibe/generate_milestone.md" %}
+{% endif %}
+
 <effort>High</effort>
 <mode>Thoughtful before action</mode>
 <output_size>Maximum allowed, i.e. up to 100,000 tokens</output_size>
@@ -152,6 +159,6 @@ Has an account image, which defaults to a placeholder, and can be created throug
 
 The following is the current project milestone plan, so as to work around large language model input/output limits.
 <milestone_plan>
-{{ milestone_plan }}
+{% include milestone_plan %}
 </milestone_plan>
 {% endif %}

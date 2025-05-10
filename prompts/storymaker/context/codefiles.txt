@@ -1,14 +1,6 @@
 .flake8
 .pre-commit-config.yaml
-data/storymaker/**/*
 noxfile.py
-prompts/design/dndassist.md
-prompts/design/improvisor.md
-prompts/design/personalvibe.md
-prompts/design/relmirror.md
-prompts/storymaker/_README.md
-prompts/storymaker/generate_chapter.md
-prompts/storymaker/generate_story.md
 prompts/storymaker/stages/06_testing.md
 prompts/storymaker/stages/08_testing.md
 pyproject.toml

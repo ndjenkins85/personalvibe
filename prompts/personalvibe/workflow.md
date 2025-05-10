@@ -1,8 +1,11 @@
-# Personalvibe workflow
+# Personalvibe product requirements document
+
+You are tasked with {{ execution_task }} related to the personalvibe project.
+
+{{ execution_details }}
 
 I am still thinking through approaches to performing vibe coding.
 I have been able to generate a MVP / scaffold of a good application.
-
 While I started with cursor, I ended up rolling-my-own approach.
 Ultimately it is what works best for you to have control of your project, code generation, and feedback loop.
 
@@ -21,6 +24,10 @@ I consider this approach an investment, as well as a temporary high-price.
 
 **Web**: I also have the OpenAI ChatGPT plus subscription, which is great for informal/disposable discussions.
 These are best for early non-technical discussions, one-off bug hunts, and side-channel questions, that do not need the full project context.
+
+## Broader considerations of the personalvibe project
+
+{% include "design/personalvibe.md" %}
 
 ## Design phases
 
@@ -92,3 +99,11 @@ def execute_sprint(
 	code_context_paths: List[str],
 )
 ```
+
+## Code context
+
+The following is the relevant existing code context, including file names and file contents, for use in your deliberations.
+
+<code_context>
+{{ code_context }}
+</code_context>

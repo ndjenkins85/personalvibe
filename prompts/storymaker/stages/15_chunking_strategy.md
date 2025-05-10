@@ -1,73 +1,54 @@
-Large systems become tractable when each incremental slice is **both self-consistent and independently verifiable**. Because a language model can emit only \~20 000 characters at a time, the safest path is to carve the roadmap along *natural architectural seams*—pure-Python services first, then API glue, then front-end consumption—so that every slice compiles, passes tests, and delivers a visible sliver of value before the next layer depends on it.  With Storymaker the main gap is turning an empty “book” record into a fully illustrated, reviewable story.  We therefore anchor the plan around an *End-to-End Story Creation* milestone and ensure that no chunk exceeds the token budget while still leaving space for docs and tests.
+Storymaker already has a rock-solid “hello-world” stack: a Flask API with auth, Pydantic models, local JSON storage, a minimal React/Vite SPA, and an async job queue.  All smoke-tests are green (Chunk 6/8), but the product still stops at “create empty book”.  The next leap of value is letting users press “Generate story” in Studio and actually receive a full 10-chapter script + (stub) images they can edit.  That entails new background jobs, DTOs, CRUD routes, and front-end flows—large enough that we must slice the work so each slice fits comfortably under an LLM’s ~20 k character reply limit and under a human’s review bandwidth.
 
-Applied to the brief, this means: (1) auditing what already exists (CRUD API, SPA skeleton, prompts), (2) defining the smallest feature that lets a user generate and review a book, and (3) splitting the work into ≤ 5 logical chunks, each < 20 k characters, that march steadily toward that feature.  The ordering starts with the most foundational code (prompt rendering + workers) and finishes with purely cosmetic UI, keeping risks low and feedback loops tight.
+Below is a concrete plan that (1) defines the next milestone, (2) estimates its code size, (3) splits it into ≤ 5 coherent chunks, and (4) orders them so each chunk scaffolds the next.
 
----
+────────────────────────────────────────────────────────────────────────
+1. Current state
+────────────────────────────────────────────────────────────────────────
+• Backend serves health, books, characters, auth; LocalStorage + JobQueue exist.
+• SPA can list/create characters & book stubs, but Studio step 2 is a placeholder.
+• Unit tests & lint pass; CORS, JWT DEV mode, logging, etc. are in place.
 
-## 1 · Current state (high-level)
+────────────────────────────────────────────────────────────────────────
+2. Next major milestone  –  “Script & Image Generation MVP”
+────────────────────────────────────────────────────────────────────────
+Goal: A user clicks “Next” in Studio → the backend launches a job that
+  a) calls OpenAI with the generate_story_prompt,
+  b) stores the resulting CSV as chapters inside the book JSON,
+  c) (optionally) kicks off chapter-image sub-jobs (stubbed),
+  d) lets the SPA poll and then display an editable table of chapters.
+Acceptance: end-to-end happy-path works and is covered by tests.
 
-| Area               | Implemented assets                                                                     | Missing / weak spots                                                                        |
-| ------------------ | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| **Backend**        | Flask app with CRUD for books & characters; local file storage; auth; basic test suite | No OpenAI integration; no background job orchestration; no chapter/image persistence routes |
-| **Frontend SPA**   | Vite + React skeleton; five nav pages; fetch wrapper                                   | Studio step-2 editor, avatar upload, book viewer, polling logic                             |
-| **Prompts / data** | `generate_story.md`, `generate_chapter.md`; example notebook                           | Not wired into API; no image pipeline                                                       |
-| **Ops / tests**    | Poetry, logging, CI green                                                              | Tests for new flows absent                                                                  |
+────────────────────────────────────────────────────────────────────────
+3. Size estimate
+────────────────────────────────────────────────────────────────────────
+Code & docs to add (roughly):
+  • New schemas + routes + tests …………………… ~6 k chars
+  • Job helpers / OpenAI wrapper / storage glue … ~5 k
+  • SPA components (ChapterTable, polling hook) … ~7 k
+  • Docs + migration notes …………………………… ~2 k
+Total ≈ 20 k chars   → just above one-shot limit, hence chunking.
 
----
+────────────────────────────────────────────────────────────────────────
+4. Chunking (≤ 5 pieces, each ≤ 10 k, average 6–8 k)
+────────────────────────────────────────────────────────────────────────
+Rank | Chunk (logical focus)                                           | Est. chars | Reason this must come first
+---- | --------------------------------------------------------------- | ---------- | ---------------------------------------------
+1    | Data & DTO foundation                                            | 4 k        | Adds ChapterCSV, BookWithChaptersOut, JobDTO; enables the rest.
+2    | Backend routes & story-generation job                            | 7 k        | /api/books/<id>/generate, job handler calling OpenAI, persistence, tests.
+3    | Chapter PATCH/PUT routes + validation                            | 4 k        | Needed before the UI can edit scenes; small but unlocks FE work.
+4    | Front-end: polling hook, ChapterTable component, Studio step 2   | 8 k        | Consumes new endpoints, displays chapters, allows edits.
+5    | Image-generation stub + regenerate-chapter flow + docs           | 5 k        | Optional polish that exercises JobQueue; sits nicely after script flow works.
 
-## 2 · Next major milestone
+Each chunk comfortably fits in one LLM reply, lets a human run tests, and leaves the repo in a green state before moving on.
 
-**Milestone 7 – End-to-End Story Creation & Review**
+────────────────────────────────────────────────────────────────────────
+5. Recommended execution order (same as rank above)
+────────────────────────────────────────────────────────────────────────
+1. Data/DTO foundation
+2. Backend “generate story” job & route
+3. Chapter edit / PATCH support
+4. Front-end Studio step 2 (poll & table)
+5. Image-generation stub & regenerate flow
 
-A logged-in user can:
-
-1. Create/choose characters.
-2. In **Studio > Generate**, submit title + characters.
-3. Backend queues a *story-gen* job → returns 10-scene CSV.
-4. Worker fan-outs *chapter-gen* jobs → stores PNGs under `data/storymaker/book_<id>/`.
-5. Studio polls job; when done, shows editable chapter rows with thumbnails + “Regenerate” per row.
-6. Book appears in **My Books** with real cover; clicking opens a chapter carousel.
-
----
-
-## 3 · Approximate size of milestone
-
-| Component                                           | ≈ Characters |
-| --------------------------------------------------- | ------------ |
-| Prompt engine (Jinja render, OpenAI wrapper)        | 3 k          |
-| Story & chapter worker modules                      | 4 k          |
-| New API routes (`/generate`, `/chapters`, job poll) | 4 k          |
-| Storage utils + static image serving                | 3 k          |
-| SPA additions (Studio editor, polling hooks)        | 6 k          |
-| Tests & fixtures                                    | 4 k          |
-| Docs / README tweaks                                | 1 k          |
-| **Total**                                           | **≈ 25 k**   |
-
-Since 25 k > 20 k, we divide into four slices (\~6–7 k each).
-
----
-
-## 4 · Work split into ≤ 5 manageable chunks
-
-| Chunk                                 | Scope (all code + tests)                                                                                                 | Est. chars | Compile/test gate                    |
-| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------- | ------------------------------------ |
-| **A – Prompt Engine & Workers**       | `prompt_engine.py`, `workers/story_gen.py`, `workers/chapter_gen.py`; monkey-patched OpenAI stubs                        | \~6 k      | `pytest -k workers`                  |
-| **B – Generation API & Job Wiring**   | Endpoints: `POST /api/books/<id>/generate`, `GET /api/books/<id>/chapters`, job queue integration, storage of CSV & PNGs | \~7 k      | API unit + integration tests         |
-| **C – Studio Step-2 UI**              | React context for job polling, chapter-editor table, regenerate buttons, API hooks                                       | \~6 k      | React Testing Library suites         |
-| **D – Book Viewer & Static Assets**   | Flask blueprint to serve images, SPA `/books/:id` carousel viewer, minor CSS                                             | \~5 k      | Static-route tests + component tests |
-| *(Optional E – Avatar polish / docs)* | Only if budget permits                                                                                                   | <3 k       | N/A                                  |
-
----
-
-## 5 · Recommended execution order
-
-1. **Chunk A** – Foundation: guarantees deterministic CSV/PNG outputs.
-2. **Chunk B** – Exposes foundation via HTTP; enables backend E2E.
-3. **Chunk C** – Consumes stable API; unlocks user-visible progress.
-4. **Chunk D** – Pure UI polish; zero downstream blockers.
-
----
-
-## 6 · Why this ordering works
-
-*Building bottom-up* isolates risk: the prompt engine can be unit-tested without UI, the API can be hit with `curl` before React exists, and the SPA can rely on frozen contracts.  Each deliverable fits well under 20 000 characters, includes its own tests, and produces an artifact that the next chunk can mock or build upon.  Human review effort stays reasonable (≤ 5 PRs), and by delivering a visible Story Creation flow by Milestone 7 we maximise motivation and feedback while leaving room for later niceties such as advanced avatar tooling or cloud storage migration.
+By tackling schema and backend scaffolding first we ensure later chunks (especially the React work) compile against actual, testable endpoints, preventing wasted cycles on mock contracts.
