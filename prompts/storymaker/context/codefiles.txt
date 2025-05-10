@@ -14,7 +14,6 @@ prompts/storymaker/stages/08_testing.md
 pyproject.toml
 src/personalvibe/_README.md
 src/personalvibe/__init__.py
-src/personalvibe/utils.py
 src/personalvibe/vibe_utils.py
 src/storymaker/_README.md
 src/storymaker/api/_README.md

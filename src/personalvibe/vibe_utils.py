@@ -1,5 +1,6 @@
 # Copyright © 2025 by Nick Jenkins. All rights reserved
 import hashlib
+import html
 import logging
 import os
 from datetime import datetime
@@ -9,6 +10,7 @@ from typing import List
 import dotenv
 import requests
 import tiktoken
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 from openai import OpenAI
 
 dotenv.load_dotenv()
@@ -51,9 +53,12 @@ def save_prompt(prompt: str, root_dir: Path, input_hash: str = "") -> None:
 
 
 def get_vibed(
-    prompt: str, contexts: List[Path], project_name=str, model: str = "o3", max_completion_tokens=100_000
+    prompt: str, contexts: List[Path] = None, project_name=str, model: str = "o3", max_completion_tokens=100_000
 ) -> None:
     """Wrapper for O3 vibecoding to manage history and file interface"""
+    if not contexts:
+        contexts = []
+
     base_input_path = Path("data", project_name, "prompt_inputs")
     if not base_input_path.exists():
         logging.info(f"Creating {base_input_path}")
@@ -130,8 +135,39 @@ def get_context(filenames: List[str], extension: str = ".txt") -> str:
 
 
 def _process_file(file_path: Path) -> str:
-    """Helper to read and return file content with a header comment."""
-    return f"\n# Start of {file_path}\n" + file_path.read_text(encoding="utf-8") + f"\n# End of {file_path}\n"
+    """Helper to read and return file content with appropriate markdown code fences."""
+    rel_path = file_path.relative_to(get_base_path())
+    extension = file_path.suffix.lower()
+
+    # Map file extensions to markdown languages
+    extension_to_lang = {
+        ".py": "python",
+        ".ts": "typescript",
+        ".tsx": "typescript",
+        ".js": "javascript",
+        ".jsx": "javascript",
+        ".json": "json",
+        ".html": "html",
+        ".md": "",  # Markdown files don’t need code fences, show raw content
+        ".toml": "toml",
+        ".yaml": "yaml",
+        ".yml": "yaml",
+        ".txt": "",  # Plain text, no code highlighting
+        ".sh": "bash",
+        ".cfg": "",
+        ".ini": "",
+    }
+
+    language = extension_to_lang.get(extension, "")  # Default to no highlighting if unknown
+
+    content = file_path.read_text(encoding="utf-8")
+    content = html.unescape(content)
+
+    if extension == ".md":
+        # For markdown files, don't wrap in code fences
+        return f"\n#### Start of {rel_path}\n{content}\n#### End of {rel_path}\n"
+    else:
+        return f"\n#### Start of {rel_path}\n" f"```{language}\n" f"{content}\n" f"```\n" f"#### End of {rel_path}\n"
 
 
 def get_base_path(base: str = "personalvibe") -> Path:
@@ -147,3 +183,26 @@ def get_base_path(base: str = "personalvibe") -> Path:
 def num_tokens(text: str, model: str = "o3") -> int:
     enc = tiktoken.encoding_for_model(model)
     return len(enc.encode(text))
+
+
+def render_prompt_template(template_path: str, replacements: dict) -> str:
+    """
+    Renders a prompt template using Jinja2.
+
+    Args:
+        template_path (str): Path to the Jinja2 template file, relative to templates_base.
+        replacements (dict): Variables to inject into the template.
+
+    Returns:
+        str: Rendered prompt as a string.
+    """
+    prompt_base = Path(get_base_path(), "prompts")
+    env = Environment(
+        loader=FileSystemLoader(prompt_base),
+        autoescape=False,
+        trim_blocks=True,
+        lstrip_blocks=True,
+    )
+
+    template = env.get_template(template_path)
+    return template.render(**replacements)

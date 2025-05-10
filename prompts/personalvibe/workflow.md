@@ -26,20 +26,69 @@ These are best for early non-technical discussions, one-off bug hunts, and side-
 
 These are the phases I'm using so far:
 
-### Phase 1: Create a strong PRD
+### Phase 1: Draft PRD
 
-Spend a lot of time up front developing a product requirements document.
-
+Spend a lot of time up front developing and improving the product requirements document.
 The one I used for storymaker seems to be a good amount of detail and domains.
 
 It is helpful to add examples of prototype code, **codestyle**.
 
 At this stage, AI can be used more informally and disposably to provide suggestions and help build out aspects of the PRD.
 
-Start with fleshing out all non-technical aspects. And leave scoping of the technical approach to last.
+Start with fleshing out all non-technical aspects - technical approaches follow.
 
-### Phase 2: Create project structure
+The PRD can be iterated, but it's best to invest heavily in this area up front.
+This way we can avoid any surprises which may challenge the design.
 
-Ask AI to create the project structure.
+The following is the pseudocode needed to create this interaction:
 
-You are tasked with designing the technical file and folder structure related to the storymaker project.
+
+### Phase 2: Draft milestone
+
+In this step, we ask the AI for a plain text description of the next logical project milestone.
+
+Typically this is where we start using the API, to work with greater context windows.
+This would include the prd, **codefiles**, codestyles.
+
+The project milestone should be constrained to the following:
+* A maximum of five logical sprints (chunks of work)
+* Each sprint should be no more than 20k output tokens worth of work
+* Sprints should be organized logically with respect to interfaces
+* Each sprint must be testable
+
+
+```python
+def draft_milestone(
+	prd_path: str,
+	project_name: str,
+	execution_task: str = "",
+	execution_details: str = "",
+	code_context_paths: List[str],
+)
+```
+
+### Phase 3: Execute sprint
+
+In this step, we ask the AI to develop code materials to execute a discrete sprint of work.
+
+We use the API in this stage, due to the context required, and to help with automation.
+
+We request that the model outputs executable python code to do the following kinds of activities:
+
+- touch and mkdir for new files if needed
+- Write code to new files, or patch existing files if needed
+- Write or update the code testing procedures
+- Restart the services, execute tests, smoketests, and collate logs into a central source
+- AI performs an assessment as to whether the update was successful, or needs to be iterated based on errors in log or expectations
+- Raises a pull request when code is ready to merge
+
+```python
+def execute_sprint(
+	prd_path: str,
+	project_name: str,
+	milestone_plan: str,
+	sprint_name: str,
+	execution_details: str = "",
+	code_context_paths: List[str],
+)
+```
