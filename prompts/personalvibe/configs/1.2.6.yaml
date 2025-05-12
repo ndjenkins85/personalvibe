@@ -1,0 +1,179 @@
+# python -m personalvibe.run_pipeline --config prompts/personalvibe/configs/1.2.6.yaml
+
+project_name: "personalvibe"
+mode: sprint
+execution_details: |
+
+  last update unsuccessful, here are logs:
+
+  (personalvibe-py3.12) bash-3.2$ nox -s vibed -- 0.0.2
+  nox > Running session vibed-3.12
+  nox > Re-using existing virtual environment at .nox/vibed-3-12.
+  nox > git checkout -B __temp_vibed_branch__
+  M noxfile.py
+  M tests/__init__.py
+  M tests/personalvibe.sh
+  Switched to a new branch '__temp_vibed_branch__'
+
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+  nox > git branch -D vibed/0.0.2
+  Deleted branch vibed/0.0.2 (was 6375b3f).
+  nox > git checkout -b vibed/0.0.2
+  Switched to a new branch 'vibed/0.0.2'
+  nox > git branch -D __temp_vibed_branch__
+  Deleted branch __temp_vibed_branch__ (was 6375b3f).
+  nox > bash tests/personalvibe.sh
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items / 1 deselected / 15 selected
+
+  tests/test_api_endpoints.py .....                                        [ 33%]
+  tests/test_api_spec.py ..                                                [ 46%]
+  tests/test_auth.py .                                                     [ 53%]
+  tests/test_jobs.py .                                                     [ 60%]
+  tests/test_log_to_cm.py .                                                [ 66%]
+  tests/test_logger.py .                                                   [ 73%]
+  tests/test_logger_runid.py .                                             [ 80%]
+  tests/test_logging.py .                                                  [ 86%]
+  tests/test_run_context.py .                                              [ 93%]
+  tests/test_storage.py .                                                  [100%]
+
+  =============================== warnings summary ===============================
+  tests/test_vibed_session.py:16
+    /Users/nicholasjenkins/Documents/personalvibe/tests/test_vibed_session.py:16: PytestUnknownMarkWarning: Unknown pytest.mark.advanced - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+      @pytest.mark.advanced
+
+  -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+  ================= 15 passed, 1 deselected, 1 warning in 0.33s ==================
+  nox > Session tests-3.12 was successful.
+
+  ==============================================
+  Executing quality-gate (tests/personalvibe.sh)
+  ==============================================
+
+
+  =========================================================
+  ✨  Vibe sprint '0.0.2' finished – see logs/0.0.2_base.log
+  =========================================================
+
+  nox > git checkout -b vibed/0.0.2
+  fatal: A branch named 'vibed/0.0.2' already exists.
+
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+  nox > Command git checkout -b vibed/0.0.2 failed with exit code 128
+  nox > Session vibed-3.12 failed.
+  (personalvibe-py3.12) bash-3.2$ nox -s vibed -- 0.0.2
+  nox > Running session vibed-3.12
+  nox > Re-using existing virtual environment at .nox/vibed-3-12.
+  nox > git checkout -B __temp_vibed_branch__
+  M noxfile.py
+  M tests/__init__.py
+  M tests/personalvibe.sh
+  Switched to a new branch '__temp_vibed_branch__'
+
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+  nox > git branch -D vibed/0.0.2
+  error: branch 'vibed/0.0.2' not found.
+  nox > git checkout -b vibed/0.0.2
+  Switched to a new branch 'vibed/0.0.2'
+  nox > git branch -D __temp_vibed_branch__
+  Deleted branch __temp_vibed_branch__ (was 6375b3f).
+  nox > bash tests/personalvibe.sh
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items / 1 deselected / 15 selected
+
+  tests/test_api_endpoints.py .....                                        [ 33%]
+  tests/test_api_spec.py ..                                                [ 46%]
+  tests/test_auth.py .                                                     [ 53%]
+  tests/test_jobs.py .                                                     [ 60%]
+  tests/test_log_to_cm.py .                                                [ 66%]
+  tests/test_logger.py .                                                   [ 73%]
+  tests/test_logger_runid.py .                                             [ 80%]
+  tests/test_logging.py .                                                  [ 86%]
+  tests/test_run_context.py .                                              [ 93%]
+  tests/test_storage.py .                                                  [100%]
+
+  =============================== warnings summary ===============================
+  tests/test_vibed_session.py:16
+    /Users/nicholasjenkins/Documents/personalvibe/tests/test_vibed_session.py:16: PytestUnknownMarkWarning: Unknown pytest.mark.advanced - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+      @pytest.mark.advanced
+
+  -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+  ================= 15 passed, 1 deselected, 1 warning in 0.32s ==================
+  nox > Session tests-3.12 was successful.
+
+  ==============================================
+  Executing quality-gate (tests/personalvibe.sh)
+  ==============================================
+
+
+  =========================================================
+  ✨  Vibe sprint '0.0.2' finished – see logs/0.0.2_base.log
+  =========================================================
+
+  nox > git checkout -b vibed/0.0.2
+  fatal: A branch named 'vibed/0.0.2' already exists.
+
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+  nox > Command git checkout -b vibed/0.0.2 failed with exit code 128
+  nox > Session vibed-3.12 failed.
+  (personalvibe-py3.12) bash-3.2$
+
+  Seems that the git checkout handling in these two files is inconsistent and not working great
+
+  noxfile.py
+  tests/test_vibed_session.py
+
+
+code_context_paths:
+  - "prompts/personalvibe/context/codefiles.txt"
+milestone_file_name: 1.0.0.md

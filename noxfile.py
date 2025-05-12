@@ -14,7 +14,7 @@ import nox
 from nox.sessions import Session
 from nox_poetry import session
 
-locations = "personalvibe", "tests", "noxfile.py", "docs/conf.py"
+locations = "src/personalvibe", "tests", "noxfile.py", "docs/conf.py"
 nox.options.sessions = "lint", "tests"
 package = "personalvibe"
 
@@ -109,6 +109,48 @@ def _log_to(path: Path):
 
 @session(python=["3.12"], reuse_venv=True)
 def vibed(session: Session) -> None:  # noqa: D401
+    """Create vibed/<semver> branch, apply patch(es), run quality-gate.
+
+    Usage examples
+    --------------
+    nox -s vibed -- 1.2.3
+    nox -s vibed -- 1.2.3 path/to/patch.py other_patch.py
+    """
+    if not session.posargs:
+        session.error("Semver identifier required, e.g. nox -s vibed -- 0.2.1")
+
+    semver, *patches = session.posargs
+    semver = semver.strip()
+
+    log_path = Path("logs") / f"{semver}_base.log"
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with _log_to(log_path):
+        _print_step(f"Creating branch vibed/{semver}")
+
+        _temp_branch = "__temp_vibed_branch__"
+
+        # Step 1: Checkout to a temporary branch (safe branch to delete from)
+        session.run("git", "checkout", "-B", _temp_branch, external=True)
+
+        # Step 2: Delete the target branch if it exists
+        session.run("git", "branch", "-D", f"vibed/{semver}", external=True, success_codes=[0, 1])
+
+        # Step 3: Create and switch to the new target branch
+        session.run("git", "checkout", "-b", f"vibed/{semver}", external=True)
+
+        # Step 4: Delete the temporary branch
+        session.run("git", "branch", "-D", _temp_branch, external=True, success_codes=[0, 1])
+
+        # ------------------------------------------------ Patch scripts
+        for patch in patches:
+            _print_step(f"Running patch script: {patch}")
+            session.run("poetry", "run", "python", patch, external=True)
+
+        _print_step("Executing quality-gate (tests/personalvibe.sh)")
+        session.run("bash", "tests/personalvibe.sh", external=True)
+
+    _print_step(f"✨  Vibe sprint '{semver}' finished – see {log_path}")
     """
     Apply an auto-generated *patch* then run the full quality-gate.
 
@@ -141,3 +183,51 @@ def vibed(session: Session) -> None:  # noqa: D401
         session.run("bash", "tests/personalvibe.sh", external=True)
 
     _print_step(f"✨  Vibe sprint '{semver}' finished – see {log_path}")
+
+
+# --- PERSONALVIBE SPRINT 0.0.2 PATCH START
+from pathlib import Path
+
+from nox_poetry import session as _p_session  # reuse already-installed decorator
+
+
+@_p_session(python=["3.12"], reuse_venv=True)  # type: ignore[misc]
+def vibed(session):  # noqa: D401
+    """Create **fresh** ``vibed/<semver>`` branch then run quality-gate.
+
+    Usage examples
+    --------------
+    nox -s vibed -- 1.2.3
+    nox -s vibed -- 1.2.3 my_patch.py other.py
+    """
+    if not session.posargs:
+        session.error("Semver identifier required, e.g. nox -s vibed -- 0.2.1")
+
+    semver, *patches = (arg.strip() for arg in session.posargs)
+
+    log_path = Path("logs") / f"{semver}_base.log"
+    from noxfile import _log_to, _print_step  # local reuse
+
+    with _log_to(log_path):
+        _print_step(f"Creating branch vibed/{semver}")
+
+        tmp_branch = "__temp_vibed_branch__"
+        session.run("git", "checkout", "-B", tmp_branch, external=True)
+
+        # ensure idempotency
+        session.run("git", "branch", "-D", f"vibed/{semver}", external=True, success_codes=[0, 1])
+        session.run("git", "checkout", "-b", f"vibed/{semver}", external=True)
+        session.run("git", "branch", "-D", tmp_branch, external=True, success_codes=[0, 1])
+
+        # optional user-supplied patch scripts
+        for patch in patches:
+            _print_step(f"Running patch script: {patch}")
+            session.run("poetry", "run", "python", patch, external=True)
+
+        _print_step("Executing quality-gate (tests/personalvibe.sh)")
+        session.run("bash", "tests/personalvibe.sh", external=True)
+
+    _print_step(f"✨  Vibe sprint '{semver}' finished – see {log_path}")
+
+
+# --- PERSONALVIBE SPRINT 0.0.2 PATCH END

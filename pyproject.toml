@@ -101,6 +101,11 @@ build-backend = "poetry.core.masonry.api"
 [tool.black]
 line-length = 120
 
+[tool.pytest.ini_options]
+markers = [
+    "advanced: marks tests as advanced (deselect with '-m \"not advanced\"')"
+]
+
 [tool.isort]
 profile = "black"
 known_local_folder = ["personalvibe"]

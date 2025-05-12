@@ -1,0 +1,1540 @@
+# python -m personalvibe.run_pipeline --config prompts/personalvibe/configs/1.2.5.yaml
+
+project_name: "personalvibe"
+mode: sprint
+execution_details: |
+
+  last update unsuccessful, here are logs:
+
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  🧹  Code quality (black, mypy, flake8)…
+  nox > Running session lint-3.12
+  nox > Re-using existing virtual environment at .nox/lint-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > black src/personalvibe tests noxfile.py docs/conf.py tests noxfile.py docs/conf.py
+  reformatted /Users/nicholasjenkins/Documents/personalvibe/tests/dummy_patch.py
+  reformatted /Users/nicholasjenkins/Documents/personalvibe/tests/test_vibed_session.py
+
+  All done! ✨ 🍰 ✨
+  2 files reformatted, 20 files left unchanged.
+  nox > mypy src/personalvibe tests noxfile.py docs/conf.py tests noxfile.py docs/conf.py
+  tests/__init__.py: error: Duplicate module named "tests" (also at "tests/__init__.py")
+  tests/__init__.py: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#mapping-file-paths-to-modules for more info
+  tests/__init__.py: note: Common resolutions include: a) using `--exclude` to avoid checking one of them, b) adding `__init__.py` somewhere, c) using `--explicit-package-bases` or adjusting MYPYPATH
+  Found 1 error in 1 file (errors prevented further checking)
+  nox > Command mypy src/personalvibe tests noxfile.py docs/conf.py tests noxfile.py docs/conf.py failed with exit code 2
+  nox > Session lint-3.12 failed.
+
+  ==============================================
+  Executing quality-gate (tests/personalvibe.sh)
+  ==============================================
+
+
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  🧹  Code quality (black, mypy, flake8)…
+  nox > Running session lint-3.12
+  nox > Re-using existing virtual environment at .nox/lint-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > black src/personalvibe tests noxfile.py docs/conf.py
+  reformatted noxfile.py
+
+  All done! ✨ 🍰 ✨
+  1 file reformatted, 21 files left unchanged.
+  nox > mypy src/personalvibe tests noxfile.py docs/conf.py
+  docs/conf.py:8: error: Cannot find implementation or library stub for module named "personalsite"  [import-not-found]
+  tests/test_run_context.py:5: error: Skipping analyzing "personalvibe.run_context": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  tests/test_logging.py:7: error: Skipping analyzing "personalvibe": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  tests/test_auth.py:3: error: Skipping analyzing "storymaker.auth.auth": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  tests/test_api_spec.py:5: error: Skipping analyzing "storymaker.api.app": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  tests/test_storage.py:6: error: Skipping analyzing "storymaker.data.storage": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  tests/test_storage.py:7: error: Skipping analyzing "storymaker.models.book": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  tests/test_storage.py:8: error: Skipping analyzing "storymaker.models.chapter": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  tests/test_storage.py:9: error: Skipping analyzing "storymaker.models.character": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  tests/test_jobs.py:5: error: Skipping analyzing "storymaker.jobs": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  src/personalvibe/run_context.py:21: error: No overload variant of "dataclass" matches argument types "bool", "bool"  [call-overload]
+  src/personalvibe/run_context.py:21: note: Possible overload variants:
+  src/personalvibe/run_context.py:21: note:     def dataclass(None, /) -> Callable[[Type[_T]], Type[_T]]
+  src/personalvibe/run_context.py:21: note:     def [_T] dataclass(Type[_T], /) -> Type[_T]
+  src/personalvibe/run_context.py:21: note:     def dataclass(*, init: bool = ..., repr: bool = ..., eq: bool = ..., order: bool = ..., unsafe_hash: bool = ..., frozen: bool = ...) -> Callable[[Type[_T]], Type[_T]]
+  tests/test_logger_runid.py:6: error: Skipping analyzing "personalvibe": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  tests/test_logger.py:10: error: Skipping analyzing "personalvibe": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  tests/test_api_endpoints.py:16: error: Skipping analyzing "storymaker.api": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  tests/test_api_endpoints.py:17: error: Skipping analyzing "storymaker.api.routes": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  noxfile.py:102: error: Item "None" of "Optional[IO[str]]" has no attribute "flush"  [union-attr]
+  noxfile.py:103: error: Item "None" of "Optional[IO[str]]" has no attribute "flush"  [union-attr]
+  noxfile.py:105: error: Item "None" of "Optional[IO[str]]" has no attribute "close"  [union-attr]
+  noxfile.py:105: note: Error code "union-attr" not covered by "type: ignore" comment
+  src/personalvibe/run_pipeline.py:12: error: Skipping analyzing "personalvibe": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  src/personalvibe/run_pipeline.py:12: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+  src/personalvibe/vibe_utils.py:26: error: X | Y syntax for unions requires Python 3.10  [syntax]
+  src/personalvibe/vibe_utils.py:40: error: Argument 1 to "find_existing_hash" has incompatible type "Path"; expected "str"  [arg-type]
+  src/personalvibe/vibe_utils.py:57: error: Incompatible default for argument "contexts" (default has type "None", argument has type "List[Path]")  [assignment]
+  src/personalvibe/vibe_utils.py:57: note: PEP 484 prohibits implicit Optional. Accordingly, mypy has changed its default to no_implicit_optional=True
+  src/personalvibe/vibe_utils.py:57: note: Use https://github.com/hauntsaninja/no_implicit_optional to automatically upgrade your codebase
+  src/personalvibe/vibe_utils.py:67: error: "save_prompt" does not return a value (it only ever returns None)  [func-returns-value]
+  src/personalvibe/vibe_utils.py:85: error: Argument "messages" to "create" of "Completions" has incompatible type "List[Dict[str, Sequence[Collection[str]]]]"; expected "Iterable[Union[ChatCompletionDeveloperMessageParam, ChatCompletionSystemMessageParam, ChatCompletionUserMessageParam, ChatCompletionAssistantMessageParam, ChatCompletionToolMessageParam, ChatCompletionFunctionMessageParam]]"  [arg-type]
+  src/personalvibe/vibe_utils.py:87: error: Incompatible types in assignment (expression has type "Optional[str]", variable has type "ChatCompletion")  [assignment]
+  src/personalvibe/vibe_utils.py:97: error: "save_prompt" does not return a value (it only ever returns None)  [func-returns-value]
+  src/personalvibe/vibe_utils.py:97: error: Argument 1 to "save_prompt" has incompatible type "ChatCompletion"; expected "str"  [arg-type]
+  src/personalvibe/vibe_utils.py:98: error: Incompatible return value type (got "ChatCompletion", expected "str")  [return-value]
+  Found 28 errors in 14 files (checked 22 source files)
+  nox > Command mypy src/personalvibe tests noxfile.py docs/conf.py failed with exit code 1
+  nox > Session lint-3.12 failed.
+
+  ==============================================
+  Executing quality-gate (tests/personalvibe.sh)
+  ==============================================
+
+
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                        [ 31%]
+  tests/test_api_spec.py ..                                                [ 43%]
+  tests/test_auth.py .                                                     [ 50%]
+  tests/test_jobs.py .                                                     [ 56%]
+  tests/test_log_to_cm.py .                                                [ 62%]
+  tests/test_logger.py .                                                   [ 68%]
+  tests/test_logger_runid.py .                                             [ 75%]
+  tests/test_logging.py .                                                  [ 81%]
+  tests/test_run_context.py .                                              [ 87%]
+  tests/test_storage.py .                                                  [ 93%]
+  tests/test_vibed_session.py
+  ===========================
+  Creating branch vibed/0.0.2
+  ===========================
+
+
+  ==========================================
+  Running patch script: tests/dummy_patch.py
+  ==========================================
+
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+  nox > Interrupted...
+  nox > Session tests-3.12 interrupted.
+  nox > Interrupted...
+  nox > Interrupted...
+  nox > Interrupted...
+  nox > Session tests-3.12 interrupted.
+  nox > Interrupted...
+  nox > Session tests-3.12 interrupted.
+  nox > Interrupted...
+  nox > Session tests-3.12 interrupted.
+  nox > Interrupted...
+  nox > Session tests-3.12 interrupted.
+  nox > Interrupted...
+  nox > Session tests-3.12 interrupted.
+  nox > Interrupted...
+  nox > Session tests-3.12 interrupted.
+  nox > Interrupted...
+  nox > Session tests-3.12 interrupted.
+  nox > Interrupted...
+  nox > Interrupted...
+  nox > Session tests-3.12 interrupted.
+  nox > Interrupted...
+  nox > Interrupted...
+  nox > Interrupted...
+  nox > Interrupted...
+  nox > Interrupted...
+  nox > Interrupted...
+  nox > Interrupted...
+  nox > Interrupted...
+  nox > Session tests-3.12 interrupted.
+  nox > Interrupted...
+  nox > Interrupted...
+  nox > Interrupted...
+  nox > Interrupted...
+  nox > Interrupted...
+  nox > Interrupted...
+  nox > Interrupted...
+  nox > Interrupted...
+  nox > Interrupted...
+  nox > Interrupted...
+  nox > Interrupted...
+  nox > Interrupted...
+
+
+
+
+
+  ---- lets see if everything was stored above , this is what i copied
+
+  (personalvibe-py3.12) bash-3.2$ nox -rs tests
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (0.1.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ======================================================================================= test session starts =======================================================================================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 16 items
+
+  tests/test_api_endpoints.py .....                                                                                                                                                           [ 31%]
+  tests/test_api_spec.py ..                                                                                                                                                                   [ 43%]
+  tests/test_auth.py .                                                                                                                                                                        [ 50%]
+  tests/test_jobs.py .                                                                                                                                                                        [ 56%]
+  tests/test_log_to_cm.py .                                                                                                                                                                   [ 62%]
+  tests/test_logger.py .                                                                                                                                                                      [ 68%]
+  tests/test_logger_runid.py .                                                                                                                                                                [ 75%]
+  tests/test_logging.py .                                                                                                                                                                     [ 81%]
+  tests/test_run_context.py .                                                                                                                                                                 [ 87%]
+  tests/test_storage.py .                                                                                                                                                                     [ 93%]
+  tests/test_vibed_session.py ^Cnox > Interrupted...
+  nox > Session tests-3.12 interrupted.
+  (personalvibe-py3.12) bash-3.2$
+  (personalvibe-py3.12) bash-3.2$
+
+
+
+  I think there is a major design flaw in that the self testing is recursive
+
+code_context_paths:
+  - "prompts/personalvibe/context/codefiles.txt"
+milestone_file_name: 1.0.0.md

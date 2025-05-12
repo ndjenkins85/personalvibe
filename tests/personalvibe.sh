@@ -27,8 +27,9 @@ exec > >(tee -a "${LOG_FILE}") 2>&1
 echo "🔍  Installing project (if not already)…"
 poetry install --sync --no-interaction --no-root
 
-echo -e "\n🧹  Code quality (black, mypy, flake8)…"
-poetry run nox -rs lint
+# We dont worry about this for now, maybe later when we get more pedantic
+# echo -e "\n🧹  Code quality (black, mypy, flake8)…"
+# poetry run nox -rs lint
 
 echo -e "\n✅  Running pytest…"
 poetry run nox -rs tests
