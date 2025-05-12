@@ -32,13 +32,14 @@ def find_existing_hash(root_dir: str, hash_str: str) -> str | None:
 
 def save_prompt(prompt: str, root_dir: Path, input_hash: str = "") -> None:
     # Get current timestamp
+    log = logging.getLogger(__name__)
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     hash_str = get_prompt_hash(prompt)[:10]  # Shorten hash for filename
 
     # Check for existing hash match
     existing = find_existing_hash(root_dir, hash_str)
     if existing:
-        logging.info(f"Duplicate prompt detected. Existing file: {existing}")
+        log.info(f"Duplicate prompt detected. Existing file: {existing}")
         return
 
     # Save prompt to new file
@@ -49,7 +50,7 @@ def save_prompt(prompt: str, root_dir: Path, input_hash: str = "") -> None:
     filepath = Path(root_dir, filename)
     filepath.write_text(prompt)
 
-    logging.info(f"Prompt saved to: {filepath}")
+    log.info(f"Prompt saved to: {filepath}")
 
 
 def get_vibed(

@@ -7,6 +7,8 @@ execution_details: |
 
   validate that my approach in vibe_utils and run_pipeline looks sufficient to build out milestone and sprint stages
   We do not want to provide this for non-Python users yet, we are still mid development of the core self-testing on the core personalvibe
+
+  In my opinion, getting the logging centralized to a per-prompt input run is essential (i.e. log naming)
 code_context_paths:
   - "prompts/personalvibe/context/codefiles.txt"
 milestone_file_name: ""
