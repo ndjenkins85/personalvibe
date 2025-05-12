@@ -210,6 +210,18 @@ def render_prompt_template(template_path: str, replacements: dict) -> str:
     return template.render(**replacements)
 
 
+def _get_error_text(config) -> str:
+    error_path = Path(get_base_path(), "prompts", config.project_name, "errors", config.error_file_name).read_text()
+    # NOTE TO LLM: improve the handling here as per my usual codestyle
+    return error_path.read_text()
+
+
+def _get_milestone_text(config) -> str:
+    milestone_path = Path(get_base_path(), "prompts", config.project_name, "stages", config.milestone_file_name)
+    # NOTE TO LLM: improve the handling here as per my usual codestyle
+    return milestone_path.read_text()
+
+
 def get_replacements(config, code_context: str) -> dict:
     """
     Build the Jinja replacement map once.
@@ -218,6 +230,7 @@ def get_replacements(config, code_context: str) -> dict:
       unless the YAML overrides it.
     """
     log.info(f"Running config version: {config.version}")
+    log.info(f"Running mode = {config.mode}")
     milestone_ver, sprint_ver, bugfix_ver = config.version.split(".")
     if config.mode == "prd":
         exec_task = config.execution_task
@@ -230,16 +243,16 @@ def get_replacements(config, code_context: str) -> dict:
         instructions = (
             Path(get_base_path(), "prompts", config.project_name, "commands", "sprint.md").read_text()
             + "\n"
-            + Path(get_base_path(), "prompts", config.project_name, "stages", config.milestone_file_name).read_text()
+            + _get_milestone_text(config)
         )
     elif config.mode == "validate":
         exec_task = f"validate the following logs following the generation of sprint {sprint_ver}"
         instructions = (
             Path(get_base_path(), "prompts", config.project_name, "commands", "validate.md").read_text()
             + "\n"
-            + Path(get_base_path(), "prompts", config.project_name, "stages", config.milestone_file_name).read_text()
+            + _get_milestone_text(config)
             + "\n"
-            + Path(get_base_path(), "prompts", config.project_name, "stages", config.error_file_name).read_text()
+            + _get_error_text(config)
         )
 
     return {
