@@ -207,3 +207,43 @@ def render_prompt_template(template_path: str, replacements: dict) -> str:
 
     template = env.get_template(template_path)
     return template.render(**replacements)
+
+
+def get_replacements(config, code_context: str) -> dict:
+    """
+    Build the Jinja replacement map once.
+
+    * Milestone mode injects a standard execution task by default
+      unless the YAML overrides it.
+    """
+    logging.debug(config.version)
+    milestone_ver, sprint_ver, bugfix_ver = config.version.split(".")
+    if config.mode == "prd":
+        exec_task = config.execution_task
+        instructions = ""
+    elif config.mode == "milestone":
+        exec_task = "conduct milestone analysis according to guidelines"
+        instructions = Path(get_base_path(), "prompts", config.project_name, "commands", "milestone.md").read_text()
+    elif config.mode == "sprint":
+        exec_task = f"perform the sprint number marked {sprint_ver}"
+        instructions = (
+            Path(get_base_path(), "prompts", config.project_name, "commands", "sprint.md").read_text()
+            + "\n"
+            + Path(get_base_path(), "prompts", config.project_name, "stages", config.milestone_file_name).read_text()
+        )
+    elif config.mode == "validate":
+        exec_task = f"validate the following logs following the generation of sprint {sprint_ver}"
+        instructions = (
+            Path(get_base_path(), "prompts", config.project_name, "commands", "validate.md").read_text()
+            + "\n"
+            + Path(get_base_path(), "prompts", config.project_name, "stages", config.milestone_file_name).read_text()
+            + "\n"
+            + Path(get_base_path(), "prompts", config.project_name, "stages", config.error_file_name).read_text()
+        )
+
+    return {
+        "execution_task": exec_task,
+        "execution_details": config.execution_details,
+        "instructions": instructions,
+        "code_context": code_context,
+    }

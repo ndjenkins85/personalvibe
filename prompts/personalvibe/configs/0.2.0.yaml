@@ -1,0 +1,12 @@
+# python -m personalvibe.run_pipeline --config prompts/personalvibe/configs/0.2.0.yaml
+
+project_name: "personalvibe"
+mode: milestone
+execution_details: |
+  specifically, please consider the following in your milestone generation:
+
+  validate that my approach in vibe_utils and run_pipeline looks sufficient to build out milestone and sprint stages
+  We do not want to provide this for non-Python users yet, we are still mid development of the core self-testing on the core personalvibe
+code_context_paths:
+  - "prompts/personalvibe/context/codefiles.txt"
+milestone_file_name: ""

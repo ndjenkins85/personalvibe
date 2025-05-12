@@ -1,9 +1,15 @@
 .flake8
 .pre-commit-config.yaml
-data/storymaker/prompt_outputs/mypatch.py
 noxfile.py
 pyproject.toml
 src/personalvibe/_README.md
 src/personalvibe/__init__.py
+src/personalvibe/commands.py
+src/personalvibe/logger.py
+src/personalvibe/run_pipeline.py
 src/personalvibe/vibe_utils.py
 tests/_README.md
+tests/personalvibe.sh
+prompts/personalvibe/commands/milestone.md
+prompts/personalvibe/commands/sprint.md
+prompts/personalvibe/configs/0.2.0.yaml
