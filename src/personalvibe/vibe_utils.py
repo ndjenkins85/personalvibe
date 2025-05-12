@@ -15,7 +15,8 @@ from openai import OpenAI
 
 dotenv.load_dotenv()
 client = OpenAI()
-logging.basicConfig(level=logging.INFO)
+
+log = logging.getLogger(__name__)
 
 
 def get_prompt_hash(prompt: str) -> str:
@@ -32,7 +33,6 @@ def find_existing_hash(root_dir: str, hash_str: str) -> str | None:
 
 def save_prompt(prompt: str, root_dir: Path, input_hash: str = "") -> None:
     # Get current timestamp
-    log = logging.getLogger(__name__)
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     hash_str = get_prompt_hash(prompt)[:10]  # Shorten hash for filename
 
@@ -62,7 +62,7 @@ def get_vibed(
 
     base_input_path = Path("data", project_name, "prompt_inputs")
     if not base_input_path.exists():
-        logging.info(f"Creating {base_input_path}")
+        log.info(f"Creating {base_input_path}")
         base_input_path.mkdir(parents=True)
     input_hash = save_prompt(prompt, base_input_path)
 
@@ -79,7 +79,7 @@ def get_vibed(
 
     message_chars = len(str(messages))
     message_tokens = num_tokens(str(messages), model=model)
-    logging.info(f"Prompt input size - Tokens: {message_tokens}, Chars: {message_chars}")
+    log.info(f"Prompt input size - Tokens: {message_tokens}, Chars: {message_chars}")
 
     response = client.chat.completions.create(
         model=model, messages=messages, max_completion_tokens=max_completion_tokens
@@ -88,11 +88,11 @@ def get_vibed(
 
     message_chars = len(str(response))
     message_tokens = num_tokens(str(response), model=model)
-    logging.info(f"Response output size - Tokens: {message_tokens}, Chars: {message_chars}")
+    log.info(f"Response output size - Tokens: {message_tokens}, Chars: {message_chars}")
 
     base_output_path = Path("data", project_name, "prompt_outputs")
     if not base_output_path.exists():
-        logging.info(f"Creating {base_output_path}")
+        log.info(f"Creating {base_output_path}")
         base_output_path.mkdir(parents=True)
     _ = save_prompt(response, base_output_path, input_hash=input_hash)
     return response
@@ -122,14 +122,14 @@ def get_context(filenames: List[str], extension: str = ".txt") -> str:
             if any(char in line for char in "*?[]"):  # Wildcard detected
                 matches = sorted(base_path.glob(line))
                 if not matches:
-                    logging.warning(f"No matches found for wildcard pattern: {line}")
+                    log.warning(f"No matches found for wildcard pattern: {line}")
                 for match in matches:
                     if match.is_file():
                         big_string += _process_file(match)
             else:
                 if not line_path.exists():
                     message = f"Warning: {line_path} does not exist. {os.getcwd()}"
-                    logging.error(message)
+                    log.error(message)
                     raise ValueError(message)
                 big_string += _process_file(line_path)
 
@@ -217,7 +217,7 @@ def get_replacements(config, code_context: str) -> dict:
     * Milestone mode injects a standard execution task by default
       unless the YAML overrides it.
     """
-    logging.debug(config.version)
+    log.info(f"Running config version: {config.version}")
     milestone_ver, sprint_ver, bugfix_ver = config.version.split(".")
     if config.mode == "prd":
         exec_task = config.execution_task
