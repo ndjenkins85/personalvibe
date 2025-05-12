@@ -1,0 +1,9 @@
+# python -m personalvibe.run_pipeline --config prompts/personalvibe/configs/1.2.1.yaml
+
+project_name: "personalvibe"
+mode: validate
+execution_details: ""
+code_context_paths:
+  - "prompts/personalvibe/context/codefiles.txt"
+milestone_file_name: 1.0.0.md
+error_file_name: 1.2.1.md

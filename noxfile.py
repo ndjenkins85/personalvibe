@@ -76,17 +76,32 @@ def _print_step(msg: str) -> None:
 
 @contextmanager
 def _log_to(path: Path):
-    """Context manager that duplicates everything sent to stdout/stderr."""
-    with path.open("w") as fh:
-        # tee both stdout & stderr into fh
-        proc = subprocess.Popen(["tee", str(path)], stdin=subprocess.PIPE, text=True)  # type: ignore[arg-type]
-        saved_out, saved_err = sys.stdout, sys.stderr
-        sys.stdout = sys.stderr = proc.stdin  # type: ignore[assignment]
+    """Duplicate *all* stdout/stderr to **append** mode log file.
+
+    The implementation purposefully:
+    • opens the target file beforehand so it is never truncated
+    • spawns one long-lived ``tee -a`` process
+    • restores sys.std* even if exceptions occur
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    # Ensure file exists so tee -a never complains
+    path.touch(exist_ok=True)
+
+    proc = subprocess.Popen(
+        ["tee", "-a", str(path)],
+        stdin=subprocess.PIPE,
+        text=True,
+    )  # type: ignore[arg-type]
+    saved_out, saved_err = sys.stdout, sys.stderr
+    sys.stdout = sys.stderr = proc.stdin  # type: ignore[assignment]
+    try:
+        yield
+    finally:
+        # Flush and close the tee input; restore
         try:
-            yield
-        finally:
             sys.stdout.flush()
             sys.stderr.flush()
+        finally:
             proc.stdin.close()  # type: ignore[attr-defined]
             proc.wait()
             sys.stdout, sys.stderr = saved_out, saved_err
@@ -113,7 +128,6 @@ def vibed(session: Session) -> None:  # noqa: D401
     if not session.posargs:
         session.error("Semver identifier required, e.g. nox -s vibed -- 0.2.1")
     semver = session.posargs[0].strip()
-    patch = session.posargs[1] if len(session.posargs) > 1 else "data/storymaker/prompt_outputs/mypatch.py"
 
     log_path = Path("logs") / f"{semver}.log"
     log_path.parent.mkdir(exist_ok=True)
@@ -121,10 +135,6 @@ def vibed(session: Session) -> None:  # noqa: D401
     with _log_to(log_path):
         _print_step(f"Creating branch vibed/{semver}")
         session.run("git", "checkout", "-b", f"vibed/{semver}", external=True)
-
-        _print_step(f"Running patch script: {patch}")
-        session.install(".")
-        session.run("poetry", "run", "python", patch, external=True)
 
         _print_step("Executing quality-gate (tests/personalvibe.sh)")
         # the script already exits-on-error (`set -euo pipefail`)

@@ -1,0 +1,33 @@
+# python -m personalvibe.run_pipeline --config prompts/personalvibe/configs/1.2.2.yaml
+
+project_name: "personalvibe"
+mode: sprint
+execution_details: |
+
+  The following errors appeared when attempting the latest sprint implementation
+
+  Fail – sprint 2 does not satisfy the acceptance criteria
+
+  Summary
+  • run_pipeline now derives run_id=“<semver>_base” and the first process correctly writes the RUN_ID header and a BEGIN-STAMP line (see 1.2.0 log excerpt), so the core logger change is in place.
+  • The remainder of the sprint goals are missing or incomplete, causing the quality-gate to fail:
+
+  Evidence of failure
+  1. _log_to still opens the log with mode="w" (noxfile.py L59) – this truncates logs instead of appending, violating the “every process must write to the same file” requirement.
+  2. Required pytest test_logfile_created() is absent; tests/ contains only the shell harness. Coverage for the new logger behaviour is therefore 0 %.
+  3. Stage driver prompts/personalvibe/stages/1.2.0.py aborts with “❌ Could not locate vibed() session in noxfile.py.” even though vibed() exists. The script clearly is not invoking nox properly, so the CI path is broken.
+  4. tests/personalvibe.sh has been added but was never executed during the supplied run; consequently no lint/tests output was captured in logs/1.2.0_base.log.
+  5. No BEGIN-STAMP lines appear after the initial run, confirming that downstream tools are not appending.
+
+  Next steps before merge
+  • Change _log_to(path) to path.open("a") and verify tee still mirrors stdout/stderr.
+  • Add the missing pytest module with test_logfile_created() (and reset_logging fixture).
+  • Ensure prompts/personalvibe/stages/*.py calls nox via subprocess (“nox -s vibed -- <semver>”) so vibed() is discoverable.
+  • Re-run tests/personalvibe.sh under nox; confirm multiple BEGIN-STAMP entries in logs/{semver}_base.log and that log is never truncated.
+  • When these pass, push the updated branch and re-request review.
+
+  Until the above issues are resolved the sprint is considered incomplete and should not be merged.
+
+code_context_paths:
+  - "prompts/personalvibe/context/codefiles.txt"
+milestone_file_name: 1.0.0.md
