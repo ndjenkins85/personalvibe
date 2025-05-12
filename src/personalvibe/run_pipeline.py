@@ -1,4 +1,5 @@
 # Copyright © 2025 by Nick Jenkins. All rights reserved
+"""Orchestrates YAML → prompt rendering → vibecoding."""
 
 import argparse
 import logging
@@ -23,57 +24,52 @@ class ConfigModel(BaseModel):
 
 
 def load_config(config_path: str) -> ConfigModel:
-    """Load and validate YAML config, logging any schema errors."""
-    log = logging.getLogger(__name__)
-    with open(config_path, "r") as f:
-        raw_config = yaml.safe_load(f)
-        raw_config["version"] = Path(config_path).stem
+    """Load & validate YAML config; bubble schema errors."""
+    with open(config_path, "r", encoding="utf-8") as f:
+        raw = yaml.safe_load(f)
+        raw["version"] = Path(config_path).stem
     try:
-        return ConfigModel(**raw_config)
+        return ConfigModel(**raw)
     except ValidationError as e:
-        log.error("Config validation failed:\n%s", e)
+        logging.getLogger(__name__).error("Config validation failed:\n%s", e)
         raise
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Run the Personalvibe Workflow.")
     parser.add_argument("--config", required=True, help="Path to YAML config file.")
-    parser.add_argument("--verbosity", choices=["verbose", "none", "errors"], default="none")
+    parser.add_argument("--verbosity", choices=["verbose", "none", "errors"], default="none", help="Console log level")
     parser.add_argument("--prompt_only", action="store_true", help="If set, only generate the prompt.")
     args = parser.parse_args()
 
-    # ------------------------------------------------------------------
-    # 1️⃣  Centralised logging – one call, early.
-    #     Accepts 'verbose' | 'none' | 'errors'
-    # ------------------------------------------------------------------
-    logger.configure_logging(args.verbosity)
-
-    log = logging.getLogger(__name__)
-    log.info("P  E  R  S  O  N  A  L  V  I  B  E")
-
+    # 1️⃣  Parse config first – we need the semver to derive run_id
     config = load_config(args.config)
+    run_id = f"{config.version}_base"
 
+    # 2️⃣  Bootstrap logging (console + per-semver file)
+    logger.configure_logging(args.verbosity, run_id=run_id)
+    log = logging.getLogger(__name__)
+    log.info("P  E  R  S  O  N  A  L  V  I  B  E  – run_id=%s", run_id)
+
+    # 3️⃣  Render prompt template ------------------------------------------------
     code_context = vibe_utils.get_context(config.code_context_paths)
-
     replacements = vibe_utils.get_replacements(config, code_context)
 
     template_map = {"prd": "", "milestone": "", "sprint": "", "validate": ""}
-
     template_path = f"{config.project_name}/prd.md"
     if not template_path:
-        log.error(f"Unsupported mode '{config.mode}'. Must be one of {list(template_map.keys())}.")
+        log.error("Unsupported mode '%s'.", config.mode)
         return
 
     prompt = vibe_utils.render_prompt_template(template_path, replacements=replacements)
+
     if args.prompt_only:
         base_input_path = Path("data", config.project_name, "prompt_inputs")
-        if not base_input_path.exists():
-            log.info(f"Creating {base_input_path}")
-            base_input_path.mkdir(parents=True)
+        base_input_path.mkdir(parents=True, exist_ok=True)
         _ = vibe_utils.save_prompt(prompt, base_input_path)
     else:
         vibe_utils.get_vibed(prompt, project_name=config.project_name, max_completion_tokens=20_000)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()

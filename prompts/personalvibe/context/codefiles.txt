@@ -5,6 +5,7 @@ prompts/personalvibe/commands/milestone.md
 prompts/personalvibe/commands/sprint.md
 prompts/personalvibe/configs/1.0.0.yaml
 prompts/personalvibe/configs/1.1.0.yaml
+prompts/personalvibe/configs/1.1.1.yaml
 pyproject.toml
 src/personalvibe/_README.md
 src/personalvibe/__init__.py

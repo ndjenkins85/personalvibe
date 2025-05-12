@@ -211,7 +211,7 @@ def render_prompt_template(template_path: str, replacements: dict) -> str:
 
 
 def _get_error_text(config) -> str:
-    error_path = Path(get_base_path(), "prompts", config.project_name, "errors", config.error_file_name).read_text()
+    error_path = Path(get_base_path(), "prompts", config.project_name, "errors", config.error_file_name)
     # NOTE TO LLM: improve the handling here as per my usual codestyle
     return error_path.read_text()
 
