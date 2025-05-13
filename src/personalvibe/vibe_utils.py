@@ -27,30 +27,50 @@ def find_existing_hash(root_dir: str, hash_str: str) -> str | None:
     for dirpath, _, filenames in os.walk(root_dir):
         for filename in filenames:
             if hash_str in filename:
-                return os.path.join(dirpath, filename)
+                return Path(dirpath) / filename
     return None
 
 
-def save_prompt(prompt: str, root_dir: Path, input_hash: str = "") -> None:
-    # Get current timestamp
+def save_prompt(prompt: str, root_dir: Path, input_hash: str = "") -> Path:
+    """Persist *one* prompt to disk and return its Path.
+
+    Behaviour
+    ----------
+    • Uses SHA-256(prompt)[:10] to create a stable short-hash.
+    • If a file containing that hash already exists, nothing is written
+      and the *existing* Path is returned.
+    • New files are named   <timestamp>[_<input_hash>]_ <hash>.md
+    • Every file is terminated with an extra line::
+
+          ### END PROMPT
+
+      to make `grep -A999 '^### END PROMPT$'` trivially reliable.
+    """
+    # Timestamp + hash bits
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    hash_str = get_prompt_hash(prompt)[:10]  # Shorten hash for filename
+    hash_str = get_prompt_hash(prompt)[:10]
 
-    # Check for existing hash match
-    existing = find_existing_hash(root_dir, hash_str)
-    if existing:
-        log.info(f"Duplicate prompt detected. Existing file: {existing}")
-        return
+    if existing := find_existing_hash(root_dir, hash_str):
+        log.info("Duplicate prompt detected. Existing file: %s", existing)
+        return existing
 
-    # Save prompt to new file
+    # Compose filename
     if input_hash:
         filename = f"{timestamp}_{input_hash}_{hash_str}.md"
     else:
         filename = f"{timestamp}_{hash_str}.md"
-    filepath = Path(root_dir, filename)
-    filepath.write_text(prompt)
+    filepath = Path(root_dir) / filename
+    filepath.parent.mkdir(parents=True, exist_ok=True)
 
-    log.info(f"Prompt saved to: {filepath}")
+    # Write prompt + END-marker
+    filepath.write_text(
+        f"""{prompt}
+### END PROMPT
+""",
+        encoding="utf-8",
+    )
+    log.info("Prompt saved to: %s", filepath)
+    return filepath
 
 
 def get_vibed(
@@ -64,7 +84,8 @@ def get_vibed(
     if not base_input_path.exists():
         log.info(f"Creating {base_input_path}")
         base_input_path.mkdir(parents=True)
-    input_hash = save_prompt(prompt, base_input_path)
+    prompt_file = save_prompt(prompt, base_input_path)
+    input_hash = prompt_file.stem.split("_")[-1]
 
     messages = []
     for context in contexts:

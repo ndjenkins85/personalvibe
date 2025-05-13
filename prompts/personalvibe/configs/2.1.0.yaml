@@ -1,0 +1,8 @@
+# python -m personalvibe.run_pipeline --config prompts/personalvibe/configs/2.1.0.yaml
+
+project_name: "personalvibe"
+mode: sprint
+execution_details: ""
+code_context_paths:
+  - "prompts/personalvibe/context/codefiles.txt"
+milestone_file_name: 2.0.0.md

@@ -1,4 +1,4 @@
-# python -m personalvibe.run_pipeline --config prompts/personalvibe/configs/1.0.0.yaml
+# python -m personalvibe.run_pipeline --config prompts/personalvibe/configs/2.0.0.yaml
 
 project_name: "personalvibe"
 mode: milestone
