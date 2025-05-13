@@ -40,6 +40,7 @@ def main() -> None:
     parser.add_argument("--config", required=True, help="Path to YAML config file.")
     parser.add_argument("--verbosity", choices=["verbose", "none", "errors"], default="none", help="Console log level")
     parser.add_argument("--prompt_only", action="store_true", help="If set, only generate the prompt.")
+    parser.add_argument("--max_retries", type=int, default=5, help="Maximum attempts for sprint validation")
     args = parser.parse_args()
 
     # 1️⃣  Parse config first – we need the semver to derive run_id
