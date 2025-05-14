@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# tests/personalvibe.sh
+# bash tests/personalvibe.sh
 #
 # One script to rule them all: lint, type-check & pytest,
 # **while appending all output** to logs/{semver}_base.log.

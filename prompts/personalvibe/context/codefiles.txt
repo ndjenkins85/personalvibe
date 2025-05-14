@@ -5,7 +5,6 @@ prompts/personalvibe/commands/milestone.md
 prompts/personalvibe/commands/sprint.md
 prompts/personalvibe/configs/1.0.0.yaml
 prompts/personalvibe/context/codefiles.txt
-prompts/personalvibe/stages/1.0.0.md
 pyproject.toml
 src/personalvibe/_README.md
 src/personalvibe/__init__.py
@@ -21,6 +20,7 @@ tests/__init__.py
 tests/conftest.py
 tests/dummy_patch.py
 tests/personalvibe.sh
+tests/test_config_schema_v2.py
 tests/test_jobs.py
 tests/test_log_to_cm.py
 tests/test_logger.py
