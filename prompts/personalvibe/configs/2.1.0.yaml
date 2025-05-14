@@ -5,4 +5,3 @@ mode: sprint
 execution_details: "Execute 1 → Chunk A – Schema is the scaffolding; nothing else builds without it."
 code_context_paths:
   - "prompts/personalvibe/context/codefiles.txt"
-milestone_file_name: "2.0.0.md"

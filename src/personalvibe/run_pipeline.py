@@ -13,14 +13,25 @@ from personalvibe import logger, vibe_utils
 
 
 class ConfigModel(BaseModel):
+    """Schema **v2**
+
+    • adds optional ``conversation_history`` (list of {role, content})
+    • drops *required* ``milestone_file_name`` (legacy keys tolerated)
+    """
+
     version: str
     project_name: str
     mode: str = Field(..., pattern="^(prd|milestone|sprint|validate)$")
     execution_task: Optional[str] = None
     execution_details: str = ""
     code_context_paths: List[str]
-    milestone_file_name: str = ""
+    # ---- NEW --------------------------------------------------------
+    conversation_history: Optional[List[dict[str, str]]] = None
+    # ---- still used by validate flow --------------------------------
     error_file_name: str = ""
+
+    class Config:
+        extra = "ignore"  # silently discard unknown legacy fields
 
 
 def load_config(config_path: str) -> ConfigModel:

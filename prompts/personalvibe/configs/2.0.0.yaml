@@ -1,8 +1,14 @@
+# 1 → Chunk A – Schema is the scaffolding; nothing else builds without it.
+# 2 → Chunk B – Wire the execution path while tests still target simple log output.
+# 3 → Chunk C – Logging depends on the new data flowing through.
+# 4 → Chunk D – Docs last: they cannot stabilise until behaviour is frozen.
+
 # python -m personalvibe.run_pipeline --config prompts/personalvibe/configs/2.0.0.yaml
 
 project_name: "personalvibe"
 mode: milestone
 execution_details: |
+
   specifically, please consider the following in your milestone generation:
 
   We need to take time to perform a review of the PRD to make sure we can effectively create sprints

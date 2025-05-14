@@ -11,6 +11,7 @@ src/personalvibe/_README.md
 src/personalvibe/__init__.py
 src/personalvibe/commands.py
 src/personalvibe/logger.py
+src/personalvibe/parse_stage.py
 src/personalvibe/retry_engine.py
 src/personalvibe/run_context.py
 src/personalvibe/run_pipeline.py
