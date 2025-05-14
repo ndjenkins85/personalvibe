@@ -4,13 +4,15 @@ noxfile.py
 prompts/personalvibe/commands/milestone.md
 prompts/personalvibe/commands/sprint.md
 prompts/personalvibe/configs/1.0.0.yaml
-prompts/personalvibe/configs/1.1.0.yaml
-prompts/personalvibe/configs/1.1.1.yaml
+prompts/personalvibe/context/codefiles.txt
+prompts/personalvibe/stages/1.0.0.md
 pyproject.toml
 src/personalvibe/_README.md
 src/personalvibe/__init__.py
 src/personalvibe/commands.py
 src/personalvibe/logger.py
+src/personalvibe/retry_engine.py
+src/personalvibe/run_context.py
 src/personalvibe/run_pipeline.py
 src/personalvibe/vibe_utils.py
 tests/_README.md
@@ -18,9 +20,6 @@ tests/__init__.py
 tests/conftest.py
 tests/dummy_patch.py
 tests/personalvibe.sh
-tests/test_api_endpoints.py
-tests/test_api_spec.py
-tests/test_auth.py
 tests/test_jobs.py
 tests/test_log_to_cm.py
 tests/test_logger.py

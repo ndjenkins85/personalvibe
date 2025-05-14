@@ -238,9 +238,22 @@ def _get_error_text(config) -> str:
 
 
 def _get_milestone_text(config) -> str:
-    milestone_path = Path(get_base_path(), "prompts", config.project_name, "stages", config.milestone_file_name)
-    # NOTE TO LLM: improve the handling here as per my usual codestyle
-    return milestone_path.read_text()
+    stages_path = Path(get_base_path(), "prompts", config.project_name, "stages")
+    milestone_ver, _, _ = config.version.split(".")
+    current_major = int(milestone_ver)
+
+    milestone_files = sorted(
+        [p for p in stages_path.glob("*.0.0.md") if p.is_file() and int(p.stem.split(".")[0]) <= current_major],
+        key=lambda x: int(x.stem.split(".")[0]),
+    )
+
+    if not milestone_files:
+        raise ValueError(f"No valid milestone files found in {stages_path} for major <= {current_major}")
+    data = """The following are all milestones related to this project.
+    The latest milestone text proposes next work needed, this is what sprints focus on:
+    """
+    data += "\n\n".join(p.read_text() for p in milestone_files)
+    return data
 
 
 def get_replacements(config, code_context: str) -> dict:
