@@ -74,48 +74,49 @@ def save_prompt(prompt: str, root_dir: Path, input_hash: str = "") -> Path:
 
 
 def get_vibed(
-    prompt: str, contexts: List[Path] = None, project_name=str, model: str = "o3", max_completion_tokens=100_000
+    prompt: str,
+    contexts: Union[List[Path], None] = None,
+    project_name: str = "",
+    model: str = "o3",
+    max_completion_tokens: int = 100_000,
+    *,
+    workspace: Union[Path, None] = None,
 ) -> str:
-    """Wrapper for O3 vibecoding to manage history and file interface"""
-    if not contexts:
+    """Wrapper for O3 vibecoding – **now workspace-aware**."""
+    if contexts is None:
         contexts = []
 
-    base_input_path = Path("data", project_name, "prompt_inputs")
-    if not base_input_path.exists():
-        log.info(f"Creating {base_input_path}")
-        base_input_path.mkdir(parents=True)
+    workspace = workspace or get_workspace_root()
+
+    base_input_path = get_data_dir(project_name, workspace) / "prompt_inputs"
+    base_input_path.mkdir(parents=True, exist_ok=True)
     prompt_file = save_prompt(prompt, base_input_path)
     input_hash = prompt_file.stem.split("_")[-1]
 
+    # -- build messages ---------------------------------------------------
     messages = []
     for context in contexts:
-        if "prompt_inputs" in context.parts:
-            c = {"role": "user", "content": [{"type": "text", "text": context.read_text()}]}
-        elif "prompt_outputs" in context.parts:
-            c = {"role": "assistant", "content": [{"type": "text", "text": context.read_text()}]}
-        messages.append(c)
+        part = {"role": "user" if "prompt_inputs" in context.parts else "assistant"}
+        part["content"] = [{"type": "text", "text": context.read_text()}]
+        messages.append(part)
 
-    c = {"role": "user", "content": [{"type": "text", "text": prompt}]}
-    messages.append(c)
+    messages.append({"role": "user", "content": [{"type": "text", "text": prompt}]})
 
     message_chars = len(str(messages))
     message_tokens = num_tokens(str(messages), model=model)
-    log.info(f"Prompt input size - Tokens: {message_tokens}, Chars: {message_chars}")
+    log.info("Prompt size – Tokens: %s, Chars: %s", message_tokens, message_chars)
 
-    response = client.chat.completions.create(
-        model=model, messages=messages, max_completion_tokens=max_completion_tokens
+    response = (
+        client.chat.completions.create(model=model, messages=messages, max_completion_tokens=max_completion_tokens)
+        .choices[0]
+        .message.content
     )
-    response = response.choices[0].message.content
 
-    message_chars = len(str(response))
-    message_tokens = num_tokens(str(response), model=model)
-    log.info(f"Response output size - Tokens: {message_tokens}, Chars: {message_chars}")
-
-    base_output_path = Path("data", project_name, "prompt_outputs")
-    if not base_output_path.exists():
-        log.info(f"Creating {base_output_path}")
-        base_output_path.mkdir(parents=True)
+    # -- save assistant reply --------------------------------------------
+    base_output_path = get_data_dir(project_name, workspace) / "prompt_outputs"
+    base_output_path.mkdir(parents=True, exist_ok=True)
     _ = save_prompt(response, base_output_path, input_hash=input_hash)
+
     return response
 
 
@@ -191,6 +192,61 @@ def _process_file(file_path: Path) -> str:
         return f"\n#### Start of {rel_path}\n{content}\n#### End of {rel_path}\n"
     else:
         return f"\n#### Start of {rel_path}\n" f"```{language}\n" f"{content}\n" f"```\n" f"#### End of {rel_path}\n"
+
+
+# ----------------------------------------------------------------------
+# ✨  New workspace-root helpers  (Chunk B)
+# ----------------------------------------------------------------------
+_SENTINEL_PROMPTS_DIR = Path(__file__).resolve().parent.parent / "prompts"
+
+
+def get_workspace_root() -> Path:
+    """Return the directory where **runtime artefacts** should live.
+
+    Resolution order
+    ----------------
+    1. Environment variable ``PV_DATA_DIR`` (if set & non-empty)
+    2. **Mono-repo fallback** – if the current process is running from
+       within the original Personalvibe source checkout (detected by the
+       presence of *prompts/* beside ``src/``), we keep the *old* behaviour
+       so that developer workflows stay unchanged.
+    3. Finally, just ``Path.cwd()`` (suits ``pip install personalvibe`` in
+       any third-party project).
+    """
+    env = os.getenv("PV_DATA_DIR")
+    if env:
+        return Path(env).expanduser().resolve()
+
+    # inside mono-repo?  -> use legacy base-path crawl
+    if _SENTINEL_PROMPTS_DIR.exists():
+        from warnings import warn
+
+        warn(
+            "⚠️  get_workspace_root() fell back to repo-root because "
+            "$PV_DATA_DIR is unset and prompts/ directory exists.  "
+            "Set PV_DATA_DIR to silence this message.",
+            stacklevel=2,
+        )
+        return get_base_path()  # type: ignore[arg-type]
+
+    # default
+    return Path.cwd().resolve()
+
+
+def get_data_dir(project_name: str, workspace: Union[Path, None] = None) -> Path:
+    """<workspace>/data/<project_name> (mkdir-p, but *not* the sub-folders)."""
+    root = workspace or get_workspace_root()
+    p = root / "data" / project_name
+    p.mkdir(parents=True, exist_ok=True)
+    return p
+
+
+def get_logs_dir(workspace: Union[Path, None] = None) -> Path:
+    """<workspace>/logs  (mkdir-p)."""
+    root = workspace or get_workspace_root()
+    p = root / "logs"
+    p.mkdir(parents=True, exist_ok=True)
+    return p
 
 
 def get_base_path(base: str = "personalvibe") -> Path:

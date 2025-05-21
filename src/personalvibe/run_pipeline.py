@@ -64,7 +64,11 @@ def main() -> None:
     config = load_config(args.config)
     run_id = f"{config.version}_base"
 
+    # workspace aware ----------------------------------------------------
+    workspace = vibe_utils.get_workspace_root()
+
     # 2️⃣  Bootstrap logging (console + per-semver file)
+    logger.configure_logging(args.verbosity, run_id=run_id, log_dir=workspace / "logs")
     logger.configure_logging(args.verbosity, run_id=run_id)
     log = logging.getLogger(__name__)
     log.info("P  E  R  S  O  N  A  L  V  I  B  E  – run_id=%s", run_id)
@@ -82,11 +86,16 @@ def main() -> None:
     prompt = vibe_utils.render_prompt_template(template_path, replacements=replacements)
 
     if args.prompt_only:
-        base_input_path = Path("data", config.project_name, "prompt_inputs")
+        base_input_path = vibe_utils.get_data_dir(config.project_name, workspace) / "prompt_inputs"
         base_input_path.mkdir(parents=True, exist_ok=True)
         _ = vibe_utils.save_prompt(prompt, base_input_path)
     else:
-        vibe_utils.get_vibed(prompt, project_name=config.project_name, max_completion_tokens=20_000)
+        vibe_utils.get_vibed(
+            prompt,
+            project_name=config.project_name,
+            max_completion_tokens=20_000,
+            workspace=workspace,
+        )
 
 
 if __name__ == "__main__":  # pragma: no cover

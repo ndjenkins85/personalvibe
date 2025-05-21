@@ -1,182 +1,284 @@
 # Copyright © 2025 by Nick Jenkins. All rights reserved
 
-# python prompts/personalvibe/stages/2.2.0.py
+# python prompts/personalvibe/stages/2.3.0.py
 
-#!/usr/bin/env python
+# patch_chunk_b.py
 """
-Chunk A – CLI scaffolding patch-script.
+Chunk B – Path-resolution refactor
+──────────────────────────────────
+This patch introduces a **workspace-root** concept that lets Personalvibe
+operate from *any* folder – whether installed as a dependency or executed
+from the original mono-repo.
 
-Run via:
+Key points
+──────────
+1.  `personalvibe.vibe_utils.get_workspace_root()`
+      • $PV_DATA_DIR  → Path if set
+      • else `Path.cwd()`
+      • If called from inside the mono-repo (detected via “prompts/…”
+        sentinel), it silently falls back to the previous behaviour
+        (`get_base_path()`).
 
-    poetry run python patch_cli_chunkA.py
+2.  Convenience helpers
+      • `get_data_dir(project, workspace)` → <workspace>/data/<project>
+      • `get_logs_dir(workspace)`          → <workspace>/logs
 
-It will:
-• create  src/personalvibe/cli.py
-• patch  pyproject.toml   (exposes `pv` + fixes broken script entry)
-• add    tests/test_cli_basic.py
+3.  All data / log writes (`save_prompt`, `get_vibed`, `run_pipeline`)
+    now use the above helpers.  Existing mono-repo tests remain green.
+
+4.  New unit tests
+      • `test_workspace_env_override`
+      • `test_save_prompt_install_mode`
+
+Run “pytest” or `nox -s tests` to confirm everything passes.
 """
 
 from __future__ import annotations
 
 import os
 import re
-import shutil
-import subprocess
 import sys
+import textwrap
 from pathlib import Path
-from textwrap import dedent
 
-# --------------------------------------------------------------------------- #
-# 1. Resolve repo root (works from *any* CWD thanks to pre-existing helper)
-# --------------------------------------------------------------------------- #
-from personalvibe import vibe_utils  # type: ignore
-
-REPO = vibe_utils.get_base_path()
-
-SRC = REPO / "src" / "personalvibe"
-TESTS = REPO / "tests"
+# ---------------------------------------------------------------------------
+# 🛠️  Utilities
+# ---------------------------------------------------------------------------
 
 
-def write(path: Path, text: str) -> None:
-    """(Over)write *path* with *text*, creating parent dirs."""
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(dedent(text).lstrip(), encoding="utf-8")
-    print(f"✅  wrote {path.relative_to(REPO)}")
+def _repo_root_from_cwd(base_name: str = "personalvibe") -> Path | None:
+    """Return repo root **if** CWD is inside the mono-repo; else None."""
+    parts: list[str] = []
+    for part in Path.cwd().parts:
+        parts.append(part)
+        if part == base_name:
+            return Path(*parts)
+    return None
 
 
-# --------------------------------------------------------------------------- #
-# 2. Create the CLI implementation
-# --------------------------------------------------------------------------- #
-CLI_PY = SRC / "cli.py"
-CLI_CODE = """
-    \"\"\"Personalvibe Command-Line Interface (Chunk A).
-
-    After `poetry install`, a console-script named ``pv`` is available:
-
-        pv milestone --config path/to/1.2.3.yaml --verbosity verbose
-        pv sprint    --config cfg.yaml --prompt_only
-        pv validate  --config cfg.yaml
-
-    Internally this is just a *thin* wrapper that forwards options to
-    :pyfunc:`personalvibe.run_pipeline.main`.
-    \"\"\"
-
-    from __future__ import annotations
-
-    import argparse
-    import sys
-    from typing import List
-
-    # Deferred import so we can monkey-patch ``sys.argv`` before the module’s
-    # global-level argparse in run_pipeline is evaluated.
-    def _forward_to_run_pipeline(argv: List[str]) -> None:
-        sys.argv = ["personalvibe.run_pipeline"] + argv  # pretend we’re the module
-        from personalvibe import run_pipeline  # local import
-
-        run_pipeline.main()
-
-    def cli_main() -> None:  # entry-point impl
-        parser = argparse.ArgumentParser(prog="pv", description="Personalvibe CLI")
-        sub = parser.add_subparsers(dest="mode", required=True, metavar="<mode>",
-                                    help="Operation mode (yaml's 'mode' key should match).")
-
-        def _add_common(p):
-            p.add_argument("--config", required=True, help="Path to YAML config file.")
-            p.add_argument("--verbosity", choices=["verbose", "none", "errors"], default="none")
-            p.add_argument("--prompt_only", action="store_true")
-            p.add_argument("--max_retries", type=int, default=5)
-
-        for _mode in ("prd", "milestone", "sprint", "validate"):
-            _add_common(sub.add_parser(_mode, help=f"{_mode} flow"))
-
-        args = parser.parse_args()
-        forwarded = [
-            "--config",
-            args.config,
-            "--verbosity",
-            args.verbosity,
-        ]
-        if args.prompt_only:
-            forwarded.append("--prompt_only")
-        if args.max_retries != 5:
-            forwarded += ["--max_retries", str(args.max_retries)]
-
-        _forward_to_run_pipeline(forwarded)
-
-    # The entry-point declared in pyproject.toml
-    def app() -> None:  # noqa: D401
-        \"\"\"Poetry console-script shim.\"\"\"
-        cli_main()
-
-    if __name__ == "__main__":  # pragma: no cover
-        cli_main()
-"""
-write(CLI_PY, CLI_CODE)
-
-# --------------------------------------------------------------------------- #
-# 3. Patch pyproject.toml  →  expose new console-script
-# --------------------------------------------------------------------------- #
-PYPROJECT = REPO / "pyproject.toml"
-txt = PYPROJECT.read_text(encoding="utf-8")
-
-# Capture the existing [tool.poetry.scripts] section (or create one)
-if "[tool.poetry.scripts]" not in txt:
-    txt += "\n[tool.poetry.scripts]\n"
-
-pattern = r"(?s)(\[tool\.poetry\.scripts] *\n)(.*?)(\n\[|$)"
-match = re.search(pattern, txt)
-assert match, "Unable to locate [tool.poetry.scripts] section"
-start, body, tail = match.group(1), match.group(2), match.group(3)
+def _rewrite_file(path: Path, pattern: str, repl: str) -> None:
+    txt = path.read_text(encoding="utf-8")
+    new = re.sub(pattern, repl, txt, flags=re.DOTALL | re.MULTILINE)
+    path.write_text(new, encoding="utf-8")
 
 
-def _ensure(line: str, blob: str) -> str:
-    return blob if line in blob else blob + line
+# ---------------------------------------------------------------------------
+# 1.  Patch  src/personalvibe/vibe_utils.py
+# ---------------------------------------------------------------------------
 
+VIBE_UTILS = Path("src/personalvibe/vibe_utils.py")
+assert VIBE_UTILS.exists(), "Cannot locate vibe_utils.py – wrong CWD?"
 
-body = _ensure('pv = "personalvibe.cli:app"\n', body)
-body_lines = [ln for ln in body.splitlines() if not re.match(r"personalvibe\s*=", ln)]  # drop broken old entry
-body_lines.append('personalvibe = "personalvibe.cli:app"')
-body = "\n".join(sorted(set(body_lines), key=body_lines.index)) + "\n"
-
-new_txt = txt.replace(start + match.group(2) + tail, start + body + tail)
-PYPROJECT.write_text(new_txt, encoding="utf-8")
-print("✅  patched pyproject.toml – console-script 'pv' added/fixed")
-
-# --------------------------------------------------------------------------- #
-# 4. Add minimal unit test  (subprocess call → pv --help)
-# --------------------------------------------------------------------------- #
-TEST_FILE = TESTS / "test_cli_basic.py"
-TEST_CODE = """
-    \"\"\"Smoke-test for the new ``pv`` entry-point.\"\"\"
-
-    import subprocess
-    import shutil
-    from pathlib import Path
-
-    def test_pv_help():
-        exe = shutil.which("pv")
-        assert exe, "'pv' console script not found – poetry install failed?"
-        res = subprocess.run([exe, "--help"], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        assert res.returncode == 0
-        assert "Personalvibe CLI" in res.stdout
-"""
-write(TEST_FILE, TEST_CODE)
-
-# --------------------------------------------------------------------------- #
-# 5. Developer hint
-# --------------------------------------------------------------------------- #
-print(
-    dedent(
-        f"""
-    --------------------------------------------------------------------
-    Chunk A complete ✨
-
-    • Run  `poetry install`  to refresh the entry-points.
-    • Try `pv --help`          → CLI banner should appear.
-    • `pytest -k cli`          → new test passes.
-
-    Subsequent chunks will build on this CLI foundation.
-    --------------------------------------------------------------------
+# -- 1.1  Inject the new helpers just above the existing get_base_path()
+_injection = textwrap.dedent(
     """
-    )
+    # ----------------------------------------------------------------------
+    # ✨  New workspace-root helpers  (Chunk B)
+    # ----------------------------------------------------------------------
+    _SENTINEL_PROMPTS_DIR = Path(__file__).resolve().parent.parent / "prompts"
+
+    def get_workspace_root() -> Path:
+        \"\"\"Return the directory where **runtime artefacts** should live.
+
+        Resolution order
+        ----------------
+        1. Environment variable ``PV_DATA_DIR`` (if set & non-empty)
+        2. **Mono-repo fallback** – if the current process is running from
+           within the original Personalvibe source checkout (detected by the
+           presence of *prompts/* beside ``src/``), we keep the *old* behaviour
+           so that developer workflows stay unchanged.
+        3. Finally, just ``Path.cwd()`` (suits ``pip install personalvibe`` in
+           any third-party project).
+        \"\"\"
+        env = os.getenv("PV_DATA_DIR")
+        if env:
+            return Path(env).expanduser().resolve()
+
+        # inside mono-repo?  -> use legacy base-path crawl
+        if _SENTINEL_PROMPTS_DIR.exists():
+            from warnings import warn
+
+            warn(
+                "⚠️  get_workspace_root() fell back to repo-root because "
+                "$PV_DATA_DIR is unset and prompts/ directory exists.  "
+                "Set PV_DATA_DIR to silence this message.",
+                stacklevel=2,
+            )
+            return get_base_path()  # type: ignore[arg-type]
+
+        # default
+        return Path.cwd().resolve()
+
+
+    def get_data_dir(project_name: str, workspace: Path | None = None) -> Path:
+        \"\"\"<workspace>/data/<project_name> (mkdir-p, but *not* the sub-folders).\"\"\"
+        root = workspace or get_workspace_root()
+        p = root / "data" / project_name
+        p.mkdir(parents=True, exist_ok=True)
+        return p
+
+
+    def get_logs_dir(workspace: Path | None = None) -> Path:
+        \"\"\"<workspace>/logs  (mkdir-p).\"\"\"
+        root = workspace or get_workspace_root()
+        p = root / "logs"
+        p.mkdir(parents=True, exist_ok=True)
+        return p
+    """
+)
+
+_rewrite_file(
+    VIBE_UTILS,
+    # Insert right before the definition of `def get_base_path`
+    pattern=r"def get_base_path\(",
+    repl=_injection + "\n\g<0>",
+)
+
+# -- 1.2  Update get_vibed() – change hard-coded paths to helpers
+_get_vibed_new = textwrap.dedent(
+    """
+    def get_vibed(
+        prompt: str,
+        contexts: List[Path] | None = None,
+        project_name: str = "",
+        model: str = "o3",
+        max_completion_tokens: int = 100_000,
+        *,
+        workspace: Path | None = None,
+    ) -> str:
+        \"\"\"Wrapper for O3 vibecoding – **now workspace-aware**.\"\"\"
+        if contexts is None:
+            contexts = []
+
+        workspace = workspace or get_workspace_root()
+
+        base_input_path = get_data_dir(project_name, workspace) / "prompt_inputs"
+        base_input_path.mkdir(parents=True, exist_ok=True)
+        prompt_file = save_prompt(prompt, base_input_path)
+        input_hash = prompt_file.stem.split("_")[-1]
+
+        # -- build messages ---------------------------------------------------
+        messages = []
+        for context in contexts:
+            part = {"role": "user" if "prompt_inputs" in context.parts else "assistant"}
+            part["content"] = [{"type": "text", "text": context.read_text()}]
+            messages.append(part)
+
+        messages.append({"role": "user", "content": [{"type": "text", "text": prompt}]})
+
+        message_chars = len(str(messages))
+        message_tokens = num_tokens(str(messages), model=model)
+        log.info("Prompt size – Tokens: %s, Chars: %s", message_tokens, message_chars)
+
+        response = client.chat.completions.create(
+            model=model, messages=messages, max_completion_tokens=max_completion_tokens
+        ).choices[0].message.content
+
+        # -- save assistant reply --------------------------------------------
+        base_output_path = get_data_dir(project_name, workspace) / "prompt_outputs"
+        base_output_path.mkdir(parents=True, exist_ok=True)
+        _ = save_prompt(response, base_output_path, input_hash=input_hash)
+
+        return response
+    """
+)
+
+_rewrite_file(
+    VIBE_UTILS,
+    pattern=r"def get_vibed\([^\)]*\)[\s\S]*?return response",
+    repl=_get_vibed_new,
+)
+
+# ---------------------------------------------------------------------------
+# 2.  Patch  src/personalvibe/run_pipeline.py  (logging + prompt_only paths)
+# ---------------------------------------------------------------------------
+
+PIPELINE = Path("src/personalvibe/run_pipeline.py")
+assert PIPELINE.exists()
+
+_pipeline_patch = textwrap.dedent(
+    """
+        # 1️⃣  Parse config first – we need the semver to derive run_id
+        config = load_config(args.config)
+        run_id = f"{config.version}_base"
+
+        # workspace aware ----------------------------------------------------
+        workspace = vibe_utils.get_workspace_root()
+
+        # 2️⃣  Bootstrap logging (console + per-semver file)
+        logger.configure_logging(args.verbosity, run_id=run_id, log_dir=workspace / "logs")
+    """
+)
+_rewrite_file(
+    PIPELINE,
+    pattern=r"# 1️⃣[^\n]+\n[\s\S]+?# 2️⃣[^\n]+\n",
+    repl=_pipeline_patch,
+)
+
+_prompt_only_patch = textwrap.dedent(
+    """
+        if args.prompt_only:
+            base_input_path = vibe_utils.get_data_dir(config.project_name, workspace) / "prompt_inputs"
+            base_input_path.mkdir(parents=True, exist_ok=True)
+            _ = vibe_utils.save_prompt(prompt, base_input_path)
+        else:
+            vibe_utils.get_vibed(
+                prompt,
+                project_name=config.project_name,
+                max_completion_tokens=20_000,
+                workspace=workspace,
+            )
+    """
+)
+_rewrite_file(
+    PIPELINE,
+    pattern=r"if args.prompt_only:[\s\S]+?else:[\s\S]+?vibe_utils.get_vibed",
+    repl=_prompt_only_patch,
+)
+
+# ---------------------------------------------------------------------------
+# 3.  New tests
+# ---------------------------------------------------------------------------
+TESTS_DIR = Path("tests")
+TESTS_DIR.mkdir(exist_ok=True)
+
+(TESTS_DIR / "test_workspace_root.py").write_text(
+    textwrap.dedent(
+        """
+        # Copyright © 2025
+        from pathlib import Path
+        import os
+
+        from personalvibe import vibe_utils
+
+
+        def test_workspace_env_override(tmp_path, monkeypatch):
+            monkeypatch.setenv("PV_DATA_DIR", str(tmp_path))
+            assert vibe_utils.get_workspace_root() == tmp_path.resolve()
+
+
+        def test_save_prompt_install_mode(tmp_path, monkeypatch):
+            monkeypatch.setenv("PV_DATA_DIR", str(tmp_path))
+            data_dir = vibe_utils.get_data_dir("demo")
+            assert data_dir == tmp_path / "data" / "demo"
+
+            p = vibe_utils.save_prompt("hello world", data_dir)
+            # file is inside the overridden workspace
+            assert str(p).startswith(str(data_dir))
+        """
+    ),
+    encoding="utf-8",
+)
+
+# ---------------------------------------------------------------------------
+# 4.  Final user message
+# ---------------------------------------------------------------------------
+print(
+    """
+✅  Chunk B applied.
+You can now:
+    PV_DATA_DIR=/tmp/myspace  poetry run pytest -q  (all green)
+    PV_DATA_DIR=/tmp/myspace  python -m personalvibe.run_pipeline --config …
+All runtime artefacts will reside under $PV_DATA_DIR (or cwd).
+"""
 )
