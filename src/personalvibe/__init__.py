@@ -5,3 +5,5 @@
 This sub-package is intentionally left minimal—actual shared
 utilities will be added organically as Storymaker evolves.
 """
+
+__version__ = "2.0.0"

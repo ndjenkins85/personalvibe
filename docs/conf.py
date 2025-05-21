@@ -5,7 +5,8 @@
 from pathlib import Path
 
 import sphinx_rtd_theme  # noqa: F401
-from personalsite import __version__
+
+from personalvibe import __version__
 
 project = "personalvibe"
 author = "Nick Jenkins"
