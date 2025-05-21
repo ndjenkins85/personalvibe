@@ -127,6 +127,7 @@ def get_context(filenames: List[str], extension: str = ".txt") -> str:
     """Pulls in many file contexts, resolving wildcards only in lines inside the files."""
     big_string = ""
     base_path = get_base_path()
+    log.debug(f"Base path is {base_path}")
 
     for name in filenames:
         file_path = base_path / name
@@ -144,6 +145,8 @@ def get_context(filenames: List[str], extension: str = ".txt") -> str:
                 continue  # Skip empty lines
 
             line_path = base_path / line
+            log.debug(f"Working on codepath {line_path}")
+
             if any(char in line for char in "*?[]"):  # Wildcard detected
                 matches = sorted(base_path.glob(line))
                 if not matches:
@@ -330,18 +333,19 @@ def get_replacements(config, code_context: str) -> dict:
         instructions = ""
     elif config.mode == "milestone":
         exec_task = "conduct milestone analysis according to guidelines"
-        instructions = Path(get_base_path(), "prompts", config.project_name, "commands", "milestone.md").read_text()
+        # Note to AI assistant: src works for now, but what about for an installed version?
+        instructions = Path(get_base_path(), "src/personalvibe/commands", "milestone.md").read_text()
     elif config.mode == "sprint":
         exec_task = f"perform the sprint number marked {sprint_ver}"
         instructions = (
-            Path(get_base_path(), "prompts", config.project_name, "commands", "sprint.md").read_text()
+            Path(get_base_path(), "src/personalvibe/commands", "sprint.md").read_text()
             + "\n"
             + _get_milestone_text(config)
         )
     elif config.mode == "validate":
         exec_task = f"validate the following logs following the generation of sprint {sprint_ver}"
         instructions = (
-            Path(get_base_path(), "prompts", config.project_name, "commands", "validate.md").read_text()
+            Path(get_base_path(), "src/personalvibe/commands", "validate.md").read_text()
             + "\n"
             + _get_milestone_text(config)
             + "\n"

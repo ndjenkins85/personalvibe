@@ -1,0 +1,17 @@
+# pv sprint --config prompts/personalvibe/configs/3.1.0.yaml
+
+# 1. Chunk 1 – CLI foundations
+# 2. Chunk 2 – Resource & path resolver
+# 3. Chunk 4 – Distribution smoke
+# 4. Chunk 3 – Docs & help text
+# 5. Chunk 5 – Optional example
+
+project_name: "personalvibe"
+mode: sprint
+execution_details: |
+
+  Perform work for 1. Chunk 1 – CLI foundations
+
+code_context_paths:
+  - "prompts/personalvibe/context/codefiles.txt"
+milestone_file_name: ""

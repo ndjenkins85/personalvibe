@@ -1,4 +1,4 @@
-# python -m personalvibe.run_pipeline --config prompts/personalvibe/configs/2.0.0.yaml
+# pv milestone --config prompts/personalvibe/configs/3.0.0.yaml
 
 project_name: "personalvibe"
 mode: milestone
@@ -11,6 +11,37 @@ execution_details: |
   - Run config file (should not need to specify a mode, that should already be in config)
   - Should be able to run the commands like `python -m personalvibe.parse_stage --project_name personalvibe --run` from cli
 
+  Vibe utils has a problem i think
+  # Note to AI assistant: src works for now, but what about for an installed version?
+  instructions = Path(get_base_path(), "src/personalvibe/commands", "milestone.md").read_text()
+
+  For instance when i run this from another project
+
+  (bytedtramd-py3.9) bytedance@C02H86S6Q05N transparency_reporting % pv milestone --config prompts/sharp/configs/1.0.0.yaml
+  2025-05-21 15:42:55 | INFO | personalvibe.run_pipeline | P  E  R  S  O  N  A  L  V  I  B  E  – run_id=1.0.0_base
+  2025-05-21 15:42:55 | INFO | personalvibe.vibe_utils | Running config version: 1.0.0
+  2025-05-21 15:42:55 | INFO | personalvibe.vibe_utils | Running mode = milestone
+  Traceback (most recent call last):
+    File "/Users/bytedance/Documents/transparency_reporting/.venv/bin/pv", line 8, in <module>
+      sys.exit(app())
+    File "/Users/bytedance/Documents/personalvibe/src/personalvibe/cli.py", line 64, in app
+      cli_main()
+    File "/Users/bytedance/Documents/personalvibe/src/personalvibe/cli.py", line 58, in cli_main
+      _forward_to_run_pipeline(forwarded)
+    File "/Users/bytedance/Documents/personalvibe/src/personalvibe/cli.py", line 28, in _forward_to_run_pipeline
+      run_pipeline.main()
+    File "/Users/bytedance/Documents/personalvibe/src/personalvibe/run_pipeline.py", line 78, in main
+      replacements = vibe_utils.get_replacements(config, code_context)
+    File "/Users/bytedance/Documents/personalvibe/src/personalvibe/vibe_utils.py", line 337, in get_replacements
+      instructions = Path(get_base_path(), "src/personalvibe/commands", "milestone.md").read_text()
+    File "/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/pathlib.py", line 1266, in read_text
+      with self.open(mode='r', encoding=encoding, errors=errors) as f:
+    File "/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/pathlib.py", line 1252, in open
+      return io.open(self, mode, buffering, encoding, errors, newline,
+    File "/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/pathlib.py", line 1120, in _opener
+      return self._accessor.open(self, flags, mode)
+  FileNotFoundError: [Errno 2] No such file or directory: '/Users/bytedance/Documents/transparency_reporting/src/personalvibe/commands/milestone.md'
+  (bytedtramd-py3.9) bytedance@C02H86S6Q05N transparency_reporting %
+
 code_context_paths:
   - "prompts/personalvibe/context/codefiles.txt"
-milestone_file_name: ""
