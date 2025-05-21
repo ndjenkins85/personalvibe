@@ -23,7 +23,7 @@ def _run(*args):
 def test_help_ok():
     res = _run("--help")
     assert res.returncode == 0
-    assert "Personalvibe Command-Line Interface" in res.stdout
+    assert "Personalvibe CLI – Command-Line Interface" in res.stdout
 
 
 def test_subcommand_help():

@@ -112,7 +112,7 @@ def _cmd_parse_stage(ns: argparse.Namespace) -> None:
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="pv",
-        description="Personalvibe Command-Line Interface",
+        description="Personalvibe CLI – Command-Line Interface",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     sub = p.add_subparsers(dest="cmd", required=True, metavar="<command>")

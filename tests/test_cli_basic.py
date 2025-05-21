@@ -12,4 +12,4 @@ def test_pv_help():
     assert exe, "'pv' console script not found – poetry install failed?"
     res = subprocess.run([exe, "--help"], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     assert res.returncode == 0
-    assert "Personalvibe CLI" in res.stdout
+    assert "Personalvibe CLI – Command-Line Interface" in res.stdout
