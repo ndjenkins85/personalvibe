@@ -231,3 +231,42 @@ def vibed(session):  # noqa: D401
 
 
 # --- PERSONALVIBE SPRINT 0.0.2 PATCH END
+
+
+# --- PERSONALVIBE CHUNK D PATCH START
+@session(python=["3.12"], reuse_venv=False)
+def smoke_dist(session: Session) -> None:  # noqa: D401
+    """Build wheel, install into **fresh** temp venv, run `pv --help`."""
+    _print_step("🏗️  Building wheel …")
+    session.run("poetry", "build", "-f", "wheel", external=True)
+
+    dist_dir = Path("dist")
+    wheels = sorted(dist_dir.glob("personalvibe-*.whl"))
+    if not wheels:
+        session.error("Wheel not found in ./dist – build failed?")
+    wheel = max(wheels, key=lambda p: p.stat().st_mtime)
+    _print_step(f"Wheel built: {wheel.name}")
+
+    import os
+    import subprocess
+    import sys
+    import tempfile
+
+    venv_dir = Path(tempfile.mkdtemp(prefix="pv_smoke_"))
+    _print_step(f"🧪  Creating temp venv at {venv_dir}")
+    session.run("python", "-m", "venv", str(venv_dir), external=True)
+
+    bin_dir = venv_dir / ("Scripts" if os.name == "nt" else "bin")
+    pip = bin_dir / ("pip.exe" if os.name == "nt" else "pip")
+    pv_exe = bin_dir / ("pv.exe" if os.name == "nt" else "pv")
+
+    _print_step("📦  Installing wheel into temp venv …")
+    session.run(str(pip), "install", str(wheel), external=True)
+
+    _print_step("🚀  Running `pv --help` smoke test …")
+    session.run(str(pv_exe), "--help", external=True)
+
+    _print_step("✅  smoke_dist completed successfully")
+
+
+# --- PERSONALVIBE CHUNK D PATCH END
