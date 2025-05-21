@@ -30,8 +30,8 @@ tests/test_log_to_cm.py
 tests/test_logger.py
 tests/test_logger_runid.py
 tests/test_logging.py
+tests/test_resource_fallback.py
 tests/test_run_context.py
 tests/test_storage.py
 tests/test_vibed_no_duplicates.py
 tests/test_vibed_session.py
-tests/test_resource_fallback.py

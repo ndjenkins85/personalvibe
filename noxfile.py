@@ -268,5 +268,103 @@ def smoke_dist(session: Session) -> None:  # noqa: D401
 
     _print_step("✅  smoke_dist completed successfully")
 
+    # --- PERSONALVIBE CHUNK D PATCH END
 
-# --- PERSONALVIBE CHUNK D PATCH END
+    # --- PERSONALVIBE CHUNK 4 PATCH START
+    import tempfile
+    from datetime import datetime
+    from pathlib import Path as _Path
+
+    from nox_poetry import session as _pv_session  # reuse already-installed decorator
+
+    @_pv_session(python=["3.12"], reuse_venv=False)  # type: ignore[misc]
+    def smoke_dist(session):  # noqa: D401
+        """Extended smoke-test: wheel install + core CLI commands."""
+        _print_step = globals()["_print_step"]  # late-bind from module globals
+
+        # 1) build wheel --------------------------------------------------
+        _print_step("🏗️  Building wheel …")
+        session.run("poetry", "build", "-f", "wheel", external=True)
+        dist_dir = _Path("dist")
+        wheels = sorted(dist_dir.glob("personalvibe-*.whl"))
+        if not wheels:
+            session.error("Wheel build failed – no file in ./dist")
+        wheel = max(wheels, key=lambda p: p.stat().st_mtime)
+
+        # 2) temp venv ----------------------------------------------------
+        venv_dir = _Path(tempfile.mkdtemp(prefix="pv_smoke_"))
+        _print_step(f"🧪  Creating temp venv at {venv_dir}")
+        session.run("python", "-m", "venv", str(venv_dir), external=True)
+
+        bindir = venv_dir / ("Scripts" if session.platform == "win32" else "bin")
+        pip_exe = bindir / ("pip.exe" if session.platform == "win32" else "pip")
+        pv_exe = bindir / ("pv.exe" if session.platform == "win32" else "pv")
+
+        # 3) install wheel -------------------------------------------------
+        _print_step("📦  Installing wheel …")
+        session.run(str(pip_exe), "install", str(wheel), external=True)
+
+        # 4) pv --help -----------------------------------------------------
+        _print_step("🚀  Running `pv --help` …")
+        session.run(str(pv_exe), "--help", external=True)
+
+        # 5) prepare minimal workspace (prompts + cfg) --------------------
+        repo_root = _Path.cwd()  # still the mono-repo root
+        prompts_dir = repo_root / "prompts" / "sampleproj"
+        prompts_dir.mkdir(parents=True, exist_ok=True)
+        (prompts_dir / "prd.md").write_text(
+            "# dummy template used by smoke_dist\nHello {{ execution_task }}.",
+            encoding="utf-8",
+        )
+
+        cfg_dir = repo_root / "tmp_smoke_cfg"
+        cfg_dir.mkdir(exist_ok=True)
+        cfg_file = cfg_dir / "1.0.0.yaml"
+        cfg_file.write_text(
+            textwrap.dedent(
+                """                project_name: sampleproj
+            mode: milestone
+            execution_details: ''
+            code_context_paths: []
+            """
+            ),
+            encoding="utf-8",
+        )
+
+        # 6) run pv run --prompt_only --------------------------------------
+        _print_step("🎯  pv run --prompt_only …")
+        session.run(
+            str(pv_exe),
+            "run",
+            "--config",
+            str(cfg_file),
+            "--prompt_only",
+            "--verbosity",
+            "errors",
+            external=True,
+        )
+
+        # 7) create dummy assistant output so parse-stage succeeds ---------
+        outputs_dir = repo_root / "data" / "sampleproj" / "prompt_outputs"
+        outputs_dir.mkdir(parents=True, exist_ok=True)
+        dummy_path = outputs_dir / f"{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}_dummyhash.md"
+        dummy_path.write_text(
+            """```python
+print('hello world')
+```""",
+            encoding="utf-8",
+        )
+
+        # 8) pv parse-stage -----------------------------------------------
+        _print_step("🔎  pv parse-stage …")
+        session.run(
+            str(pv_exe),
+            "parse-stage",
+            "--project_name",
+            "sampleproj",
+            external=True,
+        )
+
+        _print_step("✅  smoke_dist finished without errors")
+
+    # --- PERSONALVIBE CHUNK 4 PATCH END
