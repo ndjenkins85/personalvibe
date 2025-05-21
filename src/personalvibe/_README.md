@@ -21,3 +21,10 @@ hash so re-runs never flood the directory; it simply returns the existing
 ```
 
 which makes shell/grep extraction of individual prompts trivial.
+## CLI usage
+After installation a *console-script* named `pv` is available:
+
+pv --help                         # global help
+pv milestone --config 1.0.0.yaml  # run milestone analysis
+pv sprint    --config 1.0.0.yaml  # execute a sprint
+pv validate  --config 1.0.0.yaml  # lint/tests against the log file

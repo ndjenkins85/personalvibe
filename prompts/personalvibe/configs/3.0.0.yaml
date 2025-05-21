@@ -1,0 +1,16 @@
+# python -m personalvibe.run_pipeline --config prompts/personalvibe/configs/2.0.0.yaml
+
+project_name: "personalvibe"
+mode: milestone
+execution_details: |
+
+  The following are some new requirements I'd like to explore in the next milestone generation
+
+  * Need clear user documentation on how to use `pv` from command line
+  * The current cli.py interface needs the following options:
+  - Run config file (should not need to specify a mode, that should already be in config)
+  - Should be able to run the commands like `python -m personalvibe.parse_stage --project_name personalvibe --run` from cli
+
+code_context_paths:
+  - "prompts/personalvibe/context/codefiles.txt"
+milestone_file_name: ""
