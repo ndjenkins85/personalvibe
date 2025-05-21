@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import datetime as _dt
 from pathlib import Path
+from typing import Union
 from uuid import uuid4
 
 from pydantic import BaseModel, EmailStr, Field
@@ -15,7 +16,7 @@ class User(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid4()))
     email: EmailStr
     display_name: str = Field(..., min_length=1, max_length=50)
-    avatar_path: Path | None = None
+    avatar_path: Union[Path, None] = None
     created_at: _dt.datetime = Field(default_factory=_dt.datetime.utcnow)
     is_active: bool = True
 

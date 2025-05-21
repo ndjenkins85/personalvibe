@@ -82,6 +82,10 @@ def extract_and_save_code_block(project_name: str) -> str:
 
 
 if __name__ == "__main__":
+    """Parse and execute the latest sprint code generation.
+
+    python -m personalvibe.parse_stage
+    """
     parser = argparse.ArgumentParser(description="Extract latest prompt output and save as versioned Python file.")
     parser.add_argument("--project_name", required=True, help="Project name (used for path resolution).")
     parser.add_argument("--run", action="store_true", help="Execute the extracted code after saving.")

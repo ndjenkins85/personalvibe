@@ -18,7 +18,7 @@ import logging
 import shutil
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Final, TypeVar
+from typing import Any, Final, TypeVar, Union
 
 from storymaker.config import settings
 from storymaker.logging_config import configure_logging
@@ -68,7 +68,7 @@ class LocalStorage(StorageBackend):
 
     SUFFIX: Final[str] = ".json"
 
-    def __init__(self, base_dir: Path | None = None) -> None:
+    def __init__(self, base_dir: Union[Path, None] = None) -> None:
         self.base_dir = (base_dir or settings.data_dir).expanduser()
         self.base_dir.mkdir(parents=True, exist_ok=True)
         log.info("📂 LocalStorage ready at %s", self.base_dir.resolve())

@@ -18,7 +18,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 
 
-@dataclass(slots=True, frozen=True)
+@dataclass(frozen=True)
 class RunContext:
     timestamp: datetime = field(default_factory=datetime.utcnow, repr=False)
     uuid_hex8: str = field(default_factory=lambda: uuid.uuid4().hex[:8], repr=False)

@@ -12,6 +12,7 @@ import datetime as _dt
 import enum
 from email.utils import parsedate_to_datetime
 from pathlib import Path
+from typing import Union
 from uuid import uuid4
 
 from pydantic import BaseModel, Field, field_validator, validator
@@ -35,7 +36,7 @@ class Character(BaseModel):
     name: str = Field(..., min_length=1, max_length=50)
     type: CharacterType = CharacterType.TOY
     description: str = Field("", max_length=1_000)
-    avatar_path: Path | None = Field(default=None, description="Path on disk to the latest avatar image.")
+    avatar_path: Union[Path, None] = Field(default=None, description="Path on disk to the latest avatar image.")
     created_at: _dt.datetime = Field(default_factory=_dt.datetime.utcnow)
 
     # ---------------------------- Validators -------------------------

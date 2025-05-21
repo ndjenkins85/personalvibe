@@ -1,0 +1,17 @@
+# python -m personalvibe.run_pipeline --config prompts/personalvibe/configs/2.4.0.yaml
+
+# 1️⃣ Chunk A – CLI scaffolding
+# 2️⃣ Chunk B – Path-resolution refactor
+# 3️⃣ Chunk C – Data-directory bootstrap
+# 4️⃣ Chunk D – Packaging & smoke-test
+# 5️⃣ Chunk E – Documentation & examples
+
+project_name: "personalvibe"
+mode: sprint
+execution_details: |
+
+  Perform work for 4️⃣ Chunk D – Packaging & smoke-test
+
+code_context_paths:
+  - "prompts/personalvibe/context/codefiles.txt"
+milestone_file_name: ""

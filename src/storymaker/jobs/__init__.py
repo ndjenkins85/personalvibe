@@ -15,7 +15,7 @@ import threading
 import uuid
 from concurrent.futures import Future, ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Any, Callable, Dict, Final
+from typing import Any, Callable, Dict, Final, Union
 
 from pydantic import BaseModel, Field
 
@@ -42,8 +42,8 @@ class Job(BaseModel):
     status: JobStatus = JobStatus.PENDING
     created_at: _dt.datetime = Field(default_factory=_dt.datetime.utcnow)
     updated_at: _dt.datetime = Field(default_factory=_dt.datetime.utcnow)
-    result: Any | None = None
-    error: str | None = None
+    result: Union[Any, None] = None
+    error: Union[str, None] = None
 
     model_config = {"arbitrary_types_allowed": True}  # result can be any python obj
 
@@ -114,7 +114,7 @@ class LocalJobQueue:
             return Job.parse_file(path)
         raise KeyError(job_id)
 
-    def await_job(self, job_id: str, timeout: float | None = None) -> Job:
+    def await_job(self, job_id: str, timeout: Union[float, None] = None) -> Job:
         fut = self._futures.get(job_id)
         if not fut:
             raise KeyError(job_id)
@@ -122,7 +122,9 @@ class LocalJobQueue:
         return self.get(job_id)
 
     # -------------------------- internals --------------------------
-    def _update_status(self, job_id: str, status: JobStatus, *, result: Any | None = None, error: str | None = None):
+    def _update_status(
+        self, job_id: str, status: JobStatus, *, result: Union[Any, None] = None, error: Union[str, None] = None
+    ):
         with self._lock:
             job = self._jobs[job_id]
             job.status = status

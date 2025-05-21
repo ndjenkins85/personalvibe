@@ -7,7 +7,7 @@ from pathlib import Path
 import sphinx_rtd_theme  # noqa: F401
 from personalsite import __version__
 
-project = "personalsite"
+project = "personalvibe"
 author = "Nick Jenkins"
 copyright = open(Path("..", "LICENSE")).read()
 version = __version__

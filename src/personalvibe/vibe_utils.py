@@ -5,7 +5,7 @@ import logging
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import List
+from typing import List, Union
 
 import dotenv
 import requests
@@ -23,7 +23,7 @@ def get_prompt_hash(prompt: str) -> str:
     return hashlib.sha256(prompt.encode("utf-8")).hexdigest()
 
 
-def find_existing_hash(root_dir: str, hash_str: str) -> str | None:
+def find_existing_hash(root_dir: str, hash_str: str) -> Union[str, None]:
     for dirpath, _, filenames in os.walk(root_dir):
         for filename in filenames:
             if hash_str in filename:

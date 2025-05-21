@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
+from typing import Union
 
 from pydantic import BaseModel, Field, validator
 
@@ -15,8 +16,8 @@ class Chapter(BaseModel):
     title: str = Field(..., max_length=50)
     scene: str = Field(..., max_length=300)
     key_visual: str = Field(..., max_length=300)
-    caption: str | None = Field(default=None, max_length=120)
-    image_path: Path | None = Field(default=None, description="Location of the rendered chapter image.")
+    caption: Union[str, None] = Field(default=None, max_length=120)
+    image_path: Union[Path, None] = Field(default=None, description="Location of the rendered chapter image.")
 
     # ---------------------------- Helpers ---------------------------
     @property

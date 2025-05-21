@@ -14,7 +14,7 @@ New fields can be added in later chunks—unit tests catch regressions.
 import os
 import secrets
 from pathlib import Path
-from typing import List
+from typing import List, Union
 
 from pydantic import Field, HttpUrl, validator
 from pydantic_settings import BaseSettings
@@ -60,7 +60,7 @@ class Settings(BaseSettings):
     # -----------------------------------------------------------------
     # 3rd-party APIs
     # -----------------------------------------------------------------
-    openai_api_key: str | None = Field(
+    openai_api_key: Union[str, None] = Field(
         default=None,
         description="Pulled from OPENAI_API_KEY env var automatically.",
     )
@@ -77,7 +77,7 @@ class Settings(BaseSettings):
     # Validators
     # -----------------------------------------------------------------
     @validator("openai_api_key", pre=True, always=True)
-    def _load_openai_key(cls, v: str | None) -> str | None:
+    def _load_openai_key(cls, v: Union[str, None]) -> Union[str, None]:
         return v or os.getenv("OPENAI_API_KEY")
 
     class Config:
