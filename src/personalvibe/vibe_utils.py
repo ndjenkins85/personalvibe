@@ -334,23 +334,84 @@ def get_replacements(config, code_context: str) -> dict:
     elif config.mode == "milestone":
         exec_task = "conduct milestone analysis according to guidelines"
         # Note to AI assistant: src works for now, but what about for an installed version?
-        instructions = Path(get_base_path(), "src/personalvibe/commands", "milestone.md").read_text()
+        instructions = Path(get_base_path(), "src/personalvibe/data", "milestone.md").read_text()
     elif config.mode == "sprint":
         exec_task = f"perform the sprint number marked {sprint_ver}"
         instructions = (
-            Path(get_base_path(), "src/personalvibe/commands", "sprint.md").read_text()
-            + "\n"
-            + _get_milestone_text(config)
+            Path(get_base_path(), "src/personalvibe/data", "sprint.md").read_text() + "\n" + _get_milestone_text(config)
         )
     elif config.mode == "validate":
         exec_task = f"validate the following logs following the generation of sprint {sprint_ver}"
         instructions = (
-            Path(get_base_path(), "src/personalvibe/commands", "validate.md").read_text()
+            Path(get_base_path(), "src/personalvibe/data", "validate.md").read_text()
             + "\n"
             + _get_milestone_text(config)
             + "\n"
             + _get_error_text(config)
         )
+
+    return {
+        "execution_task": exec_task,
+        "execution_details": config.execution_details,
+        "instructions": instructions,
+        "code_context": code_context,
+    }
+
+
+import logging as _logging
+
+# ----------------------------------------------------------------------
+# PERSONALVIBE CHUNK 2 – Resource loader
+# ----------------------------------------------------------------------
+from importlib import resources
+from pathlib import Path as _Path
+
+_log = _logging.getLogger(__name__)
+
+
+def _load_template(fname: str) -> str:
+    """Return the *text* of a template shipped as package-data.
+
+    Resolution order
+    ----------------
+    1. `importlib.resources.files('personalvibe.data')/fname`
+    2. Legacy path  src/personalvibe/commands/<fname>
+    """
+    try:
+        pkg_file = resources.files("personalvibe.data").joinpath(fname)
+        return pkg_file.read_text(encoding="utf-8")
+    except Exception:  # noqa: BLE001
+        legacy = _Path(__file__).parent / "data" / fname
+        if legacy.exists():
+            _log.debug("Template %s loaded from legacy path %s", fname, legacy)
+            return legacy.read_text(encoding="utf-8")
+        raise FileNotFoundError(f"Template {fname!s} not found in package or legacy path")
+
+
+# ----------------------------- override -------------------------------------
+def get_replacements(config, code_context: str) -> dict:  # type: ignore[override]
+    """Build the Jinja replacement map (rev-2 using _load_template)."""
+
+    _log.info("Running config version: %s", config.version)
+    _log.info("Running mode = %s", config.mode)
+    milestone_ver, sprint_ver, bugfix_ver = config.version.split(".")  # noqa: F841
+
+    if config.mode == "prd":
+        exec_task = config.execution_task
+        instructions = ""
+    elif config.mode == "milestone":
+        exec_task = "conduct milestone analysis according to guidelines"
+        instructions = _load_template("milestone.md")
+    elif config.mode == "sprint":
+        exec_task = f"perform the sprint number marked {sprint_ver}"
+        instructions = _load_template("sprint.md") + "\n" + _get_milestone_text(config)
+    elif config.mode == "validate":
+        exec_task = f"validate the following logs following the generation of sprint {sprint_ver}"
+        instructions = (
+            _load_template("validate.md") + "\n" + _get_milestone_text(config) + "\n" + _get_error_text(config)
+        )
+    else:  # pragma: no cover
+        raise ValueError(f"Unsupported mode {config.mode}")
 
     return {
         "execution_task": exec_task,
