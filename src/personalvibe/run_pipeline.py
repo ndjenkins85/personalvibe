@@ -47,6 +47,12 @@ def load_config(config_path: str) -> ConfigModel:
 
 
 def main() -> None:
+    """Run an iteration of personal vibe based on a config file.
+
+    i.e. subl prompts/personalvibe/configs/2.1.0.yaml
+
+    python -m personalvibe.run_pipeline --config prompts/personalvibe/configs/2.1.0.yaml --prompt_only
+    """
     parser = argparse.ArgumentParser(description="Run the Personalvibe Workflow.")
     parser.add_argument("--config", required=True, help="Path to YAML config file.")
     parser.add_argument("--verbosity", choices=["verbose", "none", "errors"], default="none", help="Console log level")

@@ -27,7 +27,7 @@ classifiers = [
 include = ["LICENSE", "README.md"]
 
 [tool.poetry.dependencies]
-python = ">=3.12,<4"
+python = ">=3.9,<3.12"
 
 python-dotenv = "^1.0"
 pyyaml = "^6.0"
@@ -82,10 +82,10 @@ types-Markdown = "^3.7"
 types-pytz = "^2025.1"
 
 [tool.poetry.group.docs.dependencies]
-sphinx = "^8.2"
+sphinx = { version = "^7.4", python = ">=3.9" }
 sphinx-rtd-theme = "^3.0"
-sphinx-autodoc-typehints = "^3.1"
-myst-parser = "^4.0"
+sphinx-autodoc-typehints = "^2.3"
+myst-parser = { version = "^3.0", python = ">=3.9" }
 
 [tool.poetry.scripts]
 personalvibe = 'run:app'
