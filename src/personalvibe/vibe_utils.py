@@ -23,7 +23,7 @@ def get_prompt_hash(prompt: str) -> str:
     return hashlib.sha256(prompt.encode("utf-8")).hexdigest()
 
 
-def find_existing_hash(root_dir: str, hash_str: str) -> Union[str, None]:
+def find_existing_hash(root_dir: Union[str, Path], hash_str: str) -> Union[Path, None]:
     for dirpath, _, filenames in os.walk(root_dir):
         for filename in filenames:
             if hash_str in filename:
@@ -31,6 +31,9 @@ def find_existing_hash(root_dir: str, hash_str: str) -> Union[str, None]:
     return None
 
 
+# ------------------------------------------------------------------
+# --- PERSONALVIBE PATCH C ANCHOR: save_prompt (do not delete) -----
+# ------------------------------------------------------------------
 def save_prompt(prompt: str, root_dir: Path, input_hash: str = "") -> Path:
     """Persist *one* prompt to disk and return its Path.
 

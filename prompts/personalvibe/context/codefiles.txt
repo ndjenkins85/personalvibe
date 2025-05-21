@@ -8,6 +8,7 @@ prompts/personalvibe/context/codefiles.txt
 pyproject.toml
 src/personalvibe/_README.md
 src/personalvibe/__init__.py
+src/personalvibe/cli.py
 src/personalvibe/commands.py
 src/personalvibe/logger.py
 src/personalvibe/parse_stage.py
@@ -20,6 +21,7 @@ tests/__init__.py
 tests/conftest.py
 tests/dummy_patch.py
 tests/personalvibe.sh
+tests/test_cli_basic.py
 tests/test_config_schema_v2.py
 tests/test_jobs.py
 tests/test_log_to_cm.py
