@@ -22,6 +22,7 @@ tests/conftest.py
 tests/dummy_patch.py
 tests/personalvibe.sh
 tests/test_cli_basic.py
+tests/test_cli_subcommands.py
 tests/test_config_schema_v2.py
 tests/test_jobs.py
 tests/test_log_to_cm.py

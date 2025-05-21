@@ -1,4 +1,4 @@
-# pv sprint --config prompts/personalvibe/configs/3.1.0.yaml
+# pv run --config prompts/personalvibe/configs/3.1.1.yaml --prompt-only
 
 # 1. Chunk 1 – CLI foundations
 # 2. Chunk 2 – Resource & path resolver
@@ -42,6 +42,39 @@ execution_details: |
       return self._accessor.open(self, flags, mode)
   FileNotFoundError: [Errno 2] No such file or directory: '/Users/bytedance/Documents/personalvibe/prompts/personalvibe/stages/src/personalvibe/cli.py'
   (personalvibe-py3.9) bytedance@C02H86S6Q05N personalvibe %
+
+  Further error with the following still to solve
+
+  (personalvibe-py3.9) bytedance@C02H86S6Q05N personalvibe % python -m personalvibe.parse_stage --project_name personalvibe --run
+  Saved extracted code to: /Users/bytedance/Documents/personalvibe/prompts/personalvibe/stages/3.1.0.py
+  Running extracted code from: /Users/bytedance/Documents/personalvibe/prompts/personalvibe/stages/3.1.0.py
+
+  ✅  CLI foundation patch applied.
+
+  • src/personalvibe/cli.py   – new parser & sub-commands
+  • tests/test_cli_subcommands.py – extra smoke tests
+
+  Next steps
+  ----------
+  1.  Run `pytest` or `nox -s tests` – the new tests should pass.
+  2.  Try the CLI manually, e.g.:
+
+          pv run --config prompts/personalvibe/configs/2.0.0.yaml --prompt_only
+          pv parse-stage --project_name personalvibe
+
+  3.  Subsequent milestone chunks can rely on this richer CLI surface.
+
+
+  (personalvibe-py3.9) bytedance@C02H86S6Q05N personalvibe % pv run --config prompts/personalvibe/configs/2.0.0.yaml --prompt_only
+  usage: pv [-h] <command> ...
+  pv: error: unrecognized arguments: --config prompts/personalvibe/configs/2.0.0.yaml --prompt_only
+  (personalvibe-py3.9) bytedance@C02H86S6Q05N personalvibe % pv parse-stage --project_name personalvibe
+  Saved extracted code to: /Users/bytedance/Documents/personalvibe/prompts/personalvibe/stages/3.2.0.py
+  (personalvibe-py3.9) bytedance@C02H86S6Q05N personalvibe % pv run --config prompts/personalvibe/configs/2.0.0.yaml
+  usage: pv [-h] <command> ...
+  pv: error: unrecognized arguments: --config prompts/personalvibe/configs/2.0.0.yaml
+  (personalvibe-py3.9) bytedance@C02H86S6Q05N personalvibe %
+
 
 
 code_context_paths:
