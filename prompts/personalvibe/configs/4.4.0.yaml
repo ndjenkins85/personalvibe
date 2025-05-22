@@ -1,4 +1,4 @@
-# pv sprint --config prompts/personalvibe/configs/4.4.0.yaml
+# pv run --config prompts/personalvibe/configs/4.4.0.yaml
 
 # 1) Chunk A – trimming dependencies must happen first; downstream chunks rely on the lean lock-file.
 # 2) Chunk B – once deps are correct, tidy up the automation entry-points.

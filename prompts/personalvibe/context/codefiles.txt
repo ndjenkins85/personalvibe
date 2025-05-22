@@ -5,7 +5,7 @@ LICENSE
 README.md
 docs/*
 noxfile.py
+prompts/code_style_guide.md
 pyproject.toml
 src/personalvibe/*
 tests/*
-prompts/code_style_guide.md
