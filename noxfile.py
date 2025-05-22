@@ -493,3 +493,19 @@ def _log_to(path: Path):  # type: ignore[override]  # type: ignore[no-redef]
 
 
 # --- END FIXED _log_to IMPLEMENTATION ---
+
+# === release session (chunk E) ===
+from nox_poetry import session as _session_release  # type: ignore
+
+
+@_session_release(python=["3.12"], reuse_venv=False)  # type: ignore[misc]
+def release(session):
+    """Simulate a *real* release: bump, build, smoke, report location."""
+    _print_step = globals()["_print_step"]
+    _print_step("🏗️   Building wheel for release…")
+    session.run("poetry", "build", "-f", "wheel", external=True)
+
+    _print_step("🧪  Running smoke_dist…")
+    session.run("poetry", "run", "nox", "-s", "smoke_dist", external=True)
+
+    _print_step("🎉  Release rehearsal for 2.1.0 passed – wheel in ./dist")
