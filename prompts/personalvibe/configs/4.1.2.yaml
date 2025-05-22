@@ -1,0 +1,50 @@
+# pv run --config prompts/personalvibe/configs/4.1.3.yaml
+
+# 1) Chunk A – trimming dependencies must happen first; downstream chunks rely on the lean lock-file.
+# 2) Chunk B – once deps are correct, tidy up the automation entry-points.
+# 3) Chunk C – consolidate the quality-gate so that subsequent edits keep proving themselves.
+# 4) Chunk D – refresh documentation after technical details stabilise.
+# 5) Chunk E – final polish & release simulation closes the milestone.
+
+project_name: "personalvibe"
+mode: sprint
+execution_details: |
+
+  Follow up work for 1) Chunk A – trimming dependencies must happen first; downstream chunks rely on the lean lock-file.
+
+  >> Appears to hang at `tests/test_log_to_cm.py`
+
+  (personalvibe-py3.12) bash-3.2$
+  (personalvibe-py3.12) bash-3.2$ bash tests/personalvibe.sh
+  🔍  Installing project (if not already)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  ✅  Running pytest…
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (2.0.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  configfile: pyproject.toml
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 22 items / 1 deselected / 21 selected
+
+  tests/test_cli_basic.py .                                                [  4%]
+  tests/test_cli_subcommands.py ..                                         [ 14%]
+  tests/test_config_schema_v2.py ...                                       [ 28%]
+  tests/test_log_to_cm.py
+
+
+code_context_paths:
+  - "prompts/personalvibe/context/codefiles.txt"
+milestone_file_name: ""

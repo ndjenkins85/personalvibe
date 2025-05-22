@@ -1,6 +1,7 @@
 # Copyright © 2025 by Nick Jenkins. All rights reserved
 
 """Nox for python task automation."""
+import io
 import os
 import shutil
 import subprocess
@@ -8,7 +9,7 @@ import sys
 import tempfile
 from contextlib import contextmanager
 from pathlib import Path
-from typing import List
+from typing import Iterator, List
 
 import nox
 from nox.sessions import Session
@@ -75,7 +76,57 @@ def _print_step(msg: str) -> None:
 
 
 @contextmanager
-def _log_to(path: Path):
+def _log_to(path: Path):  # type: ignore[override]
+    """
+    Context-manager that *appends* **all** stdout/stderr – including output
+    from spawned sub-processes – to ``path`` using a persistent ``tee -a``.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.touch(exist_ok=True)
+
+    # 1) spawn tee ----------------------------------------------------------------
+    tee_proc = subprocess.Popen(
+        ["tee", "-a", str(path)],
+        stdin=subprocess.PIPE,
+        text=False,  # binary stream
+    )
+    if tee_proc.stdin is None:  # pragma: no cover
+        raise RuntimeError("Failed to open tee stdin")
+
+    # 2) low-level FD hijack -------------------------------------------------------
+    saved_out_fd = os.dup(1)
+    saved_err_fd = os.dup(2)
+    os.dup2(tee_proc.stdin.fileno(), 1)
+    os.dup2(tee_proc.stdin.fileno(), 2)
+
+    # 3) wrap in Python TextIO so `print()` still works ----------------------------
+    new_stdout = io.TextIOWrapper(os.fdopen(1, "wb", buffering=0), encoding="utf-8", line_buffering=True)
+    new_stderr = io.TextIOWrapper(os.fdopen(2, "wb", buffering=0), encoding="utf-8", line_buffering=True)
+
+    saved_stdout_obj, saved_stderr_obj = sys.stdout, sys.stderr
+    sys.stdout, sys.stderr = new_stdout, new_stderr
+    try:
+        yield
+    finally:
+        # flush buffers ------------------------------------------------------------
+        try:
+            sys.stdout.flush()
+            sys.stderr.flush()
+        except Exception:  # noqa: BLE001
+            pass
+
+        # restore original fds -----------------------------------------------------
+        os.dup2(saved_out_fd, 1)
+        os.dup2(saved_err_fd, 2)
+        os.close(saved_out_fd)
+        os.close(saved_err_fd)
+
+        # close tee + wait ---------------------------------------------------------
+        tee_proc.stdin.close()
+        tee_proc.wait()
+
+        # restore Python objects ---------------------------------------------------
+        sys.stdout, sys.stderr = saved_stdout_obj, saved_stderr_obj
     """Duplicate *all* stdout/stderr to **append** mode log file.
 
     The implementation purposefully:
@@ -368,3 +419,72 @@ print('hello world')
         _print_step("✅  smoke_dist finished without errors")
 
     # --- PERSONALVIBE CHUNK 4 PATCH END
+
+
+# --- FIXED _log_to IMPLEMENTATION ---
+@contextmanager
+def _log_to(path: Path):  # type: ignore[override]
+    """
+    Duplicate *all* stdout / stderr – including child-process output – to
+    ``path`` **in append mode** without dead-locking.
+
+    Key fix:
+        Close the per-context TextIOWrapper duplicates **before** waiting
+        on the underlying ``tee`` process so that the pipe write-end is
+        fully closed (otherwise tee never terminates and pytest hangs).
+    """
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.touch(exist_ok=True)
+
+    # Spawn persistent tee (-a so we append)
+    tee_proc = subprocess.Popen(
+        ["tee", "-a", str(path)],
+        stdin=subprocess.PIPE,
+        text=False,  # binary FD handing
+    )
+    if tee_proc.stdin is None:  # pragma: no cover
+        raise RuntimeError("tee failed to provide stdin")
+
+    tee_fd = tee_proc.stdin.fileno()
+
+    # Save original low-level fds
+    saved_out_fd = os.dup(1)
+    saved_err_fd = os.dup(2)
+
+    # Route fd1/fd2 to tee
+    os.dup2(tee_fd, 1)
+    os.dup2(tee_fd, 2)
+
+    # High-level Python objects (wrappers around *new* duped fds)
+    saved_stdout_obj, saved_stderr_obj = sys.stdout, sys.stderr
+    wrapper_stdout = io.TextIOWrapper(os.fdopen(os.dup(1), "wb"), encoding="utf-8", line_buffering=True)
+    wrapper_stderr = io.TextIOWrapper(os.fdopen(os.dup(2), "wb"), encoding="utf-8", line_buffering=True)
+    sys.stdout, sys.stderr = wrapper_stdout, wrapper_stderr
+
+    try:
+        yield
+    finally:
+        # Flush & CLOSE wrappers so no fd points to the pipe afterwards
+        try:
+            wrapper_stdout.flush()
+            wrapper_stderr.flush()
+        finally:
+            wrapper_stdout.close()
+            wrapper_stderr.close()
+
+        # Restore original low-level fds
+        os.dup2(saved_out_fd, 1)
+        os.dup2(saved_err_fd, 2)
+        os.close(saved_out_fd)
+        os.close(saved_err_fd)
+
+        # Close tee stdin and wait for it to finish writing
+        tee_proc.stdin.close()
+        tee_proc.wait()
+
+        # Restore original Python objects
+        sys.stdout, sys.stderr = saved_stdout_obj, saved_stderr_obj
+
+
+# --- END FIXED _log_to IMPLEMENTATION ---

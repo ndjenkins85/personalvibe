@@ -1,0 +1,42 @@
+# pv run --config prompts/personalvibe/configs/4.1.4.yaml
+
+# 1) Chunk A – trimming dependencies must happen first; downstream chunks rely on the lean lock-file.
+# 2) Chunk B – once deps are correct, tidy up the automation entry-points.
+# 3) Chunk C – consolidate the quality-gate so that subsequent edits keep proving themselves.
+# 4) Chunk D – refresh documentation after technical details stabilise.
+# 5) Chunk E – final polish & release simulation closes the milestone.
+
+project_name: "personalvibe"
+mode: sprint
+execution_details: |
+
+  Follow up work after chunk A:
+
+  The problem to solve: Logging still does not automatically go into the right file
+
+  this part of the .sh file needs to change
+
+  # ------------------------------------------------------------------- #
+  # Detect semver (either exported or from current git branch)
+  # ------------------------------------------------------------------- #
+  BRANCH="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")"
+  if [[ "$BRANCH" =~ ^vibed\/(.+)$ ]]; then
+    SEMVER="${BASH_REMATCH[1]}"
+  else
+    SEMVER="${SEMVER:-dev}"
+  fi
+
+  i.e. it finds 'master' we dont use semver in the git branch
+
+  (personalvibe-py3.12) bash-3.2$ git rev-parse --abbrev-ref HEAD
+  master
+  (personalvibe-py3.12) bash-3.2$
+
+  rather than looking for the code version from git, we should pass in an optional arg to tests/personalvibe.sh 4.1.4 so it uses that to integrate logs
+
+
+
+
+code_context_paths:
+  - "prompts/personalvibe/context/codefiles.txt"
+milestone_file_name: ""
