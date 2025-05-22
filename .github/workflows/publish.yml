@@ -1,0 +1,63 @@
+name: Tests & Publish
+
+on:
+  # normal CI for every push *plus* publish when the push is a tag
+  push:
+    branches: [ "*" ]
+    tags:     [ "v*" ]   # e.g. v2.1.0
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.12'
+          architecture: x64
+
+      - name: Install tools
+        run: |
+          pip install nox==2025.2.9
+          pip install poetry==2.1.1
+
+      # install project deps (editable) for Nox
+      - run: poetry install
+
+      # run your quality gate & build artefacts (release session builds dist/)
+      - run: poetry run nox -s release
+
+      # make the wheel + sdist available to the next job
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/*
+
+  publish:
+    # only execute if a tag push triggered the workflow AND build-test passed
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build-test
+    runs-on: ubuntu-latest
+    environment: pypi          # optional; protect with reviewers if desired
+    steps:
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.12'
+          architecture: x64
+
+      - name: Install Poetry
+        run: pip install poetry==2.1.1
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Publish to PyPI
+        env:
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_API_TOKEN }}
+        run: poetry publish \
+               --dist-dir dist \
+               --username __token__ \
+               --password $POETRY_PYPI_TOKEN_PYPI \
+               --no-interaction
