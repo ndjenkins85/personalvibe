@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import List, Union
 
 import dotenv
+import pathspec
 import requests
 import tiktoken
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -124,10 +125,11 @@ def get_vibed(
 
 
 def get_context(filenames: List[str], extension: str = ".txt") -> str:
-    """Pulls in many file contexts, resolving wildcards only in lines inside the files."""
     big_string = ""
     base_path = get_base_path()
     log.debug(f"Base path is {base_path}")
+
+    gitignore_spec = load_gitignore(base_path)
 
     for name in filenames:
         file_path = base_path / name
@@ -142,23 +144,35 @@ def get_context(filenames: List[str], extension: str = ".txt") -> str:
 
         for line in unique_lines:
             if not line.strip():
-                continue  # Skip empty lines
+                continue
 
             line_path = base_path / line
             log.debug(f"Working on codepath {line_path}")
 
-            if any(char in line for char in "*?[]"):  # Wildcard detected
+            if any(char in line for char in "*?[]"):
                 matches = sorted(base_path.glob(line))
                 if not matches:
                     log.warning(f"No matches found for wildcard pattern: {line}")
                 for match in matches:
+                    rel_match = str(match.relative_to(base_path))
+                    if gitignore_spec.match_file(rel_match):
+                        continue
                     if match.is_file():
-                        big_string += _process_file(match)
+                        try:
+                            big_string += _process_file(match)
+                        except UnicodeDecodeError:
+                            message = f"Unable to parse {line} in {name} - {match}"
+                            logging.error(message)
             else:
                 if not line_path.exists():
                     message = f"Warning: {line_path} does not exist. {os.getcwd()}"
                     log.error(message)
                     raise ValueError(message)
+
+                rel_line = str(line_path.relative_to(base_path))
+                if gitignore_spec.match_file(rel_line):
+                    continue
+
                 big_string += _process_file(line_path)
 
     return big_string
@@ -198,6 +212,15 @@ def _process_file(file_path: Path) -> str:
         return f"\n#### Start of {rel_path}\n{content}\n#### End of {rel_path}\n"
     else:
         return f"\n#### Start of {rel_path}\n" f"```{language}\n" f"{content}\n" f"```\n" f"#### End of {rel_path}\n"
+
+
+def load_gitignore(base_path):
+    gitignore_path = base_path / ".gitignore"
+    if gitignore_path.exists():
+        with open(gitignore_path, "r") as f:
+            spec = pathspec.PathSpec.from_lines("gitwildmatch", f)
+        return spec
+    return pathspec.PathSpec([])  # Empty spec if no .gitignore
 
 
 # ----------------------------------------------------------------------
