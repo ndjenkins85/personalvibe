@@ -1,0 +1,17 @@
+# pv sprint --config prompts/personalvibe/configs/4.4.0.yaml
+
+# 1) Chunk A – trimming dependencies must happen first; downstream chunks rely on the lean lock-file.
+# 2) Chunk B – once deps are correct, tidy up the automation entry-points.
+# 3) Chunk C – consolidate the quality-gate so that subsequent edits keep proving themselves.
+# 4) Chunk D – refresh documentation after technical details stabilise.
+# 5) Chunk E – final polish & release simulation closes the milestone.
+
+project_name: "personalvibe"
+mode: sprint
+execution_details: |
+
+  Perform work for 4) Chunk D – refresh documentation after technical details stabilise.
+
+code_context_paths:
+  - "prompts/personalvibe/context/codefiles.txt"
+milestone_file_name: ""
