@@ -1,8 +1,7 @@
 [tool.poetry]
 name = "personalvibe"
 packages = [
-    { include = "personalvibe", from = "src" },
-    { include = "storymaker", from = "src" }
+    { include = "personalvibe", from = "src" }
 ]
 version = "2.0.0"
 description = "My personal vibecoding."
