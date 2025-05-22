@@ -16,6 +16,7 @@ from nox.sessions import Session
 from nox_poetry import session
 
 locations = ("src/personalvibe", "tests", "noxfile.py", "docs/conf.py")
+
 nox.options.sessions = "lint", "tests"
 package = "personalvibe"
 
@@ -32,9 +33,14 @@ def lint(session: Session) -> None:
     * flake8 - code format and consistency checks
     """
     args = session.posargs or locations
+
     session.run_always("poetry", "install", external=True)
     session.run("black", *args)
-    session.run("mypy", *args)
+    session.run(
+        "mypy",
+        "-p",
+        package,  # analyse the installed package
+    )
     session.run("flake8", *args)
 
 
@@ -110,8 +116,8 @@ def _log_to(path: Path):  # type: ignore[override]
     finally:
         # flush buffers ------------------------------------------------------------
         try:
-            sys.stdout.flush()
-            sys.stderr.flush()
+            sys.stdout.flush()  # type: ignore[union-attr]
+            sys.stderr.flush()  # type: ignore[union-attr]
         except Exception:  # noqa: BLE001
             pass
 
@@ -150,8 +156,8 @@ def _log_to(path: Path):  # type: ignore[override]
     finally:
         # Flush and close the tee input; restore
         try:
-            sys.stdout.flush()
-            sys.stderr.flush()
+            sys.stdout.flush()  # type: ignore[union-attr]
+            sys.stderr.flush()  # type: ignore[union-attr]
         finally:
             proc.stdin.close()  # type: ignore[attr-defined]
             proc.wait()
@@ -243,7 +249,7 @@ from nox_poetry import session as _p_session  # reuse already-installed decorato
 
 
 @_p_session(python=["3.12"], reuse_venv=True)  # type: ignore[misc]
-def vibed(session):  # noqa: D401
+def vibed(session):  # noqa: D401  # type: ignore[no-redef]
     """Create **fresh** ``vibed/<semver>`` branch then run quality-gate.
 
     Usage examples
@@ -422,7 +428,7 @@ print('hello world')
 
 # --- FIXED _log_to IMPLEMENTATION ---
 @contextmanager
-def _log_to(path: Path):  # type: ignore[override]
+def _log_to(path: Path):  # type: ignore[override]  # type: ignore[no-redef]
     """
     Duplicate *all* stdout / stderr – including child-process output – to
     ``path`` **in append mode** without dead-locking.

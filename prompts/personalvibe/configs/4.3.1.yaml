@@ -1,0 +1,376 @@
+# pv run --config prompts/personalvibe/configs/4.3.1.yaml
+
+# 1) Chunk A – trimming dependencies must happen first; downstream chunks rely on the lean lock-file.
+# 2) Chunk B – once deps are correct, tidy up the automation entry-points.
+# 3) Chunk C – consolidate the quality-gate so that subsequent edits keep proving themselves.
+# 4) Chunk D – refresh documentation after technical details stabilise.
+# 5) Chunk E – final polish & release simulation closes the milestone.
+
+project_name: "personalvibe"
+mode: sprint
+execution_details: |
+
+  Perform bugfixes post implementation of 3) Chunk C – consolidate the quality-gate so that subsequent edits keep proving themselves.
+
+  The testing process runs successfully, and logs output, but reveals some errors
+
+  We should add a dummy value for OPENAI_API_KEY
+
+  Lets fix up some of the basic lint errors so we're in a great state
+
+  (personalvibe-py3.12) bash-3.2$ nox -s vibed -- 2.1.0
+  nox > Running session vibed-3.12
+  nox > Re-using existing virtual environment at .nox/vibed-3-12.
+
+  ===========================
+  Creating branch vibed/2.1.0
+  ===========================
+
+  nox > git checkout -B __temp_vibed_branch__
+  Switched to a new branch '__temp_vibed_branch__'
+  M noxfile.py
+  nox > git branch -D vibed/2.1.0
+  error: branch 'vibed/2.1.0' not found.
+  nox > git checkout -b vibed/2.1.0
+  Switched to a new branch 'vibed/2.1.0'
+  nox > git branch -D __temp_vibed_branch__
+  Deleted branch __temp_vibed_branch__ (was 7e7711e).
+
+  ==============================================
+  Executing quality-gate (tests/personalvibe.sh)
+  ==============================================
+
+  nox > bash tests/personalvibe.sh
+  🔍  Installing project dependencies (poetry)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  Package operations: 0 installs, 7 updates, 21 removals
+
+    - Removing blinker (1.9.0)
+    - Removing dnspython (2.7.0)
+    - Removing email-validator (2.2.0)
+    - Removing eventlet (0.39.1)
+    - Removing flask (3.1.0)
+    - Removing flask-cors (5.0.1)
+    - Removing flask-sslify (0.1.5)
+    - Removing gevent (24.11.1)
+    - Removing greenlet (3.1.1)
+    - Removing gunicorn (23.0.0)
+    - Removing ipython-pygments-lexers (1.1.1)
+    - Removing itsdangerous (2.2.0)
+    - Removing markdown (3.8)
+    - Removing numpy (2.2.5)
+    - Removing pandas (2.2.3)
+    - Removing pyjwt (2.10.1)
+    - Removing roman-numerals-py (3.1.0)
+    - Removing tzdata (2025.2)
+    - Removing werkzeug (3.1.3)
+    - Removing zope-event (5.0)
+    - Removing zope-interface (7.2)
+    - Downgrading ipython (9.1.0 -> 8.18.1)
+    - Downgrading alabaster (1.0.0 -> 0.7.16)
+    - Downgrading cryptography (44.0.2 -> 43.0.3)
+    - Downgrading sphinx (8.2.3 -> 7.4.7)
+    - Downgrading python-dotenv (1.1.0 -> 0.21.1)
+    - Downgrading sphinx-autodoc-typehints (3.1.0 -> 2.3.0)
+    - Downgrading myst-parser (4.0.1 -> 3.0.1)
+
+  🧹  Running quality-gate via nox (lint + tests + smoke_dist)…
+  nox > Running session lint-3.12
+  nox > Re-using existing virtual environment at .nox/lint-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (2.0.0)
+  nox > black src/personalvibe tests noxfile.py docs/conf.py
+  All done! ✨ 🍰 ✨
+  29 files left unchanged.
+  nox > mypy src/personalvibe tests noxfile.py docs/conf.py
+  docs/conf.py:9: error: Skipping analyzing "personalvibe": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  tests/test_workspace_root.py:6: error: Skipping analyzing "personalvibe": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  tests/test_save_prompt_duplicate.py:6: error: Skipping analyzing "personalvibe.vibe_utils": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  tests/test_run_context.py:5: error: Skipping analyzing "personalvibe.run_context": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  tests/test_logging.py:7: error: Skipping analyzing "personalvibe": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  tests/test_logger.py:5: error: Skipping analyzing "personalvibe": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  src/personalvibe/parse_stage.py:9: error: Skipping analyzing "personalvibe": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  tests/test_logger_runid.py:6: error: Skipping analyzing "personalvibe": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  src/personalvibe/cli.py:37: error: Skipping analyzing "personalvibe": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  src/personalvibe/cli.py:38: error: Skipping analyzing "personalvibe.parse_stage": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  src/personalvibe/cli.py:38: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+  tests/test_resource_fallback.py:8: error: Skipping analyzing "personalvibe": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  tests/test_retry_engine.py:12: error: Skipping analyzing "personalvibe.retry_engine": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  noxfile.py:153: error: Item "None" of "Optional[IO[str]]" has no attribute "flush"  [union-attr]
+  noxfile.py:154: error: Item "None" of "Optional[IO[str]]" has no attribute "flush"  [union-attr]
+  noxfile.py:156: error: Item "None" of "Optional[IO[str]]" has no attribute "close"  [union-attr]
+  noxfile.py:156: note: Error code "union-attr" not covered by "type: ignore" comment
+  noxfile.py:245: error: Name "vibed" already defined on line 161  [no-redef]
+  noxfile.py:245: note: Error code "no-redef" not covered by "type: ignore" comment
+  noxfile.py:424: error: Name "_log_to" already defined on line 78  [no-redef]
+  tests/test_config_schema_v2.py:9: error: Skipping analyzing "personalvibe.run_pipeline": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  src/personalvibe/run_pipeline.py:12: error: Skipping analyzing "personalvibe": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+  src/personalvibe/run_pipeline.py:29: error: "dict" is not subscriptable, use "typing.Dict" instead  [misc]
+  src/personalvibe/vibe_utils.py:104: error: Incompatible types in assignment (expression has type "List[Dict[str, str]]", target has type "str")  [assignment]
+  src/personalvibe/vibe_utils.py:107: error: Dict entry 1 has incompatible type "str": "List[Dict[str, str]]"; expected "str": "str"  [dict-item]
+  src/personalvibe/vibe_utils.py:114: error: Argument "messages" to "create" of "Completions" has incompatible type "List[Dict[str, str]]"; expected "Iterable[Union[ChatCompletionDeveloperMessageParam, ChatCompletionSystemMessageParam, ChatCompletionUserMessageParam, ChatCompletionAssistantMessageParam, ChatCompletionToolMessageParam, ChatCompletionFunctionMessageParam]]"  [arg-type]
+  src/personalvibe/vibe_utils.py:122: error: Argument 1 to "save_prompt" has incompatible type "Optional[str]"; expected "str"  [arg-type]
+  src/personalvibe/vibe_utils.py:124: error: Incompatible return value type (got "Optional[str]", expected "str")  [return-value]
+  src/personalvibe/vibe_utils.py:404: error: Module has no attribute "files"  [attr-defined]
+  src/personalvibe/vibe_utils.py:415: error: Name "get_replacements" already defined on line 344  [no-redef]
+  src/personalvibe/vibe_utils.py:415: note: Error code "no-redef" not covered by "type: ignore" comment
+  Found 27 errors in 15 files (checked 29 source files)
+  nox > Command mypy src/personalvibe tests noxfile.py docs/conf.py failed with exit code 1
+  nox > Session lint-3.12 failed.
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (2.0.0)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  configfile: pyproject.toml
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 22 items / 1 deselected / 21 selected
+
+  tests/test_cli_basic.py .                                                [  4%]
+  tests/test_cli_subcommands.py ..                                         [ 14%]
+  tests/test_config_schema_v2.py ...                                       [ 28%]
+  tests/test_log_to_cm.py .                                                [ 33%]
+  tests/test_log_to_subprocess.py .                                        [ 38%]
+  tests/test_logger.py .                                                   [ 42%]
+  tests/test_logger_runid.py .                                             [ 47%]
+  tests/test_logging.py .                                                  [ 52%]
+  tests/test_resource_fallback.py ..                                       [ 61%]
+  tests/test_retry_engine.py ...                                           [ 76%]
+  tests/test_run_context.py .                                              [ 80%]
+  tests/test_save_prompt_duplicate.py .                                    [ 85%]
+  tests/test_vibed_no_duplicates.py .                                      [ 90%]
+  tests/test_workspace_root.py ..                                          [100%]
+
+  ======================= 21 passed, 1 deselected in 5.07s =======================
+  nox > Session tests-3.12 was successful.
+  nox > Running session smoke_dist-3.12
+  nox > Creating virtual environment (virtualenv) using python3.12 in .nox/smoke_dist-3-12
+  nox > poetry build -f wheel
+  Building personalvibe (2.0.0)
+  Building wheel
+
+  ====================
+  🏗️  Building wheel …
+  ====================
+
+  nox > python -m venv /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_qi1waf21
+
+  ================================================
+  Wheel built: personalvibe-2.0.0-py3-none-any.whl
+  ================================================
+
+
+  ===========================================================================================
+  🧪  Creating temp venv at /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_qi1waf21
+  ===========================================================================================
+
+  nox > /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_qi1waf21/bin/pip install dist/personalvibe-2.0.0-py3-none-any.whl
+  Processing ./dist/personalvibe-2.0.0-py3-none-any.whl
+  Collecting jinja2<4.0.0,>=3.1.6 (from personalvibe==2.0.0)
+    Using cached jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+  Collecting openai<2.0.0,>=1.77.0 (from personalvibe==2.0.0)
+    Using cached openai-1.82.0-py3-none-any.whl.metadata (25 kB)
+  Collecting pathspec<0.13.0,>=0.12.1 (from personalvibe==2.0.0)
+    Using cached pathspec-0.12.1-py3-none-any.whl.metadata (21 kB)
+  Collecting pydantic-settings<3.0.0,>=2.9.1 (from personalvibe==2.0.0)
+    Using cached pydantic_settings-2.9.1-py3-none-any.whl.metadata (3.8 kB)
+  Collecting python-dotenv<0.22,>=0.21 (from personalvibe==2.0.0)
+    Using cached python_dotenv-0.21.1-py3-none-any.whl.metadata (21 kB)
+  Collecting pytz<2026.0,>=2025.1 (from personalvibe==2.0.0)
+    Using cached pytz-2025.2-py2.py3-none-any.whl.metadata (22 kB)
+  Collecting pyyaml<7.0,>=6.0 (from personalvibe==2.0.0)
+    Using cached PyYAML-6.0.2-cp312-cp312-macosx_10_9_x86_64.whl.metadata (2.1 kB)
+  Collecting requests<3.0,>=2.29 (from personalvibe==2.0.0)
+    Using cached requests-2.32.3-py3-none-any.whl.metadata (4.6 kB)
+  Collecting tenacity<10.0,>=9.0 (from personalvibe==2.0.0)
+    Using cached tenacity-9.1.2-py3-none-any.whl.metadata (1.2 kB)
+  Collecting tiktoken<0.10.0,>=0.9.0 (from personalvibe==2.0.0)
+    Using cached tiktoken-0.9.0-cp312-cp312-macosx_10_13_x86_64.whl.metadata (6.7 kB)
+  Collecting tqdm<5.0,>=4.67 (from personalvibe==2.0.0)
+    Using cached tqdm-4.67.1-py3-none-any.whl.metadata (57 kB)
+  Collecting MarkupSafe>=2.0 (from jinja2<4.0.0,>=3.1.6->personalvibe==2.0.0)
+    Using cached MarkupSafe-3.0.2-cp312-cp312-macosx_10_13_universal2.whl.metadata (4.0 kB)
+  Collecting anyio<5,>=3.5.0 (from openai<2.0.0,>=1.77.0->personalvibe==2.0.0)
+    Using cached anyio-4.9.0-py3-none-any.whl.metadata (4.7 kB)
+  Collecting distro<2,>=1.7.0 (from openai<2.0.0,>=1.77.0->personalvibe==2.0.0)
+    Using cached distro-1.9.0-py3-none-any.whl.metadata (6.8 kB)
+  Collecting httpx<1,>=0.23.0 (from openai<2.0.0,>=1.77.0->personalvibe==2.0.0)
+    Using cached httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+  Collecting jiter<1,>=0.4.0 (from openai<2.0.0,>=1.77.0->personalvibe==2.0.0)
+    Using cached jiter-0.10.0-cp312-cp312-macosx_10_12_x86_64.whl.metadata (5.2 kB)
+  Collecting pydantic<3,>=1.9.0 (from openai<2.0.0,>=1.77.0->personalvibe==2.0.0)
+    Using cached pydantic-2.11.4-py3-none-any.whl.metadata (66 kB)
+  Collecting sniffio (from openai<2.0.0,>=1.77.0->personalvibe==2.0.0)
+    Using cached sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+  Collecting typing-extensions<5,>=4.11 (from openai<2.0.0,>=1.77.0->personalvibe==2.0.0)
+    Using cached typing_extensions-4.13.2-py3-none-any.whl.metadata (3.0 kB)
+  Collecting typing-inspection>=0.4.0 (from pydantic-settings<3.0.0,>=2.9.1->personalvibe==2.0.0)
+    Using cached typing_inspection-0.4.1-py3-none-any.whl.metadata (2.6 kB)
+  Collecting charset-normalizer<4,>=2 (from requests<3.0,>=2.29->personalvibe==2.0.0)
+    Using cached charset_normalizer-3.4.2-cp312-cp312-macosx_10_13_universal2.whl.metadata (35 kB)
+  Collecting idna<4,>=2.5 (from requests<3.0,>=2.29->personalvibe==2.0.0)
+    Using cached idna-3.10-py3-none-any.whl.metadata (10 kB)
+  Collecting urllib3<3,>=1.21.1 (from requests<3.0,>=2.29->personalvibe==2.0.0)
+    Using cached urllib3-2.4.0-py3-none-any.whl.metadata (6.5 kB)
+  Collecting certifi>=2017.4.17 (from requests<3.0,>=2.29->personalvibe==2.0.0)
+    Using cached certifi-2025.4.26-py3-none-any.whl.metadata (2.5 kB)
+  Collecting regex>=2022.1.18 (from tiktoken<0.10.0,>=0.9.0->personalvibe==2.0.0)
+    Using cached regex-2024.11.6-cp312-cp312-macosx_10_13_x86_64.whl.metadata (40 kB)
+  Collecting httpcore==1.* (from httpx<1,>=0.23.0->openai<2.0.0,>=1.77.0->personalvibe==2.0.0)
+    Using cached httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+  Collecting h11>=0.16 (from httpcore==1.*->httpx<1,>=0.23.0->openai<2.0.0,>=1.77.0->personalvibe==2.0.0)
+    Using cached h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+  Collecting annotated-types>=0.6.0 (from pydantic<3,>=1.9.0->openai<2.0.0,>=1.77.0->personalvibe==2.0.0)
+    Using cached annotated_types-0.7.0-py3-none-any.whl.metadata (15 kB)
+  Collecting pydantic-core==2.33.2 (from pydantic<3,>=1.9.0->openai<2.0.0,>=1.77.0->personalvibe==2.0.0)
+    Using cached pydantic_core-2.33.2-cp312-cp312-macosx_10_12_x86_64.whl.metadata (6.8 kB)
+  Using cached jinja2-3.1.6-py3-none-any.whl (134 kB)
+  Using cached openai-1.82.0-py3-none-any.whl (720 kB)
+  Using cached pathspec-0.12.1-py3-none-any.whl (31 kB)
+  Using cached pydantic_settings-2.9.1-py3-none-any.whl (44 kB)
+  Using cached python_dotenv-0.21.1-py3-none-any.whl (19 kB)
+  Using cached pytz-2025.2-py2.py3-none-any.whl (509 kB)
+  Using cached PyYAML-6.0.2-cp312-cp312-macosx_10_9_x86_64.whl (183 kB)
+  Using cached requests-2.32.3-py3-none-any.whl (64 kB)
+  Using cached tenacity-9.1.2-py3-none-any.whl (28 kB)
+  Using cached tiktoken-0.9.0-cp312-cp312-macosx_10_13_x86_64.whl (1.1 MB)
+  Using cached tqdm-4.67.1-py3-none-any.whl (78 kB)
+  Using cached anyio-4.9.0-py3-none-any.whl (100 kB)
+  Using cached certifi-2025.4.26-py3-none-any.whl (159 kB)
+  Using cached charset_normalizer-3.4.2-cp312-cp312-macosx_10_13_universal2.whl (199 kB)
+  Using cached distro-1.9.0-py3-none-any.whl (20 kB)
+  Using cached httpx-0.28.1-py3-none-any.whl (73 kB)
+  Using cached httpcore-1.0.9-py3-none-any.whl (78 kB)
+  Using cached idna-3.10-py3-none-any.whl (70 kB)
+  Using cached jiter-0.10.0-cp312-cp312-macosx_10_12_x86_64.whl (312 kB)
+  Using cached MarkupSafe-3.0.2-cp312-cp312-macosx_10_13_universal2.whl (14 kB)
+  Using cached pydantic-2.11.4-py3-none-any.whl (443 kB)
+  Using cached pydantic_core-2.33.2-cp312-cp312-macosx_10_12_x86_64.whl (2.0 MB)
+  Using cached regex-2024.11.6-cp312-cp312-macosx_10_13_x86_64.whl (288 kB)
+  Using cached sniffio-1.3.1-py3-none-any.whl (10 kB)
+  Using cached typing_extensions-4.13.2-py3-none-any.whl (45 kB)
+  Using cached typing_inspection-0.4.1-py3-none-any.whl (14 kB)
+  Using cached urllib3-2.4.0-py3-none-any.whl (128 kB)
+  Using cached annotated_types-0.7.0-py3-none-any.whl (13 kB)
+  Using cached h11-0.16.0-py3-none-any.whl (37 kB)
+  Installing collected packages: pytz, urllib3, typing-extensions, tqdm, tenacity, sniffio, regex, pyyaml, python-dotenv, pathspec, MarkupSafe, jiter, idna, h11, distro, charset-normalizer, certifi, annotated-types, typing-inspection, requests, pydantic-core, jinja2, httpcore, anyio, tiktoken, pydantic, httpx, pydantic-settings, openai, personalvibe
+  Successfully installed MarkupSafe-3.0.2 annotated-types-0.7.0 anyio-4.9.0 certifi-2025.4.26 charset-normalizer-3.4.2 distro-1.9.0 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.10 jinja2-3.1.6 jiter-0.10.0 openai-1.82.0 pathspec-0.12.1 personalvibe-2.0.0 pydantic-2.11.4 pydantic-core-2.33.2 pydantic-settings-2.9.1 python-dotenv-0.21.1 pytz-2025.2 pyyaml-6.0.2 regex-2024.11.6 requests-2.32.3 sniffio-1.3.1 tenacity-9.1.2 tiktoken-0.9.0 tqdm-4.67.1 typing-extensions-4.13.2 typing-inspection-0.4.1 urllib3-2.4.0
+
+  [notice] A new release of pip is available: 24.0 -> 25.1.1
+  [notice] To update, run: python3.12 -m pip install --upgrade pip
+
+  ====================================
+  📦  Installing wheel into temp venv …
+  ====================================
+
+  nox > /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_qi1waf21/bin/pv --help
+  Traceback (most recent call last):
+    File "/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_qi1waf21/bin/pv", line 5, in <module>
+      from personalvibe.cli import app
+    File "/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_qi1waf21/lib/python3.12/site-packages/personalvibe/cli.py", line 37, in <module>
+      from personalvibe import run_pipeline
+    File "/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_qi1waf21/lib/python3.12/site-packages/personalvibe/run_pipeline.py", line 12, in <module>
+      from personalvibe import logger, vibe_utils
+    File "/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_qi1waf21/lib/python3.12/site-packages/personalvibe/vibe_utils.py", line 18, in <module>
+      client = OpenAI()
+               ^^^^^^^^
+    File "/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_qi1waf21/lib/python3.12/site-packages/openai/_client.py", line 126, in __init__
+      raise OpenAIError(
+  openai.OpenAIError: The api_key client option must be set either by passing api_key to the client or by setting the OPENAI_API_KEY environment variable
+
+  ===================================
+  🚀  Running `pv --help` smoke test …
+  ===================================
+
+  nox > Command /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_qi1waf21/bin/pv --help failed with exit code 1
+  nox > Session smoke_dist-3.12 failed.
+  nox > Ran multiple sessions:
+  nox > * lint-3.12: failed
+  nox > * tests-3.12: success
+  nox > * smoke_dist-3.12: failed
+  nox > Command bash tests/personalvibe.sh failed with exit code 1
+  nox > Session vibed-3.12 failed.
+  (personalvibe-py3.12) bash-3.2$
+
+
+  Be sure not to generate a code answer that would produce this additional error message
+  (personalvibe-py3.12) bash-3.2$ pv parse-stage --project_name personalvibe --run
+  Saved extracted code to: /Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/4.4.0.py
+  Running extracted code from: /Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/4.4.0.py
+  Traceback (most recent call last):
+    File "/Users/nicholasjenkins/Documents/personalvibe/.venv/bin/pv", line 6, in <module>
+      sys.exit(app())
+               ^^^^^
+    File "/Users/nicholasjenkins/Documents/personalvibe/src/personalvibe/cli.py", line 158, in app
+      cli_main()
+    File "/Users/nicholasjenkins/Documents/personalvibe/src/personalvibe/cli.py", line 152, in cli_main
+      ns.func(ns)  # type: ignore[arg-type]
+      ^^^^^^^^^^^
+    File "/Users/nicholasjenkins/Documents/personalvibe/src/personalvibe/cli.py", line 108, in _cmd_parse_stage
+      runpy.run_path(saved, run_name="__main__")
+    File "<frozen runpy>", line 286, in run_path
+    File "<frozen runpy>", line 98, in _run_module_code
+    File "<frozen runpy>", line 88, in _run_code
+    File "/Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/4.4.0.py", line 57, in <module>
+      patch_file(
+    File "/Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/4.4.0.py", line 37, in patch_file
+      txt = path.read_text(encoding="utf-8")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/pathlib.py", line 1027, in read_text
+      with self.open(mode='r', encoding=encoding, errors=errors) as f:
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/pathlib.py", line 1013, in open
+      return io.open(self, mode, buffering, encoding, errors, newline)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  FileNotFoundError: [Errno 2] No such file or directory: '/Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/src/personalvibe/vibe_utils.py'
+  (personalvibe-py3.12) bash-3.2$
+
+  Second error
+
+  (personalvibe-py3.12) bash-3.2$ pv parse-stage --project_name personalvibe --run
+  Saved extracted code to: /Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/4.5.0.py
+  Running extracted code from: /Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/4.5.0.py
+  Traceback (most recent call last):
+    File "/Users/nicholasjenkins/Documents/personalvibe/.venv/bin/pv", line 6, in <module>
+      sys.exit(app())
+               ^^^^^
+    File "/Users/nicholasjenkins/Documents/personalvibe/src/personalvibe/cli.py", line 158, in app
+      cli_main()
+    File "/Users/nicholasjenkins/Documents/personalvibe/src/personalvibe/cli.py", line 152, in cli_main
+      ns.func(ns)  # type: ignore[arg-type]
+      ^^^^^^^^^^^
+    File "/Users/nicholasjenkins/Documents/personalvibe/src/personalvibe/cli.py", line 108, in _cmd_parse_stage
+      runpy.run_path(saved, run_name="__main__")
+    File "<frozen runpy>", line 286, in run_path
+    File "<frozen runpy>", line 98, in _run_module_code
+    File "<frozen runpy>", line 88, in _run_code
+    File "/Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/4.5.0.py", line 74, in <module>
+      patch_file(vibe_utils, "DUMMY_KEY", _dummy_env)
+    File "/Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/4.5.0.py", line 51, in patch_file
+      txt = path.read_text(encoding="utf-8")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/pathlib.py", line 1027, in read_text
+      with self.open(mode='r', encoding=encoding, errors=errors) as f:
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/pathlib.py", line 1013, in open
+      return io.open(self, mode, buffering, encoding, errors, newline)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  FileNotFoundError: [Errno 2] No such file or directory: '/Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/src/personalvibe/vibe_utils.py'
+  (personalvibe-py3.12) bash-3.2$
+
+code_context_paths:
+  - "prompts/personalvibe/context/codefiles.txt"
+milestone_file_name: ""

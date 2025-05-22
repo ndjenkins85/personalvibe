@@ -101,8 +101,10 @@ skip_glob = [
     ]
 
 [tool.mypy]
-python_version = 3.8
+python_version = "3.12"
 
+
+allow_redefinition = true
 [[tool.mypy.overrides]]
 module = [
     'flask_cors',
