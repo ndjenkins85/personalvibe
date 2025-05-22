@@ -8,3 +8,4 @@ noxfile.py
 pyproject.toml
 src/personalvibe/*
 tests/*
+prompts/code_style_guide.md
