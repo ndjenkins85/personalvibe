@@ -1,6 +1,8 @@
 # Byte-compiled / optimized / DLL files
 my_scripts.md
 
+storymaker_spa/node_modules/
+
 __pycache__/
 *.py[cod]
 *$py.class
