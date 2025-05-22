@@ -1,0 +1,23 @@
+# pv milestone --config prompts/personalvibe/configs/4.0.0.yaml
+
+project_name: "personalvibe"
+mode: milestone
+execution_details: |
+
+  While developing this project, I was originally developing a second project at the same time within the same project folder
+
+  Now that this project has matured, it needs to be housed completely separately.
+
+  Personalvibe can be used as a python library to import into other projects such that the required functionality remains but is split into a separate project for it's own git history and concerns.
+
+  This is because personalvibe will start to power other types of project so it doesn't make sense to closely bind these going forward.
+
+  To that end, I forsee the need for a few parts to our next milestone, which is entirely about "Creating an independent project"
+
+  - Rationalize pyproject python dependencies only towards what is needed for the project (and for dev dependencies)
+  - Ensure that there is a single bash `.sh` file in `tests` that can run all of the required pytests, and, if relevant: stand up any backend/frontend webservices, and launch any smoketest URLs
+  - Update the project README such that the overall purpose of the project is clear, along with up to date installation instructions, how to run tests, and links to contrib
+  - Clean up noxfile.py given the code is split over two codebases (personalvibe, storymaker) such that it is only relevant for testing this project
+
+code_context_paths:
+  - "prompts/personalvibe/context/codefiles.txt"
