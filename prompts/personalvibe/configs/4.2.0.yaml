@@ -12,6 +12,33 @@ execution_details: |
 
   Perform work for 2) Chunk B – once deps are correct, tidy up the automation entry-points.
 
+  Make sure your approach does not encounter the following error
+
+  (personalvibe-py3.12) bash-3.2$ pv parse-stage --project_name personalvibe --run
+  Saved extracted code to: /Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/4.2.0.py
+  Running extracted code from: /Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/4.2.0.py
+  Traceback (most recent call last):
+    File "/Users/nicholasjenkins/Documents/personalvibe/.venv/bin/pv", line 6, in <module>
+      sys.exit(app())
+               ^^^^^
+    File "/Users/nicholasjenkins/Documents/personalvibe/src/personalvibe/cli.py", line 158, in app
+      cli_main()
+    File "/Users/nicholasjenkins/Documents/personalvibe/src/personalvibe/cli.py", line 152, in cli_main
+      ns.func(ns)  # type: ignore[arg-type]
+      ^^^^^^^^^^^
+    File "/Users/nicholasjenkins/Documents/personalvibe/src/personalvibe/cli.py", line 108, in _cmd_parse_stage
+      runpy.run_path(saved, run_name="__main__")
+    File "<frozen runpy>", line 286, in run_path
+    File "<frozen runpy>", line 98, in _run_module_code
+    File "<frozen runpy>", line 88, in _run_code
+    File "/Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/4.2.0.py", line 76, in <module>
+      main()
+    File "/Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/4.2.0.py", line 60, in main
+      patched = patch_locations(original)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/4.2.0.py", line 51, in patch_locations
+      raise RuntimeError("Could not locate `locations = (...)` assignment in noxfile.py")
+  RuntimeError: Could not locate `locations = (...)` assignment in noxfile.py
+
 code_context_paths:
   - "prompts/personalvibe/context/codefiles.txt"
-milestone_file_name: ""

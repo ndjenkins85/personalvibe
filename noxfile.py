@@ -15,7 +15,7 @@ import nox
 from nox.sessions import Session
 from nox_poetry import session
 
-locations = "src/personalvibe", "tests", "noxfile.py", "docs/conf.py"
+locations = ("src/personalvibe", "tests", "noxfile.py", "docs/conf.py")
 nox.options.sessions = "lint", "tests"
 package = "personalvibe"
 
