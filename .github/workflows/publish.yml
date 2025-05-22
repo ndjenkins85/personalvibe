@@ -56,8 +56,9 @@ jobs:
       - name: Publish to PyPI
         env:
           POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_API_TOKEN }}
-        run: poetry publish \
-               --dist-dir dist \
-               --username __token__ \
-               --password $POETRY_PYPI_TOKEN_PYPI \
-               --no-interaction
+        run: |
+          # poetry is already installed in the job
+          poetry publish \
+            --username __token__ \
+            --password "$POETRY_PYPI_TOKEN_PYPI" \
+            --no-interaction
