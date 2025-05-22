@@ -257,7 +257,6 @@ def vibed(session):  # noqa: D401
     semver, *patches = (arg.strip() for arg in session.posargs)
 
     log_path = Path("logs") / f"{semver}_base.log"
-    from noxfile import _log_to, _print_step  # local reuse
 
     with _log_to(log_path):
         _print_step(f"Creating branch vibed/{semver}")
