@@ -25,7 +25,7 @@ jobs:
       - run: poetry install
 
       # run your quality gate & build artefacts (release session builds dist/)
-      - run: poetry run nox -s release
+      - run: poetry run nox -s release tests
 
       # make the wheel + sdist available to the next job
       - uses: actions/upload-artifact@v4
