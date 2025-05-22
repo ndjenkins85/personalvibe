@@ -1,78 +1,38 @@
-# Using **Personalvibe** in *other* projects
+# Using Personalvibe in *your* project
 
-This guide walks you through installing the published wheel, running the
-CLI, and – for front-end tinkerers – the first steps towards a later
-Single-Page-App (SPA) integration.
+## 1 – Install
 
----
+```bash
+poetry add personalvibe    # or  pip install personalvibe
+```
 
-## Quick start (Python workflow)
+## 2 – Create a YAML config
 
-# 1) Install from PyPI (recommended)
-pip install personalvibe
+```yaml
+# 1.0.0.yaml
+project_name: my_cool_idea
+mode: milestone         # prd | milestone | sprint | validate
+execution_details: ''
+code_context_paths: []  # optional snippets fed into the prompt
+```
 
-# 2) Scaffold a data workspace somewhere **outside** the source checkout
-export PV_DATA_DIR=$(pwd)/.pv_workspace     # optional, defaults to CWD
+## 3 – Run
 
-# 3) Run the milestone analysis of YOUR yaml config
-pv milestone --config path/to/1.0.0.yaml --verbosity verbose
+```bash
+pv run --config 1.0.0.yaml --prompt_only   # preview
+pv run --config 1.0.0.yaml                 # full run
+```
 
-What happened?
+## Advanced
 
-1. The `pv` console-script parsed your YAML and resolved a *workspace*
-   at `$PV_DATA_DIR` (or current directory).
-2. Logs are streamed to `logs/<semver>_base.log`.
-3. All prompt inputs/outputs are persisted under
-   `data/<project>/prompt_*`.
+• Persist artefacts in a separate folder:
 
----
+  `PV_DATA_DIR=.pv_workspace pv sprint --config 1.0.0.yaml`
 
-## Environment variables
+• Extract the last assistant code block and run it:
 
-| Variable      | Purpose                                     | Default        |
-|---------------|---------------------------------------------|----------------|
-| `PV_DATA_DIR` | Override the workspace root directory       | `Path.cwd()`   |
-| `OPENAI_API_KEY` | Passed straight through to the *OpenAI* SDK | *(required)* |
-
----
-
-## Transparency reporting (example flow)
-
-Below is an end-to-end snippet you can paste into your project’s CI:
-
-set -e
-poetry add --group dev personalvibe
-pv milestone --config prompts/myproj/configs/2.0.0.yaml
-pv sprint    --config prompts/myproj/configs/2.0.0.yaml --verbosity verbose
-pv validate  --config prompts/myproj/configs/2.0.0.yaml
-
-The trio ensures every step appends to the same `logs/2.0.0_base.log`,
-making **audit trails** trivial.
+  `pv parse-stage --project_name my_cool_idea --run`
 
 ---
 
-## SPA placeholder 🍿
-
-Personalvibe’s back-end is framework-agnostic, but future sprints will
-expose a small JSON API.  If you already use a front-end stack, keep the
-following directory layout ready:
-
-my-project/
-└─ web/
-   ├─ package.json   # will list @personalvibe/sdk once published
-   └─ src/
-        App.tsx
-
-Initial NPM bootstrap (React example):
-
-cd web
-npm create vite@latest  .
-npm install
-npm run dev
-
-**No SDK is required yet** – this is merely a sandbox for upcoming
-experiments.
-
----
-
-Happy vibecoding!  — *The Personalvibe team*
+*Happy vibecoding!*  — The Personalvibe team

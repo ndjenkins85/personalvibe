@@ -1,14 +1,27 @@
-# Installation – Personalvibe 2.x
+# Installation – Personalvibe 2.1
 
-# Grab the latest stable release
+```bash
 pip install --upgrade personalvibe
+```
 
-A console-script `pv` will be available afterwards:
+A console-script **`pv`** appears on your `$PATH` afterwards.
 
+```bash
 pv --help
-pv milestone --config path/to/1.0.0.yaml
+pv run --config my_config.yaml
+```
 
-Runtime artefacts are created in the **current working directory**.
-Override via:
+Runtime artefacts are created in the **current working directory**:
 
+```
+.
+├─ data/<project>/prompt_inputs/
+├─ data/<project>/prompt_outputs/
+└─ logs/<semver>_base.log
+```
+
+Override the workspace root via:
+
+```bash
 export PV_DATA_DIR=/absolute/path/to/workspace
+```
