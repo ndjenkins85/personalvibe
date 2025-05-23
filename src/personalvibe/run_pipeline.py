@@ -35,12 +35,21 @@ class ConfigModel(BaseModel):
 
 
 def load_config(config_path: str) -> ConfigModel:
-    """Load & validate YAML config; bubble schema errors."""
-    with open(config_path, "r", encoding="utf-8") as f:
-        raw = yaml.safe_load(f)
-        raw["version"] = Path(config_path).stem
+    """Load YAML then validate. Auto-fills *project_name* if missing."""
     try:
+        with open(config_path, "r", encoding="utf-8") as f:
+            raw = yaml.safe_load(f)
+            raw["version"] = Path(config_path).stem
+
+        # ---- auto-detect project_name if missing ----
+        if not raw.get("project_name"):
+            try:
+                raw["project_name"] = vibe_utils.detect_project_name()
+            except ValueError as e:
+                raise RuntimeError("project_name absent from YAML and auto-detection failed.") from e
+
         return ConfigModel(**raw)
+
     except ValidationError as e:
         logging.getLogger(__name__).error("Config validation failed:\n%s", e)
         raise

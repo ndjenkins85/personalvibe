@@ -458,3 +458,43 @@ def get_replacements(config: "ConfigModel", code_context: str) -> dict:  # type:
         "instructions": instructions,
         "code_context": code_context,
     }
+
+
+import logging as _pv_log
+
+# === detect_project_name (chunk 2)
+from pathlib import Path as _PvPath
+
+
+def detect_project_name(cwd: _PvPath | None = None) -> str:
+    """Best-effort inference of the **project_name**.
+
+    Strategy
+    --------
+    1. If *cwd* (or its parents) path contains ``prompts/<name>`` → return
+       that immediate directory name.
+    2. Else walk *upwards* until a folder with ``prompts/`` is found:
+         • if that ``prompts`` dir contains exactly ONE sub-directory we
+           assume it is the project.
+    3. Otherwise raise ``ValueError`` explaining how to fix.
+
+    This keeps the common cases zero-config while remaining explicit when
+    multiple projects coexist.
+    """
+    cwd = (cwd or _PvPath.cwd()).resolve()
+    parts = cwd.parts
+    if "prompts" in parts:
+        idx = parts.index("prompts")
+        if idx + 1 < len(parts):
+            return parts[idx + 1]
+
+    for parent in [cwd, *cwd.parents]:
+        p_dir = parent / "prompts"
+        if p_dir.is_dir():
+            sub = [d for d in p_dir.iterdir() if d.is_dir()]
+            if len(sub) == 1:
+                return sub[0].name
+            break  # ambiguous – fallthrough to error
+    raise ValueError(
+        "Unable to auto-detect project_name; pass --project_name or run " "from within prompts/<name>/… directory."
+    )

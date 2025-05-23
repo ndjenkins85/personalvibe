@@ -99,7 +99,16 @@ def _cmd_mode(ns: argparse.Namespace, mode: str) -> None:
 
 
 def _cmd_parse_stage(ns: argparse.Namespace) -> None:
-    saved = extract_and_save_code_block(ns.project_name)
+    proj = ns.project_name
+    if not proj:
+        from personalvibe.vibe_utils import detect_project_name
+
+        try:
+            proj = detect_project_name()
+        except ValueError as e:
+            print(str(e))
+            raise SystemExit(1) from e
+    saved = extract_and_save_code_block(proj)
     if ns.run:
         import runpy
 

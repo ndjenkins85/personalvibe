@@ -9,7 +9,8 @@ from pathlib import Path
 from personalvibe import vibe_utils
 
 
-def find_latest_log_file(project_name: str) -> Path:
+def find_latest_log_file(project_name: str | None = None) -> Path:
+    project_name = _ensure_project_name(project_name)
     base_path = vibe_utils.get_base_path()
     logs_dir = base_path / "data" / project_name / "prompt_outputs"
 
@@ -30,9 +31,12 @@ def find_latest_log_file(project_name: str) -> Path:
     return log_files[0]
 
 
-def determine_next_version(project_name: str) -> str:
+def determine_next_version(project_name: str | None = None) -> str:
     base_path = vibe_utils.get_base_path()
-    stages_dir = base_path / "prompts" / project_name / "stages"
+
+    if project_name is None:
+        raise ValueError("project_name must be provided")
+    stages_dir = Path(base_path, "prompts", project_name, "stages")
     stages_dir.mkdir(parents=True, exist_ok=True)
 
     files = list(stages_dir.glob("*.py")) + list(stages_dir.glob("*.md"))
@@ -56,10 +60,13 @@ def determine_next_version(project_name: str) -> str:
     return next_version
 
 
-def extract_and_save_code_block(project_name: str) -> str:
+def extract_and_save_code_block(project_name: str | None = None) -> str:
     base_path = vibe_utils.get_base_path()
+
+    if project_name is None:
+        raise ValueError("project_name must be provided")
     input_file = find_latest_log_file(project_name)
-    stages_dir = base_path / "prompts" / project_name / "stages"
+    stages_dir = Path(base_path, "prompts", project_name, "stages")
 
     content = input_file.read_text(encoding="utf-8")
     match = re.search(r"```python\n(.*?)\n```", content, re.DOTALL)
@@ -87,7 +94,9 @@ if __name__ == "__main__":
     python -m personalvibe.parse_stage
     """
     parser = argparse.ArgumentParser(description="Extract latest prompt output and save as versioned Python file.")
-    parser.add_argument("--project_name", required=True, help="Project name (used for path resolution).")
+
+    parser.add_argument("--project_name", help="When omitted, looked up automatically from cwd.")
+
     parser.add_argument("--run", action="store_true", help="Execute the extracted code after saving.")
     args = parser.parse_args()
 
@@ -96,3 +105,13 @@ if __name__ == "__main__":
     if args.run:
         print(f"Running extracted code from: {saved_file}")
         runpy.run_path(saved_file, run_name="__main__")
+
+
+# === helper added by chunk 2
+def _ensure_project_name(name: str | None) -> str:
+    if name:
+        return name
+    try:
+        return vibe_utils.detect_project_name()
+    except ValueError as e:  # re-raise with friendly msg
+        raise ValueError(str(e)) from e
