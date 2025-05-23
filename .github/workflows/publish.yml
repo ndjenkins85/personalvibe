@@ -9,24 +9,19 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9, 3.12]
+
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v1
+      - uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
-          architecture: x64
-
-      - name: Install tools
-        run: |
-          pip install nox==2025.2.9
-          pip install poetry==2.1.1
-
-      # install project deps (editable) for Nox
+          python-version: ${{ matrix.python-version }}
+      - run: pip install nox==2025.2.9
+      - run: pip install poetry==2.1.1
       - run: poetry install
-
-      # run your quality gate & build artefacts (release session builds dist/)
-      - run: poetry run nox -s release tests
-
+      - run: poetry run nox release tests --force-python=${{ matrix.python-version }}
       # make the wheel + sdist available to the next job
       - uses: actions/upload-artifact@v4
         with:
