@@ -1,5 +1,16 @@
 # Personalvibe
 
+
+## Documentation quick links
+
+* [Installation](docs/INSTALL.md)
+* [Developer on-boarding](docs/ONBOARDING.md)
+* [Using Personalvibe *in other projects*](docs/using_in_other_projects.md)
+* [API reference](docs/reference.rst)
+* [Roadmap 3.0.0](docs/roadmap/3.0.0_milestone.md)
+
+---
+
 Personalvibe is my own attempt at bootstrapping and building an AI interface into my code approach.
 
 *Brainstorm → YAML → Prompt → Code → Test*

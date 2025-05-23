@@ -2,11 +2,15 @@
 
 """Sphinx configuration."""
 
+import sys
 from pathlib import Path
 
-import sphinx_rtd_theme  # noqa: F401
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+# -- path hack for local build
 
-from personalvibe import __version__
+import sphinx_rtd_theme  # noqa: F401, E402
+
+from personalvibe import __version__  # noqa: E402
 
 project = "personalvibe"
 author = "Nick Jenkins"

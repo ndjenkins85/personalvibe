@@ -6,14 +6,8 @@ Reference
     :backlinks: none
 
 
-personalsite.file_parsing
--------------------------
+personalvibe.cli
+----------------
 
-.. automodule:: personalsite.file_parsing
-   :members:
-
-personalsite.views
-------------------
-
-.. automodule:: personalsite.views
+.. automodule:: personalsite.cli
    :members:
