@@ -21,7 +21,7 @@ jobs:
       - run: pip install nox==2025.2.9
       - run: pip install poetry==2.1.1
       - run: poetry install
-      - run: poetry run nox release tests --force-python=${{ matrix.python-version }}
+      - run: poetry run nox -s release tests --force-python=${{ matrix.python-version }}
       # make the wheel + sdist available to the next job
       - uses: actions/upload-artifact@v4
         with:
