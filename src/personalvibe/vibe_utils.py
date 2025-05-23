@@ -121,7 +121,7 @@ def get_vibed(
 
     message_chars = len(str(messages))
     model = model or "o3"
-    message_tokens = num_tokens(str(messages), model=model)
+    message_tokens = num_tokens(str(messages))
     log.info("Prompt size – Tokens: %s, Chars: %s", message_tokens, message_chars)
 
     response = (
@@ -302,8 +302,9 @@ def get_base_path(base: str = "personalvibe") -> Path:
     return Path(*new_parts)
 
 
-def num_tokens(text: str, model: Union[str, None] = None) -> int:
-    enc = tiktoken.encoding_for_model(model)
+def num_tokens(text: str) -> int:
+    """Just use o3 for a rough guide."""
+    enc = tiktoken.encoding_for_model("o3")
     return len(enc.encode(text))
 
 
