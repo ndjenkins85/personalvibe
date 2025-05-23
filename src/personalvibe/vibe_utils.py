@@ -3,6 +3,7 @@
 import hashlib
 import html
 import logging
+import logging as _pv_log
 import os
 from datetime import datetime
 from pathlib import Path
@@ -226,10 +227,7 @@ def _process_file(file_path: Path) -> str:
         return f"\n#### Start of {rel_path}\n" f"```{language}\n" f"{content}\n" f"```\n" f"#### End of {rel_path}\n"
 
 
-from pathlib import Path as _PvPath
-
-
-def load_gitignore(base_path: _PvPath) -> pathspec.PathSpec:
+def load_gitignore(base_path: Path) -> pathspec.PathSpec:
     gitignore_path = base_path / ".gitignore"
     if gitignore_path.exists():
         with open(gitignore_path, "r") as f:
@@ -462,13 +460,7 @@ def get_replacements(config: "ConfigModel", code_context: str) -> dict:  # type:
     }
 
 
-import logging as _pv_log
-
-# === detect_project_name (chunk 2)
-from pathlib import Path as _PvPath
-
-
-def detect_project_name(cwd: _PvPath | None = None) -> str:
+def detect_project_name(cwd: Union[Path, None] = None) -> str:
     """Best-effort inference of the **project_name**.
 
     Strategy
@@ -483,7 +475,7 @@ def detect_project_name(cwd: _PvPath | None = None) -> str:
     This keeps the common cases zero-config while remaining explicit when
     multiple projects coexist.
     """
-    cwd = (cwd or _PvPath.cwd()).resolve()
+    cwd = (cwd or Path.cwd()).resolve()
     parts = cwd.parts
     if "prompts" in parts:
         idx = parts.index("prompts")

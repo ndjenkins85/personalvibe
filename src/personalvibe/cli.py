@@ -36,7 +36,7 @@ import shlex
 import subprocess
 import sys
 from pathlib import Path
-from typing import List, Sequence
+from typing import List, Sequence, Union
 
 from personalvibe import run_pipeline, vibe_utils
 from personalvibe.parse_stage import extract_and_save_code_block
@@ -170,7 +170,7 @@ def _build_parser() -> argparse.ArgumentParser:
     return p
 
 
-def cli_main(argv: Sequence[str] | None = None) -> None:
+def cli_main(argv: Union[Sequence[str], None] = None) -> None:
     parser = _build_parser()
     ns = parser.parse_args(argv)
     # dispatch

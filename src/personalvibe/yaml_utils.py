@@ -4,7 +4,7 @@
 
 Public API
 ----------
-sanitize_yaml_text(text: str, *, origin: str | None = None) -> str
+sanitize_yaml_text(text: str, *, origin: Union[str, None] = None) -> str
     • strips ASCII control chars 0x00-0x1F (except \n, \r, \t)
     • raises *ValueError* on any remaining surrogate code-points
 """
@@ -12,6 +12,7 @@ sanitize_yaml_text(text: str, *, origin: str | None = None) -> str
 from __future__ import annotations
 
 import re
+from typing import Union
 
 # Control characters excluding \n, \r, \t
 _CTRL = "".join(chr(i) for i in range(32) if chr(i) not in "\n\r\t")
@@ -21,7 +22,7 @@ _CTRL_RE = re.compile(f"[{re.escape(_CTRL)}]")
 _SURROGATE_RE = re.compile(r"[\uD800-\uDFFF]")
 
 
-def sanitize_yaml_text(text: str, *, origin: str | None = None) -> str:
+def sanitize_yaml_text(text: str, *, origin: Union[str, None] = None) -> str:
     """Strip *dangerous* runes before YAML parsing.
 
     Parameters

@@ -5,11 +5,12 @@ import re
 import runpy
 from datetime import datetime
 from pathlib import Path
+from typing import Union
 
 from personalvibe import vibe_utils
 
 
-def find_latest_log_file(project_name: str | None = None) -> Path:
+def find_latest_log_file(project_name: Union[str, None] = None) -> Path:
     project_name = _ensure_project_name(project_name)
     base_path = vibe_utils.get_base_path()
     logs_dir = base_path / "data" / project_name / "prompt_outputs"
@@ -31,7 +32,7 @@ def find_latest_log_file(project_name: str | None = None) -> Path:
     return log_files[0]
 
 
-def extract_and_save_code_block(project_name: str | None = None) -> str:
+def extract_and_save_code_block(project_name: Union[str, None] = None) -> str:
     base_path = vibe_utils.get_base_path()
 
     if project_name is None:
@@ -60,7 +61,7 @@ def extract_and_save_code_block(project_name: str | None = None) -> str:
 
 
 # === helper added by chunk 2
-def _ensure_project_name(name: str | None) -> str:
+def _ensure_project_name(name: Union[str, None]) -> str:
     if name:
         return name
     try:
@@ -69,7 +70,7 @@ def _ensure_project_name(name: str | None) -> str:
         raise ValueError(str(e)) from e
 
 
-def determine_next_version(project_name: str | None = None) -> str:  # noqa: C901
+def determine_next_version(project_name: Union[str, None] = None) -> str:  # noqa: C901
     """Return the *next* semantic version for **patch-files** (x.y.Z).
 
     Rules

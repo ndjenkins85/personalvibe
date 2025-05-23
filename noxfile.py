@@ -22,7 +22,7 @@ nox.options.sessions = "lint", "tests"
 package = "personalvibe"
 
 
-@session(python=["3.12"])
+@session(python=["3.9", "3.12"])
 def lint(session: Session) -> None:
     """Runs code quality checks.
 
@@ -61,7 +61,7 @@ def safety(session: Session) -> None:
         session.run("safety", "check", f"--file={requirements.name}", "--full-report")
 
 
-@session(python=["3.12"])
+@session(python=["3.9", "3.12"])
 def tests(session: Session) -> None:
     """Run the test suite, locally, and in CICD process."""
     args = session.posargs or ["-m", "not advanced"]

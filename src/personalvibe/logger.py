@@ -9,7 +9,7 @@ import logging.config
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Literal
+from typing import Literal, Union
 
 _configured = False
 
@@ -31,11 +31,11 @@ class ColorFormatter(logging.Formatter):
 
 
 def configure_logging(
-    verbosity: Literal["verbose", "none", "errors"] | str = "none",
+    verbosity: Union[Literal["verbose", "none", "errors"], str] = "none",
     *,
     color: bool = True,
-    run_id: str | None = None,
-    log_dir: str | Path = "logs",
+    run_id: Union[str, None] = None,
+    log_dir: Union[str, Path] = "logs",
 ) -> None:
     """Idempotent logging bootstrap.
 

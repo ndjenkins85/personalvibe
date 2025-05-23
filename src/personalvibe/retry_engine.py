@@ -9,7 +9,7 @@ import subprocess
 import sys
 import time
 from types import TracebackType
-from typing import Callable, List, Type
+from typing import Callable, List, Type, Union
 
 log = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ def run_with_retries(
     *,
     max_retries: int = 5,
     sleep_seconds: float = 0.0,
-    branch_name: str | None = None,
+    branch_name: Union[str, None] = None,
 ) -> bool:
     """Run *action* until it returns ``True`` or retries exhausted.
 
@@ -71,7 +71,7 @@ def run_with_retries(
         If all attempts fail.
     """
     attempt = 0
-    errors: List[BaseException | None] = []
+    errors: List[Union[BaseException, None]] = []
 
     while attempt < max_retries:
         attempt += 1

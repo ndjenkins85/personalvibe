@@ -93,6 +93,13 @@ def allocate_topics(df: pd.DataFrame, target: int) -> list[str]:
     """
 ```
 
+Use python 3.9 style typing i.e.
+
+`def extract_and_save_code_block(project_name: Union[str, None] = None) -> str:`
+
+NOT
+`def extract_and_save_code_block(project_name: str | None = None) -> str:`
+
 ---
 
 ## 4. Error Handling & Logging
