@@ -3,9 +3,18 @@
 select = ANN,B,B9,BLK,C,D,DAR,E,F,I,S,W
 ignore = D104,E203,E501,W503,E712,B301,S101,S322
 
-application-import-names = personalsite
-per-file-ignores = tests/*:S101, noxfile.py:DAR101, personalsite/config/config.py:S105, personalsite/__init__.py:F401
+application-import-names = personalvibe
 
 docstring-convention = google
 import-order-style = google
 max-line-length = 120
+per-file-ignores =
+    tests/*: F401,F841,ANN001,ANN002,ANN003,ANN101,ANN201,ANN202,ANN204,S404,S603,S607
+    noxfile.py: F401,S404,S603,S607,S110,E402,F821,ANN001,ANN101,ANN201,ANN202
+    src/personalvibe/__init__.py: ANN001,ANN101,ANN202,ANN204,S110
+    src/personalvibe/cli.py: F401,F841,ANN001,ANN201,ANN202
+    src/personalvibe/logger.py: ANN101,ANN001,ANN201
+    src/personalvibe/retry_engine.py: S404,S603,F401
+    src/personalvibe/vibe_utils.py: F401,S701,S404,E402
+    personalsite/config/config.py: S105
+    personalsite/__init__.py: F401

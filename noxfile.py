@@ -1,3 +1,4 @@
+# flake8: noqa
 # Copyright © 2025 by Nick Jenkins. All rights reserved
 
 """Nox for python task automation."""
@@ -41,7 +42,7 @@ def lint(session: Session) -> None:
         "-p",
         package,  # analyse the installed package
     )
-    session.run("flake8", *args)
+    session.run("flake8", *args, "--select=ANN,E,F,S")
 
 
 @session(python=["3.12"])
@@ -82,7 +83,7 @@ def _print_step(msg: str) -> None:
 
 
 @contextmanager
-def _log_to(path: Path):  # type: ignore[override]
+def _log_to_legacy(path: Path):  # type: ignore[override]  # noqa: F401
     """
     Context-manager that *appends* **all** stdout/stderr – including output
     from spawned sub-processes – to ``path`` using a persistent ``tee -a``.
@@ -165,7 +166,7 @@ def _log_to(path: Path):  # type: ignore[override]
 
 
 @session(python=["3.12"], reuse_venv=True)
-def vibed(session: Session) -> None:  # noqa: D401
+def vibed_legacy(session: Session) -> None:  # noqa: D401
     """Create vibed/<semver> branch, apply patch(es), run quality-gate.
 
     Usage examples

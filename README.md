@@ -1,5 +1,7 @@
 # Personalvibe
 
+Personalvibe is my own attempt at bootstrapping and building an AI interface into my code approach.
+
 *Brainstorm → YAML → Prompt → Code → Test*
 Personalvibe turns AI tinkering into a **repeatable pipeline**
 you can embed in *any* project.

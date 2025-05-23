@@ -1,0 +1,550 @@
+# pv run --config prompts/personalvibe/configs/5.1.3.yaml
+
+# 1. Chunk 1 – lint baseline
+# 2. Chunk 2 – project detection scaffolding
+# 3. Chunk 3 – new commands + bug-fix
+# 4. Chunk 4 – IO hardening
+# 5. Chunk 5 – docs & release polish
+
+project_name: "personalvibe"
+mode: sprint
+execution_details: |
+
+  Perform work for Chunk 1
+
+  Notice the following errors currently need addressing
+
+  🔍  Installing project dependencies (poetry)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  🧹  Running quality-gate via nox (lint + tests + smoke_dist)…
+  nox > Running session lint-3.12
+  nox > Re-using existing virtual environment at .nox/lint-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (2.2.3)
+  nox > black src/personalvibe tests noxfile.py docs/conf.py
+  All done! ✨ 🍰 ✨
+  31 files left unchanged.
+  nox > mypy -p personalvibe
+  Success: no issues found in 10 source files
+  nox > flake8 src/personalvibe tests noxfile.py docs/conf.py --exit-zero
+  Unable to find qualified name for module: noxfile.py
+  noxfile.py:6:1: F401 'shutil' imported but unused
+  noxfile.py:7:1: S404 Consider possible security implications associated with the subprocess module.
+  noxfile.py:12:1: F401 'typing.Iterator' imported but unused
+  noxfile.py:12:1: F401 'typing.List' imported but unused
+  noxfile.py:85:66: ANN202 Missing return type annotation for protected function
+  noxfile.py:86:1: D205 1 blank line required between summary line and description
+  noxfile.py:86:1: D212 Multi-line docstring summary should start at the first line
+  noxfile.py:86:1: D415 First line should end with a period, question mark, or exclamation point
+  noxfile.py:87:1: DAR301 Missing "Yields" in Docstring: - yield
+  noxfile.py:87:1: DAR401 Missing exception(s) in Raises section: -r RuntimeError
+  noxfile.py:94:1: S607 Starting a process with a partial executable path
+  noxfile.py:94:1: S603 subprocess call - check for execution of untrusted input.
+  noxfile.py:121:1: S110 Try, Except, Pass detected.
+  noxfile.py:147:1: S607 Starting a process with a partial executable path
+  noxfile.py:147:1: S603 subprocess call - check for execution of untrusted input.
+  noxfile.py:210:37: B907 'semver' is manually surrounded by quotes, consider using the `!r` conversion flag.
+  noxfile.py:242:37: B907 'semver' is manually surrounded by quotes, consider using the `!r` conversion flag.
+  noxfile.py:246:1: E402 module level import not at top of file
+  noxfile.py:248:1: E402 module level import not at top of file
+  noxfile.py:252:11: ANN001 Missing type annotation for function argument 'session'
+  noxfile.py:252:42: ANN201 Missing return type annotation for public function
+  noxfile.py:286:37: B907 'semver' is manually surrounded by quotes, consider using the `!r` conversion flag.
+  noxfile.py:307:1: S404 Consider possible security implications associated with the subprocess module.
+  noxfile.py:307:5: F401 'subprocess' imported but unused
+  noxfile.py:308:5: F401 'sys' imported but unused
+  noxfile.py:337:20: ANN001 Missing type annotation for function argument 'session'
+  noxfile.py:337:37: ANN201 Missing return type annotation for public function
+  noxfile.py:380:13: F821 undefined name 'textwrap'
+  noxfile.py:431:59: ANN202 Missing return type annotation for protected function
+  noxfile.py:432:1: D205 1 blank line required between summary line and description
+  noxfile.py:432:1: D212 Multi-line docstring summary should start at the first line
+  noxfile.py:432:1: D415 First line should end with a period, question mark, or exclamation point
+  noxfile.py:433:1: DAR301 Missing "Yields" in Docstring: - yield
+  noxfile.py:433:1: DAR401 Missing exception(s) in Raises section: -r RuntimeError
+  noxfile.py:446:1: S607 Starting a process with a partial executable path
+  noxfile.py:446:1: S603 subprocess call - check for execution of untrusted input.
+  noxfile.py:498:1: E402 module level import not at top of file
+  noxfile.py:502:13: ANN001 Missing type annotation for function argument 'session'
+  noxfile.py:502:21: ANN201 Missing return type annotation for public function
+  src/personalvibe/__init__.py:17:20: ANN001 Missing type annotation for function argument 'self'
+  src/personalvibe/__init__.py:17:26: ANN001 Missing type annotation for function argument 'obj'
+  src/personalvibe/__init__.py:17:31: ANN001 Missing type annotation for function argument 'name'
+  src/personalvibe/__init__.py:17:37: ANN001 Missing type annotation for function argument 'value'
+  src/personalvibe/__init__.py:17:43: ANN202 Missing return type annotation for protected function
+  src/personalvibe/__init__.py:21:1: S110 Try, Except, Pass detected.
+  src/personalvibe/cli.py:2:1: D212 Multi-line docstring summary should start at the first line
+  src/personalvibe/cli.py:2:1: D415 First line should end with a period, question mark, or exclamation point
+  src/personalvibe/cli.py:34:1: F401 'pathlib.Path' imported but unused
+  src/personalvibe/cli.py:43:1: DAR101 Missing parameter(s) in Docstring: - extra
+  src/personalvibe/cli.py:43:1: DAR201 Missing "Returns" in Docstring: - return
+  src/personalvibe/cli.py:43:1: D300 Use """triple double quotes"""
+  src/personalvibe/cli.py:48:1: DAR101 Missing parameter(s) in Docstring: - extra
+  src/personalvibe/cli.py:48:1: D300 Use """triple double quotes"""
+  src/personalvibe/cli.py:63:9: F841 local variable 'mode' is assigned to but never used
+  src/personalvibe/cli.py:121:17: ANN001 Missing type annotation for function argument 'sp'
+  src/personalvibe/cli.py:121:20: ANN202 Missing return type annotation for protected function
+  src/personalvibe/cli.py:148:1: D103 Missing docstring in public function
+  src/personalvibe/commands.py:3:1: D205 1 blank line required between summary line and description
+  src/personalvibe/commands.py:3:1: D212 Multi-line docstring summary should start at the first line
+  src/personalvibe/commands.py:3:1: D415 First line should end with a period, question mark, or exclamation point
+  src/personalvibe/logger.py:17:1: D101 Missing docstring in public class
+  src/personalvibe/logger.py:27:1: D102 Missing docstring in public method
+  src/personalvibe/logger.py:27:16: ANN101 Missing type annotation for self in method
+  src/personalvibe/logger.py:27:22: ANN001 Missing type annotation for function argument 'record'
+  src/personalvibe/logger.py:27:38: ANN201 Missing return type annotation for public function
+  src/personalvibe/logger.py:35:1: DAR101 Missing parameter(s) in Docstring: - color
+  src/personalvibe/logger.py:35:1: DAR101 Missing parameter(s) in Docstring: - log_dir
+  src/personalvibe/logger.py:35:1: DAR101 Missing parameter(s) in Docstring: - run_id
+  src/personalvibe/logger.py:35:1: DAR101 Missing parameter(s) in Docstring: - verbosity
+  src/personalvibe/logger.py:40:1: D417 Missing argument descriptions in the docstring
+  src/personalvibe/parse_stage.py:1:1: D100 Missing docstring in public module
+  src/personalvibe/parse_stage.py:12:1: D103 Missing docstring in public function
+  src/personalvibe/parse_stage.py:33:1: D103 Missing docstring in public function
+  src/personalvibe/parse_stage.py:59:1: D103 Missing docstring in public function
+  src/personalvibe/retry_engine.py:8:1: S404 Consider possible security implications associated with the subprocess module.
+  src/personalvibe/retry_engine.py:9:1: F401 'sys' imported but unused
+  src/personalvibe/retry_engine.py:11:1: F401 'types.TracebackType' imported but unused
+  src/personalvibe/retry_engine.py:22:1: DAR101 Missing parameter(s) in Docstring: - branch_name
+  src/personalvibe/retry_engine.py:35:1: S603 subprocess call - check for execution of untrusted input.
+  src/personalvibe/retry_engine.py:42:1: DAR101 Missing parameter(s) in Docstring: - action
+  src/personalvibe/retry_engine.py:42:1: DAR101 Missing parameter(s) in Docstring: - branch_name
+  src/personalvibe/retry_engine.py:42:1: DAR101 Missing parameter(s) in Docstring: - max_retries
+  src/personalvibe/retry_engine.py:42:1: DAR201 Missing "Returns" in Docstring: - return
+  src/personalvibe/retry_engine.py:42:1: DAR101 Missing parameter(s) in Docstring: - sleep_seconds
+  src/personalvibe/retry_engine.py:42:1: DAR401 Missing exception(s) in Raises section: -r RetryError
+  src/personalvibe/run_context.py:22:1: D101 Missing docstring in public class
+  src/personalvibe/run_context.py:27:1: D102 Missing docstring in public method
+  src/personalvibe/run_context.py:27:12: ANN101 Missing type annotation for self in method
+  src/personalvibe/run_context.py:31:1: D105 Missing docstring in magic method
+  src/personalvibe/run_context.py:31:17: ANN101 Missing type annotation for self in method
+  src/personalvibe/run_pipeline.py:16:1: D415 First line should end with a period, question mark, or exclamation point
+  src/personalvibe/run_pipeline.py:33:1: D106 Missing docstring in public nested class
+  src/personalvibe/run_pipeline.py:38:1: DAR101 Missing parameter(s) in Docstring: - config_path
+  src/personalvibe/run_pipeline.py:38:1: DAR201 Missing "Returns" in Docstring: - return
+  src/personalvibe/run_pipeline.py:38:1: DAR401 Missing exception(s) in Raises section: -r ValidationError
+  src/personalvibe/run_pipeline.py:80:5: F841 local variable 'template_map' is assigned to but never used
+  src/personalvibe/vibe_utils.py:1:1: D100 Missing docstring in public module
+  src/personalvibe/vibe_utils.py:13:1: F401 'requests' imported but unused
+  src/personalvibe/vibe_utils.py:15:1: F401 'jinja2.select_autoescape' imported but unused
+  src/personalvibe/vibe_utils.py:30:1: D103 Missing docstring in public function
+  src/personalvibe/vibe_utils.py:34:1: D103 Missing docstring in public function
+  src/personalvibe/vibe_utils.py:46:1: DAR101 Missing parameter(s) in Docstring: - input_hash
+  src/personalvibe/vibe_utils.py:46:1: DAR101 Missing parameter(s) in Docstring: - prompt
+  src/personalvibe/vibe_utils.py:46:1: DAR201 Missing "Returns" in Docstring: - return
+  src/personalvibe/vibe_utils.py:46:1: DAR101 Missing parameter(s) in Docstring: - root_dir
+  src/personalvibe/vibe_utils.py:93:1: DAR101 Missing parameter(s) in Docstring: - contexts
+  src/personalvibe/vibe_utils.py:93:1: DAR101 Missing parameter(s) in Docstring: - max_completion_tokens
+  src/personalvibe/vibe_utils.py:93:1: DAR101 Missing parameter(s) in Docstring: - model
+  src/personalvibe/vibe_utils.py:93:1: DAR101 Missing parameter(s) in Docstring: - project_name
+  src/personalvibe/vibe_utils.py:93:1: DAR101 Missing parameter(s) in Docstring: - prompt
+  src/personalvibe/vibe_utils.py:93:1: DAR201 Missing "Returns" in Docstring: - return
+  src/personalvibe/vibe_utils.py:93:1: DAR101 Missing parameter(s) in Docstring: - workspace
+  src/personalvibe/vibe_utils.py:134:1: D103 Missing docstring in public function
+  src/personalvibe/vibe_utils.py:189:1: DAR101 Missing parameter(s) in Docstring: - file_path
+  src/personalvibe/vibe_utils.py:189:1: DAR201 Missing "Returns" in Docstring: - return
+  src/personalvibe/vibe_utils.py:224:1: D103 Missing docstring in public function
+  src/personalvibe/vibe_utils.py:224:20: ANN001 Missing type annotation for function argument 'base_path'
+  src/personalvibe/vibe_utils.py:224:30: ANN201 Missing return type annotation for public function
+  src/personalvibe/vibe_utils.py:240:1: DAR201 Missing "Returns" in Docstring: - return
+  src/personalvibe/vibe_utils.py:273:1: DAR101 Missing parameter(s) in Docstring: - project_name
+  src/personalvibe/vibe_utils.py:273:1: DAR201 Missing "Returns" in Docstring: - return
+  src/personalvibe/vibe_utils.py:273:1: DAR101 Missing parameter(s) in Docstring: - workspace
+  src/personalvibe/vibe_utils.py:281:1: DAR201 Missing "Returns" in Docstring: - return
+  src/personalvibe/vibe_utils.py:281:1: DAR101 Missing parameter(s) in Docstring: - workspace
+  src/personalvibe/vibe_utils.py:289:1: DAR101 Missing parameter(s) in Docstring: - base
+  src/personalvibe/vibe_utils.py:289:1: DAR201 Missing "Returns" in Docstring: - return
+  src/personalvibe/vibe_utils.py:298:1: D103 Missing docstring in public function
+  src/personalvibe/vibe_utils.py:304:1: D212 Multi-line docstring summary should start at the first line
+  src/personalvibe/vibe_utils.py:315:1: S701 Using jinja2 templates with autoescape=False is dangerous and can lead to XSS. Use autoescape=True or use the select_autoescape function to mitigate XSS vulnerabilities.
+  src/personalvibe/vibe_utils.py:326:21: ANN001 Missing type annotation for function argument 'config'
+  src/personalvibe/vibe_utils.py:332:25: ANN001 Missing type annotation for function argument 'config'
+  src/personalvibe/vibe_utils.py:354:26: ANN001 Missing type annotation for function argument 'config'
+  src/personalvibe/vibe_utils.py:355:1: DAR101 Missing parameter(s) in Docstring: - code_context
+  src/personalvibe/vibe_utils.py:355:1: DAR101 Missing parameter(s) in Docstring: - config
+  src/personalvibe/vibe_utils.py:355:1: DAR201 Missing "Returns" in Docstring: - return
+  src/personalvibe/vibe_utils.py:355:1: D212 Multi-line docstring summary should start at the first line
+  src/personalvibe/vibe_utils.py:394:1: E402 module level import not at top of file
+  src/personalvibe/vibe_utils.py:399:1: E402 module level import not at top of file
+  src/personalvibe/vibe_utils.py:400:1: E402 module level import not at top of file
+  src/personalvibe/vibe_utils.py:406:1: DAR101 Missing parameter(s) in Docstring: - fname
+  src/personalvibe/vibe_utils.py:406:1: DAR201 Missing "Returns" in Docstring: - return
+  src/personalvibe/vibe_utils.py:406:1: DAR401 Missing exception(s) in Raises section: -r FileNotFoundError
+  src/personalvibe/vibe_utils.py:421:9: B904 Within an `except` clause, raise exceptions with `raise ... from err` or `raise ... from None` to distinguish them from errors in exception handling.  See https://docs.python.org/3/tutorial/errors.html#exception-chaining for details.
+  src/personalvibe/vibe_utils.py:425:22: ANN001 Missing type annotation for function argument 'config'
+  src/personalvibe/vibe_utils.py:426:1: DAR101 Missing parameter(s) in Docstring: - code_context
+  src/personalvibe/vibe_utils.py:426:1: DAR101 Missing parameter(s) in Docstring: - config
+  src/personalvibe/vibe_utils.py:426:1: DAR201 Missing "Returns" in Docstring: - return
+  src/personalvibe/vibe_utils.py:426:1: DAR401 Missing exception(s) in Raises section: -r ValueError
+  src/personalvibe/vibe_utils.py:426:1: D202 No blank lines allowed after function docstring
+  tests/__init__.py:3:1: D212 Multi-line docstring summary should start at the first line
+  tests/conftest.py:1:1: D100 Missing docstring in public module
+  tests/conftest.py:3:1: F401 'pytest' imported but unused
+  tests/conftest.py:9:1: D103 Missing docstring in public function
+  tests/conftest.py:9:22: ANN001 Missing type annotation for function argument 'config'
+  tests/conftest.py:9:29: ANN201 Missing return type annotation for public function
+  tests/dummy_patch.py:1:1: D100 Missing docstring in public module
+  tests/test_cli_basic.py:6:1: S404 Consider possible security implications associated with the subprocess module.
+  tests/test_cli_basic.py:7:1: F401 'pathlib.Path' imported but unused
+  tests/test_cli_basic.py:10:1: D103 Missing docstring in public function
+  tests/test_cli_basic.py:10:19: ANN201 Missing return type annotation for public function
+  tests/test_cli_basic.py:13:1: S603 subprocess call - check for execution of untrusted input.
+  tests/test_cli_run_delegate.py:1:1: D100 Missing docstring in public module
+  tests/test_cli_run_delegate.py:9:1: F401 'unittest.mock' imported but unused
+  tests/test_cli_run_delegate.py:26:1: D103 Missing docstring in public function
+  tests/test_cli_run_delegate.py:26:32: ANN001 Missing type annotation for function argument 'monkeypatch'
+  tests/test_cli_run_delegate.py:26:45: ANN001 Missing type annotation for function argument 'tmp_path'
+  tests/test_cli_run_delegate.py:26:54: ANN201 Missing return type annotation for public function
+  tests/test_cli_run_delegate.py:29:21: ANN202 Missing return type annotation for protected function
+  tests/test_cli_run_delegate.py:43:1: D103 Missing docstring in public function
+  tests/test_cli_run_delegate.py:43:35: ANN001 Missing type annotation for function argument 'monkeypatch'
+  tests/test_cli_run_delegate.py:43:48: ANN001 Missing type annotation for function argument 'tmp_path'
+  tests/test_cli_run_delegate.py:43:57: ANN201 Missing return type annotation for public function
+  tests/test_cli_run_delegate.py:46:21: ANN202 Missing return type annotation for protected function
+  tests/test_cli_subcommands.py:3:1: D200 One-line docstring should fit on one line with quotes
+  tests/test_cli_subcommands.py:3:1: D212 Multi-line docstring summary should start at the first line
+  tests/test_cli_subcommands.py:8:1: S404 Consider possible security implications associated with the subprocess module.
+  tests/test_cli_subcommands.py:10:1: F401 'pathlib.Path' imported but unused
+  tests/test_cli_subcommands.py:15:11: ANN002 Missing type annotation for *args
+  tests/test_cli_subcommands.py:15:16: ANN202 Missing return type annotation for protected function
+  tests/test_cli_subcommands.py:20:1: S603 subprocess call - check for execution of untrusted input.
+  tests/test_cli_subcommands.py:23:1: D103 Missing docstring in public function
+  tests/test_cli_subcommands.py:23:19: ANN201 Missing return type annotation for public function
+  tests/test_cli_subcommands.py:29:1: D103 Missing docstring in public function
+  tests/test_cli_subcommands.py:29:27: ANN201 Missing return type annotation for public function
+  tests/test_config_schema_v2.py:7:1: F401 'pydantic.ValidationError' imported but unused
+  tests/test_config_schema_v2.py:18:1: D103 Missing docstring in public function
+  tests/test_config_schema_v2.py:18:39: ANN201 Missing return type annotation for public function
+  tests/test_config_schema_v2.py:35:1: D103 Missing docstring in public function
+  tests/test_config_schema_v2.py:35:42: ANN201 Missing return type annotation for public function
+  tests/test_config_schema_v2.py:46:1: D103 Missing docstring in public function
+  tests/test_config_schema_v2.py:46:60: ANN201 Missing return type annotation for public function
+  tests/test_log_to_cm.py:5:1: F401 'importlib' imported but unused
+  tests/test_log_to_cm.py:6:1: F401 'tempfile' imported but unused
+  tests/test_log_to_cm.py:16:1: D103 Missing docstring in public function
+  tests/test_log_to_cm.py:16:46: ANN201 Missing return type annotation for public function
+  tests/test_log_to_subprocess.py:4:1: S404 Consider possible security implications associated with the subprocess module.
+  tests/test_log_to_subprocess.py:11:1: D103 Missing docstring in public function
+  tests/test_log_to_subprocess.py:11:52: ANN201 Missing return type annotation for public function
+  tests/test_log_to_subprocess.py:19:1: S603 subprocess call - check for execution of untrusted input.
+  tests/test_logger.py:1:1: D100 Missing docstring in public module
+  tests/test_logger.py:8:1: D103 Missing docstring in public function
+  tests/test_logger.py:8:51: ANN201 Missing return type annotation for public function
+  tests/test_logger_runid.py:1:1: D100 Missing docstring in public module
+  tests/test_logger_runid.py:9:1: D103 Missing docstring in public function
+  tests/test_logger_runid.py:9:35: ANN001 Missing type annotation for function argument 'tmp_path'
+  tests/test_logger_runid.py:9:44: ANN201 Missing return type annotation for public function
+  tests/test_logging.py:11:1: DAR101 Missing parameter(s) in Docstring: - tmp_path
+  tests/test_resource_fallback.py:11:1: D103 Missing docstring in public function
+  tests/test_resource_fallback.py:11:33: ANN201 Missing return type annotation for public function
+  tests/test_resource_fallback.py:16:31: ANN001 Missing type annotation for function argument 'monkeypatch'
+  tests/test_resource_fallback.py:16:43: ANN201 Missing return type annotation for public function
+  tests/test_resource_fallback.py:17:1: DAR101 Missing parameter(s) in Docstring: - monkeypatch
+  tests/test_resource_fallback.py:19:17: ANN002 Missing type annotation for *_
+  tests/test_resource_fallback.py:19:22: ANN003 Missing type annotation for **__
+  tests/test_resource_fallback.py:19:25: ANN202 Missing return type annotation for protected function
+  tests/test_retry_engine.py:7:1: F401 'builtins' imported but unused
+  tests/test_retry_engine.py:15:1: D103 Missing docstring in public function
+  tests/test_retry_engine.py:15:29: ANN201 Missing return type annotation for public function
+  tests/test_retry_engine.py:18:14: ANN202 Missing return type annotation for protected function
+  tests/test_retry_engine.py:26:1: D103 Missing docstring in public function
+  tests/test_retry_engine.py:26:27: ANN001 Missing type annotation for function argument 'monkeypatch'
+  tests/test_retry_engine.py:26:39: ANN201 Missing return type annotation for public function
+  tests/test_retry_engine.py:30:21: ANN202 Missing return type annotation for protected function
+  tests/test_retry_engine.py:38:1: D103 Missing docstring in public function
+  tests/test_retry_engine.py:38:46: ANN001 Missing type annotation for function argument 'monkeypatch'
+  tests/test_retry_engine.py:39:0: ANN201 Missing return type annotation for public function
+  tests/test_retry_engine.py:42:24: ANN001 Missing type annotation for function argument 'branch'
+  tests/test_retry_engine.py:42:31: ANN202 Missing return type annotation for protected function
+  tests/test_retry_engine.py:47:24: ANN202 Missing return type annotation for protected function
+  tests/test_run_context.py:1:1: D100 Missing docstring in public module
+  tests/test_run_context.py:8:1: D103 Missing docstring in public function
+  tests/test_run_context.py:8:30: ANN201 Missing return type annotation for public function
+  tests/test_save_prompt_duplicate.py:6:1: F401 'personalvibe.vibe_utils.get_prompt_hash' imported but unused
+  tests/test_save_prompt_duplicate.py:9:1: D103 Missing docstring in public function
+  tests/test_save_prompt_duplicate.py:9:47: ANN201 Missing return type annotation for public function
+  tests/test_vibed_no_duplicates.py:1:1: D100 Missing docstring in public module
+  tests/test_vibed_no_duplicates.py:3:1: F401 'builtins' imported but unused
+  tests/test_vibed_no_duplicates.py:6:1: F401 'pytest' imported but unused
+  tests/test_vibed_no_duplicates.py:14:1: D107 Missing docstring in __init__
+  tests/test_vibed_no_duplicates.py:14:18: ANN101 Missing type annotation for self in method
+  tests/test_vibed_no_duplicates.py:14:24: ANN001 Missing type annotation for function argument 'posargs'
+  tests/test_vibed_no_duplicates.py:14:32: ANN204 Missing return type annotation for special method
+  tests/test_vibed_no_duplicates.py:19:1: D102 Missing docstring in public method
+  tests/test_vibed_no_duplicates.py:19:13: ANN101 Missing type annotation for self in method
+  tests/test_vibed_no_duplicates.py:19:20: ANN002 Missing type annotation for *cmd
+  tests/test_vibed_no_duplicates.py:19:27: ANN003 Missing type annotation for **_
+  tests/test_vibed_no_duplicates.py:19:29: ANN201 Missing return type annotation for public function
+  tests/test_vibed_no_duplicates.py:22:1: D102 Missing docstring in public method
+  tests/test_vibed_no_duplicates.py:22:20: ANN101 Missing type annotation for self in method
+  tests/test_vibed_no_duplicates.py:22:27: ANN002 Missing type annotation for *cmd
+  tests/test_vibed_no_duplicates.py:22:34: ANN003 Missing type annotation for **_
+  tests/test_vibed_no_duplicates.py:22:36: ANN201 Missing return type annotation for public function
+  tests/test_vibed_no_duplicates.py:25:1: D102 Missing docstring in public method
+  tests/test_vibed_no_duplicates.py:25:15: ANN101 Missing type annotation for self in method
+  tests/test_vibed_no_duplicates.py:25:21: ANN001 Missing type annotation for function argument 'msg'
+  tests/test_vibed_no_duplicates.py:25:25: ANN201 Missing return type annotation for public function
+  tests/test_vibed_no_duplicates.py:30:18: ANN001 Missing type annotation for function argument '_'
+  tests/test_vibed_no_duplicates.py:30:20: ANN202 Missing return type annotation for protected function
+  tests/test_vibed_no_duplicates.py:32:1: DAR301 Missing "Yields" in Docstring: - yield
+  tests/test_vibed_no_duplicates.py:35:1: D103 Missing docstring in public function
+  tests/test_vibed_no_duplicates.py:35:44: ANN001 Missing type annotation for function argument 'monkeypatch'
+  tests/test_vibed_no_duplicates.py:35:57: ANN001 Missing type annotation for function argument 'capsys'
+  tests/test_vibed_no_duplicates.py:36:0: ANN201 Missing return type annotation for public function
+  tests/test_vibed_session.py:14:1: S404 Consider possible security implications associated with the subprocess module.
+  tests/test_vibed_session.py:21:1: D103 Missing docstring in public function
+  tests/test_vibed_session.py:21:33: ANN001 Missing type annotation for function argument 'tmp_path'
+  tests/test_vibed_session.py:21:42: ANN201 Missing return type annotation for public function
+  tests/test_vibed_session.py:28:1: S607 Starting a process with a partial executable path
+  tests/test_vibed_session.py:28:1: S603 subprocess call - check for execution of untrusted input.
+  tests/test_vibed_session.py:31:1: S607 Starting a process with a partial executable path
+  tests/test_vibed_session.py:31:1: S603 subprocess call - check for execution of untrusted input.
+  tests/test_vibed_session.py:38:1: S607 Starting a process with a partial executable path
+  tests/test_vibed_session.py:38:1: S603 subprocess call - check for execution of untrusted input.
+  tests/test_vibed_session.py:39:1: S607 Starting a process with a partial executable path
+  tests/test_vibed_session.py:39:1: S603 subprocess call - check for execution of untrusted input.
+  tests/test_workspace_root.py:1:1: D100 Missing docstring in public module
+  tests/test_workspace_root.py:3:1: F401 'os' imported but unused
+  tests/test_workspace_root.py:4:1: F401 'pathlib.Path' imported but unused
+  tests/test_workspace_root.py:9:1: D103 Missing docstring in public function
+  tests/test_workspace_root.py:9:33: ANN001 Missing type annotation for function argument 'tmp_path'
+  tests/test_workspace_root.py:9:43: ANN001 Missing type annotation for function argument 'monkeypatch'
+  tests/test_workspace_root.py:9:55: ANN201 Missing return type annotation for public function
+  tests/test_workspace_root.py:14:1: D103 Missing docstring in public function
+  tests/test_workspace_root.py:14:35: ANN001 Missing type annotation for function argument 'tmp_path'
+  tests/test_workspace_root.py:14:45: ANN001 Missing type annotation for function argument 'monkeypatch'
+  tests/test_workspace_root.py:14:57: ANN201 Missing return type annotation for public function
+  nox > Session lint-3.12 was successful.
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (2.2.3)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  configfile: pyproject.toml
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 24 items / 1 deselected / 23 selected
+
+  tests/test_cli_basic.py .                                                [  4%]
+  tests/test_cli_run_delegate.py FF                                        [ 13%]
+  tests/test_cli_subcommands.py ..                                         [ 21%]
+  tests/test_config_schema_v2.py ...                                       [ 34%]
+  tests/test_log_to_cm.py .                                                [ 39%]
+  tests/test_log_to_subprocess.py .                                        [ 43%]
+  tests/test_logger.py .                                                   [ 47%]
+  tests/test_logger_runid.py .                                             [ 52%]
+  tests/test_logging.py .                                                  [ 56%]
+  tests/test_resource_fallback.py ..                                       [ 65%]
+  tests/test_retry_engine.py ...                                           [ 78%]
+  tests/test_run_context.py .                                              [ 82%]
+  tests/test_save_prompt_duplicate.py .                                    [ 86%]
+  tests/test_vibed_no_duplicates.py .                                      [ 91%]
+  tests/test_workspace_root.py ..                                          [100%]
+
+  =================================== FAILURES ===================================
+  __________________________ test_run_delegates_to_mode __________________________
+
+  monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1130e3620>
+  tmp_path = PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-26/test_run_delegates_to_mode0')
+
+      def test_run_delegates_to_mode(monkeypatch, tmp_path):
+          called = types.SimpleNamespace(args=None)
+
+          def _fake_main():
+              called.args = cli.sys.argv[1:]  # skip prog name
+
+  >       monkeypatch.patch.object(cli.run_pipeline, "main", _fake_main)
+  E       AttributeError: 'function' object has no attribute 'object'
+
+  tests/test_cli_run_delegate.py:32: AttributeError
+  ________________________ test_run_raw_argv_passthrough _________________________
+
+  monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x113102720>
+  tmp_path = PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-26/test_run_raw_argv_passthrough0')
+
+      def test_run_raw_argv_passthrough(monkeypatch, tmp_path):
+          captured = {}
+
+          def _fake_main():
+              captured["argv"] = cli.sys.argv[1:]
+
+  >       monkeypatch.patch.object(cli.run_pipeline, "main", _fake_main)
+  E       AttributeError: 'function' object has no attribute 'object'
+
+  tests/test_cli_run_delegate.py:49: AttributeError
+  =========================== short test summary info ============================
+  FAILED tests/test_cli_run_delegate.py::test_run_delegates_to_mode - Attribute...
+  FAILED tests/test_cli_run_delegate.py::test_run_raw_argv_passthrough - Attrib...
+  ================== 2 failed, 21 passed, 1 deselected in 5.15s ==================
+  nox > Command pytest -m 'not advanced' '-W ignore::DeprecationWarning' failed with exit code 1
+  nox > Session tests-3.12 failed.
+  nox > Running session smoke_dist-3.12
+  nox > Creating virtual environment (virtualenv) using python3.12 in .nox/smoke_dist-3-12
+  nox > poetry build -f wheel
+  Building personalvibe (2.2.3)
+  Building wheel
+
+  ====================
+  🏗️  Building wheel …
+  ====================
+
+  nox > python -m venv /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_x8rk_b3v
+
+  ================================================
+  Wheel built: personalvibe-2.2.3-py3-none-any.whl
+  ================================================
+
+
+  ===========================================================================================
+  🧪  Creating temp venv at /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_x8rk_b3v
+  ===========================================================================================
+
+  nox > /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_x8rk_b3v/bin/pip install dist/personalvibe-2.2.3-py3-none-any.whl
+  Processing ./dist/personalvibe-2.2.3-py3-none-any.whl
+  Collecting jinja2<4.0.0,>=3.1.6 (from personalvibe==2.2.3)
+    Using cached jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+  Collecting openai<2.0.0,>=1.77.0 (from personalvibe==2.2.3)
+    Using cached openai-1.82.0-py3-none-any.whl.metadata (25 kB)
+  Collecting pathspec<0.13.0,>=0.12.1 (from personalvibe==2.2.3)
+    Using cached pathspec-0.12.1-py3-none-any.whl.metadata (21 kB)
+  Collecting pydantic-settings<3.0.0,>=2.9.1 (from personalvibe==2.2.3)
+    Using cached pydantic_settings-2.9.1-py3-none-any.whl.metadata (3.8 kB)
+  Collecting python-dotenv<0.22,>=0.21 (from personalvibe==2.2.3)
+    Using cached python_dotenv-0.21.1-py3-none-any.whl.metadata (21 kB)
+  Collecting pytz<2026.0,>=2025.1 (from personalvibe==2.2.3)
+    Using cached pytz-2025.2-py2.py3-none-any.whl.metadata (22 kB)
+  Collecting pyyaml<7.0,>=6.0 (from personalvibe==2.2.3)
+    Using cached PyYAML-6.0.2-cp312-cp312-macosx_10_9_x86_64.whl.metadata (2.1 kB)
+  Collecting requests<3.0,>=2.29 (from personalvibe==2.2.3)
+    Using cached requests-2.32.3-py3-none-any.whl.metadata (4.6 kB)
+  Collecting tenacity<10.0,>=9.0 (from personalvibe==2.2.3)
+    Using cached tenacity-9.1.2-py3-none-any.whl.metadata (1.2 kB)
+  Collecting tiktoken<0.10.0,>=0.9.0 (from personalvibe==2.2.3)
+    Using cached tiktoken-0.9.0-cp312-cp312-macosx_10_13_x86_64.whl.metadata (6.7 kB)
+  Collecting tqdm<5.0,>=4.67 (from personalvibe==2.2.3)
+    Using cached tqdm-4.67.1-py3-none-any.whl.metadata (57 kB)
+  Collecting MarkupSafe>=2.0 (from jinja2<4.0.0,>=3.1.6->personalvibe==2.2.3)
+    Using cached MarkupSafe-3.0.2-cp312-cp312-macosx_10_13_universal2.whl.metadata (4.0 kB)
+  Collecting anyio<5,>=3.5.0 (from openai<2.0.0,>=1.77.0->personalvibe==2.2.3)
+    Using cached anyio-4.9.0-py3-none-any.whl.metadata (4.7 kB)
+  Collecting distro<2,>=1.7.0 (from openai<2.0.0,>=1.77.0->personalvibe==2.2.3)
+    Using cached distro-1.9.0-py3-none-any.whl.metadata (6.8 kB)
+  Collecting httpx<1,>=0.23.0 (from openai<2.0.0,>=1.77.0->personalvibe==2.2.3)
+    Using cached httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+  Collecting jiter<1,>=0.4.0 (from openai<2.0.0,>=1.77.0->personalvibe==2.2.3)
+    Using cached jiter-0.10.0-cp312-cp312-macosx_10_12_x86_64.whl.metadata (5.2 kB)
+  Collecting pydantic<3,>=1.9.0 (from openai<2.0.0,>=1.77.0->personalvibe==2.2.3)
+    Using cached pydantic-2.11.5-py3-none-any.whl.metadata (67 kB)
+  Collecting sniffio (from openai<2.0.0,>=1.77.0->personalvibe==2.2.3)
+    Using cached sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+  Collecting typing-extensions<5,>=4.11 (from openai<2.0.0,>=1.77.0->personalvibe==2.2.3)
+    Using cached typing_extensions-4.13.2-py3-none-any.whl.metadata (3.0 kB)
+  Collecting typing-inspection>=0.4.0 (from pydantic-settings<3.0.0,>=2.9.1->personalvibe==2.2.3)
+    Using cached typing_inspection-0.4.1-py3-none-any.whl.metadata (2.6 kB)
+  Collecting charset-normalizer<4,>=2 (from requests<3.0,>=2.29->personalvibe==2.2.3)
+    Using cached charset_normalizer-3.4.2-cp312-cp312-macosx_10_13_universal2.whl.metadata (35 kB)
+  Collecting idna<4,>=2.5 (from requests<3.0,>=2.29->personalvibe==2.2.3)
+    Using cached idna-3.10-py3-none-any.whl.metadata (10 kB)
+  Collecting urllib3<3,>=1.21.1 (from requests<3.0,>=2.29->personalvibe==2.2.3)
+    Using cached urllib3-2.4.0-py3-none-any.whl.metadata (6.5 kB)
+  Collecting certifi>=2017.4.17 (from requests<3.0,>=2.29->personalvibe==2.2.3)
+    Using cached certifi-2025.4.26-py3-none-any.whl.metadata (2.5 kB)
+  Collecting regex>=2022.1.18 (from tiktoken<0.10.0,>=0.9.0->personalvibe==2.2.3)
+    Using cached regex-2024.11.6-cp312-cp312-macosx_10_13_x86_64.whl.metadata (40 kB)
+  Collecting httpcore==1.* (from httpx<1,>=0.23.0->openai<2.0.0,>=1.77.0->personalvibe==2.2.3)
+    Using cached httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+  Collecting h11>=0.16 (from httpcore==1.*->httpx<1,>=0.23.0->openai<2.0.0,>=1.77.0->personalvibe==2.2.3)
+    Using cached h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+  Collecting annotated-types>=0.6.0 (from pydantic<3,>=1.9.0->openai<2.0.0,>=1.77.0->personalvibe==2.2.3)
+    Using cached annotated_types-0.7.0-py3-none-any.whl.metadata (15 kB)
+  Collecting pydantic-core==2.33.2 (from pydantic<3,>=1.9.0->openai<2.0.0,>=1.77.0->personalvibe==2.2.3)
+    Using cached pydantic_core-2.33.2-cp312-cp312-macosx_10_12_x86_64.whl.metadata (6.8 kB)
+  Using cached jinja2-3.1.6-py3-none-any.whl (134 kB)
+  Using cached openai-1.82.0-py3-none-any.whl (720 kB)
+  Using cached pathspec-0.12.1-py3-none-any.whl (31 kB)
+  Using cached pydantic_settings-2.9.1-py3-none-any.whl (44 kB)
+  Using cached python_dotenv-0.21.1-py3-none-any.whl (19 kB)
+  Using cached pytz-2025.2-py2.py3-none-any.whl (509 kB)
+  Using cached PyYAML-6.0.2-cp312-cp312-macosx_10_9_x86_64.whl (183 kB)
+  Using cached requests-2.32.3-py3-none-any.whl (64 kB)
+  Using cached tenacity-9.1.2-py3-none-any.whl (28 kB)
+  Using cached tiktoken-0.9.0-cp312-cp312-macosx_10_13_x86_64.whl (1.1 MB)
+  Using cached tqdm-4.67.1-py3-none-any.whl (78 kB)
+  Using cached anyio-4.9.0-py3-none-any.whl (100 kB)
+  Using cached certifi-2025.4.26-py3-none-any.whl (159 kB)
+  Using cached charset_normalizer-3.4.2-cp312-cp312-macosx_10_13_universal2.whl (199 kB)
+  Using cached distro-1.9.0-py3-none-any.whl (20 kB)
+  Using cached httpx-0.28.1-py3-none-any.whl (73 kB)
+  Using cached httpcore-1.0.9-py3-none-any.whl (78 kB)
+  Using cached idna-3.10-py3-none-any.whl (70 kB)
+  Using cached jiter-0.10.0-cp312-cp312-macosx_10_12_x86_64.whl (312 kB)
+  Using cached MarkupSafe-3.0.2-cp312-cp312-macosx_10_13_universal2.whl (14 kB)
+  Using cached pydantic-2.11.5-py3-none-any.whl (444 kB)
+  Using cached pydantic_core-2.33.2-cp312-cp312-macosx_10_12_x86_64.whl (2.0 MB)
+  Using cached regex-2024.11.6-cp312-cp312-macosx_10_13_x86_64.whl (288 kB)
+  Using cached sniffio-1.3.1-py3-none-any.whl (10 kB)
+  Using cached typing_extensions-4.13.2-py3-none-any.whl (45 kB)
+  Using cached typing_inspection-0.4.1-py3-none-any.whl (14 kB)
+  Using cached urllib3-2.4.0-py3-none-any.whl (128 kB)
+  Using cached annotated_types-0.7.0-py3-none-any.whl (13 kB)
+  Using cached h11-0.16.0-py3-none-any.whl (37 kB)
+  Installing collected packages: pytz, urllib3, typing-extensions, tqdm, tenacity, sniffio, regex, pyyaml, python-dotenv, pathspec, MarkupSafe, jiter, idna, h11, distro, charset-normalizer, certifi, annotated-types, typing-inspection, requests, pydantic-core, jinja2, httpcore, anyio, tiktoken, pydantic, httpx, pydantic-settings, openai, personalvibe
+  Successfully installed MarkupSafe-3.0.2 annotated-types-0.7.0 anyio-4.9.0 certifi-2025.4.26 charset-normalizer-3.4.2 distro-1.9.0 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.10 jinja2-3.1.6 jiter-0.10.0 openai-1.82.0 pathspec-0.12.1 personalvibe-2.2.3 pydantic-2.11.5 pydantic-core-2.33.2 pydantic-settings-2.9.1 python-dotenv-0.21.1 pytz-2025.2 pyyaml-6.0.2 regex-2024.11.6 requests-2.32.3 sniffio-1.3.1 tenacity-9.1.2 tiktoken-0.9.0 tqdm-4.67.1 typing-extensions-4.13.2 typing-inspection-0.4.1 urllib3-2.4.0
+
+  [notice] A new release of pip is available: 24.0 -> 25.1.1
+  [notice] To update, run: python3.12 -m pip install --upgrade pip
+
+  ====================================
+  📦  Installing wheel into temp venv …
+  ====================================
+
+  nox > /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_x8rk_b3v/bin/pv --help
+  usage: pv [-h] <command> ...
+
+  Personalvibe CLI – Command-Line Interface
+
+  positional arguments:
+    <command>
+      run        Determine mode from YAML then execute.
+      milestone  milestone workflow
+      sprint     sprint workflow
+      validate   validate workflow
+      prd        prd workflow
+      parse-stage
+                 Extract latest assistant code block.
+
+  options:
+    -h, --help   show this help message and exit
+
+  ===================================
+  🚀  Running `pv --help` smoke test …
+  ===================================
+
+  nox > Session smoke_dist-3.12 was successful.
+  nox > Ran multiple sessions:
+  nox > * lint-3.12: success
+  nox > * tests-3.12: failed
+  nox > * smoke_dist-3.12: success
+
+  ====================================
+  ✅  smoke_dist completed successfully
+  ====================================
+
+
+
+code_context_paths:
+  - "prompts/personalvibe/context/codefiles.txt"

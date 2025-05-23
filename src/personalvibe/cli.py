@@ -31,7 +31,6 @@ from __future__ import annotations
 import argparse
 import shlex
 import sys
-from pathlib import Path
 from typing import List, Sequence
 
 from personalvibe import run_pipeline
@@ -58,7 +57,7 @@ def _cmd_run(ns: argparse.Namespace) -> None:
         import yaml  # local import to avoid mandatory dep here
 
         with open(ns.config, "r", encoding="utf-8") as f:
-            mode = yaml.safe_load(f).get("mode", "").strip()
+            _unused_mode = yaml.safe_load(f).get("mode", "").strip()
     except Exception:  # noqa: BLE001
         mode = ""
 

@@ -1,0 +1,17 @@
+# pv run --config prompts/personalvibe/configs/5.1.0.yaml
+
+# 1. Chunk 1 – lint baseline
+# 2. Chunk 2 – project detection scaffolding
+# 3. Chunk 3 – new commands + bug-fix
+# 4. Chunk 4 – IO hardening
+# 5. Chunk 5 – docs & release polish
+
+project_name: "personalvibe"
+mode: sprint
+execution_details: |
+
+  Perform work for Chunk 1
+
+code_context_paths:
+  - "prompts/personalvibe/context/codefiles.txt"
+milestone_file_name: ""

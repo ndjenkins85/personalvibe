@@ -1,0 +1,52 @@
+# pv run --config prompts/personalvibe/configs/5.1.1.yaml
+
+# 1. Chunk 1 – lint baseline
+# 2. Chunk 2 – project detection scaffolding
+# 3. Chunk 3 – new commands + bug-fix
+# 4. Chunk 4 – IO hardening
+# 5. Chunk 5 – docs & release polish
+
+project_name: "personalvibe"
+mode: sprint
+execution_details: |
+
+  Perform work for Chunk 1
+
+  Beware of the potential of creating errors like this
+
+  (personalvibe-py3.12) bash-3.2$ pv parse-stage --project_name personalvibe --run
+  Saved extracted code to: /Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/5.1.0.py
+  Running extracted code from: /Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/5.1.0.py
+  Traceback (most recent call last):
+    File "/Users/nicholasjenkins/Documents/personalvibe/.venv/bin/pv", line 6, in <module>
+      sys.exit(app())
+               ^^^^^
+    File "/Users/nicholasjenkins/Documents/personalvibe/src/personalvibe/cli.py", line 158, in app
+      cli_main()
+    File "/Users/nicholasjenkins/Documents/personalvibe/src/personalvibe/cli.py", line 152, in cli_main
+      ns.func(ns)  # type: ignore[arg-type]
+      ^^^^^^^^^^^
+    File "/Users/nicholasjenkins/Documents/personalvibe/src/personalvibe/cli.py", line 108, in _cmd_parse_stage
+      runpy.run_path(saved, run_name="__main__")
+    File "<frozen runpy>", line 286, in run_path
+    File "<frozen runpy>", line 98, in _run_module_code
+    File "<frozen runpy>", line 88, in _run_code
+    File "/Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/5.1.0.py", line 59, in <module>
+      patch_file(REPO / ".flake8", _fix_flake8)
+    File "/Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/5.1.0.py", line 36, in patch_file
+      txt = path.read_text(encoding="utf-8")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/pathlib.py", line 1027, in read_text
+      with self.open(mode='r', encoding=encoding, errors=errors) as f:
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/pathlib.py", line 1013, in open
+      return io.open(self, mode, buffering, encoding, errors, newline)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  FileNotFoundError: [Errno 2] No such file or directory: '/Users/nicholasjenkins/Documents/.flake8'
+  (personalvibe-py3.12) bash-3.2$ pwd
+  /Users/nicholasjenkins/Documents/personalvibe
+  (personalvibe-py3.12) bash-3.2$
+
+code_context_paths:
+  - "prompts/personalvibe/context/codefiles.txt"
+milestone_file_name: ""

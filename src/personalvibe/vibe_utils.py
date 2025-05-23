@@ -10,9 +10,8 @@ from typing import List, Union
 
 import dotenv
 import pathspec
-import requests
 import tiktoken
-from jinja2 import Environment, FileSystemLoader, select_autoescape
+from jinja2 import Environment, FileSystemLoader
 from openai import OpenAI
 
 dotenv.load_dotenv()
@@ -221,7 +220,10 @@ def _process_file(file_path: Path) -> str:
         return f"\n#### Start of {rel_path}\n" f"```{language}\n" f"{content}\n" f"```\n" f"#### End of {rel_path}\n"
 
 
-def load_gitignore(base_path):
+from pathlib import Path as _PvPath
+
+
+def load_gitignore(base_path: _PvPath) -> pathspec.PathSpec:
     gitignore_path = base_path / ".gitignore"
     if gitignore_path.exists():
         with open(gitignore_path, "r") as f:
@@ -334,10 +336,13 @@ def _get_milestone_text(config) -> str:
     milestone_ver, _, _ = config.version.split(".")
     current_major = int(milestone_ver)
 
-    milestone_files = sorted(
-        [p for p in stages_path.glob("*.0.0.md") if p.is_file() and int(p.stem.split(".")[0]) <= current_major],
-        key=lambda x: int(x.stem.split(".")[0]),
-    )
+    milestone_files = [Path(stages_path, f"{current_major}.0.0.md")]
+
+    # No longer use multi
+    # milestone_files = sorted(
+    #     [p for p in stages_path.glob("*.0.0.md") if p.is_file() and int(p.stem.split(".")[0]) <= current_major],
+    #     key=lambda x: int(x.stem.split(".")[0]),
+    # )
 
     if not milestone_files:
         raise ValueError(f"No valid milestone files found in {stages_path} for major <= {current_major}")
@@ -348,7 +353,7 @@ def _get_milestone_text(config) -> str:
     return data
 
 
-def get_replacements(config, code_context: str) -> dict:
+def _get_replacements_v1(config, code_context: str) -> dict:
     """
     Build the Jinja replacement map once.
 
@@ -418,7 +423,7 @@ def _load_template(fname: str) -> str:
         raise FileNotFoundError(f"Template {fname!s} not found in package or legacy path")
 
 
-# ----------------------------- override -------------------------------------
+# -----------------------------
 def get_replacements(config, code_context: str) -> dict:  # type: ignore[override]
     """Build the Jinja replacement map (rev-2 using _load_template)."""
 

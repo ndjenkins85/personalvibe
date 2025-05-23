@@ -24,9 +24,9 @@ class RunContext:
     uuid_hex8: str = field(default_factory=lambda: uuid.uuid4().hex[:8], repr=False)
 
     @property
-    def id(self) -> str:
+    def id(self: "RunContext") -> str:
         return f"{self.timestamp.strftime('%Y%m%d_%H%M%S')}_{self.uuid_hex8}"
 
     # stringification helper -------------------------------------------------
-    def __str__(self) -> str:  # pragma: no cover
+    def __str__(self: "RunContext") -> str:  # pragma: no cover
         return self.id
