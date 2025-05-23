@@ -33,7 +33,7 @@ try:
                 self._mp = _mp
 
             # The only flavour used by our test-suite
-            def object(self, target, name, value):  # noqa: D401
+            def object(self, target: object, name: str, value: object) -> None:  # noqa: D401
                 """Redirect to ``monkeypatch.setattr`` (same semantics)."""
                 return self._mp.setattr(target, name, value)
 

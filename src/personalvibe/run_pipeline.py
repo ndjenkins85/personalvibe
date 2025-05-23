@@ -76,8 +76,6 @@ def main() -> None:
     # 3️⃣  Render prompt template ------------------------------------------------
     code_context = vibe_utils.get_context(config.code_context_paths)
     replacements = vibe_utils.get_replacements(config, code_context)
-
-    _template_map = {"prd": "", "milestone": "", "sprint": "", "validate": ""}
     template_path = f"{config.project_name}/prd.md"
     if not template_path:
         log.error("Unsupported mode '%s'.", config.mode)

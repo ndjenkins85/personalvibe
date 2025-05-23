@@ -6,12 +6,16 @@ import logging
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import List, Union
+from typing import TYPE_CHECKING, List, Union
 
 import dotenv
 import pathspec
 import tiktoken
 from jinja2 import Environment, FileSystemLoader
+
+if TYPE_CHECKING:
+    from personalvibe.run_pipeline import ConfigModel  # noqa: F401
+
 from openai import OpenAI
 
 dotenv.load_dotenv()
@@ -325,13 +329,13 @@ def render_prompt_template(template_path: str, replacements: dict) -> str:
     return template.render(**replacements)
 
 
-def _get_error_text(config) -> str:
+def _get_error_text(config: "ConfigModel") -> str:
     error_path = Path(get_base_path(), "prompts", config.project_name, "errors", config.error_file_name)
     # NOTE TO LLM: improve the handling here as per my usual codestyle
     return error_path.read_text()
 
 
-def _get_milestone_text(config) -> str:
+def _get_milestone_text(config: "ConfigModel") -> str:
     stages_path = Path(get_base_path(), "prompts", config.project_name, "stages")
     milestone_ver, _, _ = config.version.split(".")
     current_major = int(milestone_ver)
@@ -353,7 +357,7 @@ def _get_milestone_text(config) -> str:
     return data
 
 
-def _get_replacements_v1(config, code_context: str) -> dict:
+def _get_replacements_v1(config: "ConfigModel", code_context: str) -> dict:
     """
     Build the Jinja replacement map once.
 
@@ -424,7 +428,7 @@ def _load_template(fname: str) -> str:
 
 
 # -----------------------------
-def get_replacements(config, code_context: str) -> dict:  # type: ignore[override]
+def get_replacements(config: "ConfigModel", code_context: str) -> dict:  # type: ignore[override]
     """Build the Jinja replacement map (rev-2 using _load_template)."""
 
     _log.info("Running config version: %s", config.version)
