@@ -12,6 +12,32 @@ execution_details: |
 
   Perform work for Chunk 4
 
+  Beware issues like this
+
+  (personalvibe-py3.12) bash-3.2$ pv parse-stage --project_name personalvibe --run
+  Saved extracted code to: /Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/5.3.2.py
+  Running extracted code from: /Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/5.3.2.py
+  Traceback (most recent call last):
+    File "/Users/nicholasjenkins/Documents/personalvibe/.venv/bin/pv", line 6, in <module>
+      sys.exit(app())
+               ^^^^^
+    File "/Users/nicholasjenkins/Documents/personalvibe/src/personalvibe/cli.py", line 250, in app
+      cli_main()
+    File "/Users/nicholasjenkins/Documents/personalvibe/src/personalvibe/cli.py", line 177, in cli_main
+      ns.func(ns)  # type: ignore[arg-type]
+      ^^^^^^^^^^^
+    File "/Users/nicholasjenkins/Documents/personalvibe/src/personalvibe/cli.py", line 121, in _cmd_parse_stage
+      runpy.run_path(saved, run_name="__main__")
+    File "<frozen runpy>", line 286, in run_path
+    File "<frozen runpy>", line 98, in _run_module_code
+    File "<frozen runpy>", line 88, in _run_code
+    File "/Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/5.3.2.py", line 116, in <module>
+      _patch_file(
+    File "/Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/5.3.2.py", line 45, in _patch_file
+      raise RuntimeError(f"Pattern not found while patching {path}")
+  RuntimeError: Pattern not found while patching /Users/nicholasjenkins/Documents/personalvibe/src/personalvibe/cli.py
+  (personalvibe-py3.12) bash-3.2$
+
 code_context_paths:
   - "prompts/personalvibe/context/codefiles.txt"
 milestone_file_name: ""

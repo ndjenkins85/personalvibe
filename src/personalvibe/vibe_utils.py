@@ -18,6 +18,8 @@ if TYPE_CHECKING:
 
 from openai import OpenAI
 
+from personalvibe.yaml_utils import sanitize_yaml_text
+
 dotenv.load_dotenv()
 # -----------------------------------------------------------------
 # Ensure wheel smoke-tests never abort if the user forgot to export

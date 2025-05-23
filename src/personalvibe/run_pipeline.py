@@ -10,6 +10,7 @@ import yaml
 from pydantic import BaseModel, Field, ValidationError
 
 from personalvibe import logger, vibe_utils
+from personalvibe.yaml_utils import sanitize_yaml_text
 
 
 class ConfigModel(BaseModel):
@@ -38,7 +39,8 @@ def load_config(config_path: str) -> ConfigModel:
     """Load YAML then validate. Auto-fills *project_name* if missing."""
     try:
         with open(config_path, "r", encoding="utf-8") as f:
-            raw = yaml.safe_load(f)
+            _yaml_txt = sanitize_yaml_text(f.read(), origin=config_path)
+            raw = yaml.safe_load(_yaml_txt)
             raw["version"] = Path(config_path).stem
 
         # ---- auto-detect project_name if missing ----
