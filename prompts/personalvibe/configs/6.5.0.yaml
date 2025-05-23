@@ -8,6 +8,7 @@
 
 project_name: "personalvibe"
 mode: sprint
+model: anthropic/claude-3-7-sonnet-20250219
 code_context_paths:
   - "prompts/personalvibe/context/codefiles.txt"
 execution_details: |

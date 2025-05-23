@@ -7,6 +7,7 @@
 * [Developer on-boarding](docs/ONBOARDING.md)
 * [Using Personalvibe *in other projects*](docs/using_in_other_projects.md)
 * [API reference](docs/reference.rst)
+* [LLM Providers](docs/LLM_PROVIDERS.md)
 * [Roadmap 3.0.0](docs/roadmap/3.0.0_milestone.md)
 
 ---
@@ -20,7 +21,7 @@ you can embed in *any* project.
 ```text
 pip install personalvibe        # 🚀  get the CLI
 pv run --config 1.0.0.yaml      # 🤖  generate / execute prompts
-```
+pv run --config 1.0.0.yaml --model openai/gpt-4o   # 🧠  specify LLM model
 
 ---
 ## Why “vibe coding” ?

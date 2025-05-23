@@ -13,6 +13,13 @@ pv run --config my_config.yaml
 
 Runtime artefacts are created in the **current working directory**:
 
+LLM model selection is available through the `model:` YAML config field:
+```yaml
+model: openai/gpt-4o-mini  # default if omitted
+```
+
+See [LLM Providers](LLM_PROVIDERS.md) for all supported models.
+
 ```
 .
 ├─ data/<project>/prompt_inputs/

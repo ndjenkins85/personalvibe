@@ -12,6 +12,7 @@ poetry add personalvibe    # or  pip install personalvibe
 # 1.0.0.yaml
 project_name: my_cool_idea
 mode: milestone         # prd | milestone | sprint | validate
+model: openai/gpt-4o-mini  # optional, defaults to gpt-4o-mini
 execution_details: ''
 code_context_paths: []  # optional snippets fed into the prompt
 ```
@@ -24,6 +25,10 @@ pv run --config 1.0.0.yaml                 # full run
 ```
 
 ## Advanced
+
+• Choose any [supported LLM provider](LLM_PROVIDERS.md):
+
+  `model: anthropic/claude-3-sonnet`
 
 • Persist artefacts in a separate folder:
 

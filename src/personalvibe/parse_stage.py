@@ -41,9 +41,9 @@ def extract_and_save_code_block(project_name: Union[str, None] = None) -> str:
     stages_dir = Path(base_path, "prompts", project_name, "stages")
 
     content = input_file.read_text(encoding="utf-8")
-    match = re.search(r"```python\n(.*?)\n```", content, re.DOTALL)
+    match = re.search(r"<python>\n(.*?)\n</python>", content, re.DOTALL)
     if not match:
-        raise ValueError("No ```python block found in the latest log file.")
+        raise ValueError("No <python> block found in the latest log file.")
 
     extracted_code = match.group(1).strip()
 

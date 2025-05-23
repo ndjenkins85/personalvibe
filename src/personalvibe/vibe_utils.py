@@ -117,7 +117,7 @@ def get_vibed(
     messages.append({"role": "user", "content": [{"type": "text", "text": prompt}]})
 
     message_chars = len(str(messages))
-    model = model or "o3"
+    model = model or "openai/o3"
     message_tokens = num_tokens(str(messages))
     log.info("Prompt size – Tokens: %s, Chars: %s, Model:%s", message_tokens, message_chars, model)
 

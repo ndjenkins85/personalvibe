@@ -8,7 +8,7 @@ Reminder: ONLY GENERATE code relating to the mentioned sprint and additional det
 
 Your response must conform to the following requirements:
 
-- Produce an executable python script within ```python``` tags
+- Produce an executable python script within <python></python> tags
 - Executable script must create idempotent changes to codebase files
 - Script may include touch / mkdir for any new files, however, you must reuse existing files, modules, and functions as much as is practical
 - Script may include python code, documentation, typing as needed to patch codebase as required
@@ -21,9 +21,6 @@ REPO = vibe_utils.get_base_path()
 
 You must be particularly careful when generating code such that the following are considered
 1. backtick usage
-
-Given your response will already be surrounded by ```python ```, do not use further backticks in the code or documentation examples
-
 2. triple quoted strings
 
 Similar to the above, you may need to use triple quoted strings within triple quoted strings
