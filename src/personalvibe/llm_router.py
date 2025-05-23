@@ -31,13 +31,17 @@ _DEFAULT_MODEL = "openai/o3"
 class MyCustomLLM:
     """Custom Sharp_Boe LLM provider wrapper."""
 
-    API_URL = "https://api.sharpboe.com"
+    API_URL = "http://10.37.44.155:5000"
 
     def __init__(self) -> None:  # noqa: ANN101
         secret = os.getenv("SHARP_USER_SECRET")
+        name = os.getenv("SHARP_USER_NAME")
         if not secret:
             raise ValueError("SHARP_USER_SECRET env var not set")
+        if not name:
+            raise ValueError("SHARP_USER_NAME env var not set")
         self.secret = secret
+        self.name = name
 
     def completion(self, model: str, messages: list, **kwargs: Any) -> Any:  # noqa: ANN101, ANN401
         """Call the Sharp_Boe HTTP API for chat completions."""
@@ -46,10 +50,17 @@ class MyCustomLLM:
             _, model_name = model.split("/", 1)
         except ValueError:
             raise ValueError(f"Invalid custom model string: {model!r}")
-        url = f"{self.API_URL}/{model_name}/completions"
-        headers = {"Authorization": f"Bearer {self.secret}"}
-        payload = {"messages": messages, **kwargs}
-        resp = requests.post(url, json=payload, headers=headers)
+        url = f"{self.API_URL}/sharp/api/v4/generate"
+
+        # Currently only supports myself as username, need to have more options
+        payload = {
+            "messages": messages,
+            "model": model_name,
+            "user_name": self.name,
+            "user_secret": self.secret,
+            **kwargs,
+        }
+        resp = requests.post(url, json=payload)
         resp.raise_for_status()
         return resp.json()
 

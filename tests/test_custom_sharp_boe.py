@@ -23,6 +23,7 @@ class FakeResponse:
 
 def test_sharp_boe_chat_completion(monkeypatch):
     # Arrange: set the secret and capture requests.post
+    monkeypatch.setenv("SHARP_USER_NAME", "supername")
     monkeypatch.setenv("SHARP_USER_SECRET", "supersecret")
     calls = {}
 
@@ -44,9 +45,7 @@ def test_sharp_boe_chat_completion(monkeypatch):
     assert result["choices"][0]["message"]["content"] == "👍"
     assert "sharp_boe/test-model".startswith("sharp_boe/")
     # URL should include the model name
-    assert calls["url"].endswith("/test-model/completions")
-    # Authorization header present
-    assert calls["headers"]["Authorization"] == "Bearer supersecret"
+    assert calls["url"].endswith("/sharp/api/v4/generate")
     # Payload includes our messages and kwargs
     assert calls["json"]["messages"] == messages
     assert calls["json"]["max_tokens"] == 5
