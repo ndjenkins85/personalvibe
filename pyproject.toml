@@ -27,6 +27,7 @@ include = ["LICENSE", "README.md", "src/personalvibe/data/*.md", "tests/personal
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.13"
+litellm = ">=1.40"
 
 jinja2 = "^3.1.6"
 openai = "^1.77.0"

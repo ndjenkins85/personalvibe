@@ -1,0 +1,14 @@
+# pv run --config prompts/personalvibe/configs/6.3.0.yaml
+
+# Chunk 1 lays the foundation others depend on; without the shim nothing compiles.
+# Chunk 2 propagates the new configuration so later migrations can compile.
+# Chunk 3 switches the core execution path—riskier, but isolated by earlier scaffolding.
+# Chunk 4 is optional functionality that proves pluggability without blocking migration.
+# Chunk 5 polishes and documents, safest to do after behaviour stabilises.
+
+project_name: "personalvibe"
+mode: sprint
+code_context_paths:
+  - "prompts/personalvibe/context/codefiles.txt"
+execution_details: |
+  Perform work for Chunk 3
