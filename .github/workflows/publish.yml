@@ -22,8 +22,11 @@ jobs:
       - run: pip install poetry==2.1.1
       - run: poetry install
       - run: poetry run nox -s release tests --force-python=${{ matrix.python-version }}
+
       # make the wheel + sdist available to the next job
-      - uses: actions/upload-artifact@v4
+      # Upload artifact only for 3.12
+      - if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
         with:
           name: dist
           path: dist/*
