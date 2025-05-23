@@ -16,3 +16,38 @@ execution_details: |
   We need to set default behaviour such as using OpenAI o3 by default
 
   We need to change the config file settings to enable a 'model' field
+
+  We also want to setup to handle a custom AI endpoint called 'sharp_boe', here is an example implementation
+
+  from litellm import CustomLLM, completion
+  import requests
+  import os
+
+  class MyCustomLLM(CustomLLM):
+      def completion(self, model, messages, **kwargs):
+          prompt = messages[-1]["content"]
+          data = {
+              "model": model,
+              "prompt": prompt,
+              "stream": False,
+              "user_name": "nickjenkins",
+              "user_secret": os.getenv("SHARP_USER_SECRET"),
+          }
+          response = requests.post("http://10.37.44.155:5000/sharp/api/v2/generate", json=data)
+          output = response.json().get('response', '')
+          return {
+              "choices": [{"message": {"content": output}}],
+              "usage": {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
+          }
+
+  my_custom_llm = MyCustomLLM()
+
+  # Register the custom provider
+  import litellm
+  litellm.custom_provider_map = [
+      {"provider": "my-custom-llm", "custom_handler": my_custom_llm}
+  ]
+
+  # Use your custom model
+  response = completion(model="my-custom-llm/sharp_gemma3_12b_128k", messages=[{"role": "user", "content": "Tell me a short joke about rabbits"}])
+  print(response['choices'][0]['message']['content'])
