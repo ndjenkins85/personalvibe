@@ -9,7 +9,7 @@
 project_name: "personalvibe"
 mode: sprint
 # model: openai/o3
-# model: gpt-4o
+model: openai/gpt-4o
 code_context_paths:
   - "prompts/personalvibe/context/codefiles.txt"
 execution_details: |

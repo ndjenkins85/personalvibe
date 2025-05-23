@@ -12,9 +12,13 @@ chat_completion(model: str | None, messages: list, **kw) -> Any
 from __future__ import annotations
 
 import logging
+import os
 from typing import Any, List, Union
 
-import litellm  # runtime dependency injected by chunk-1
+import litellm
+import requests
+
+# runtime dependency injected by chunk-1
 
 _log = logging.getLogger(__name__)
 
@@ -22,6 +26,34 @@ _DEFAULT_MODEL = "openai/o3"
 
 
 # ------------------------------------------------------------------
+
+
+class MyCustomLLM:
+    """Custom Sharp_Boe LLM provider wrapper."""
+
+    API_URL = "https://api.sharpboe.com"
+
+    def __init__(self) -> None:  # noqa: ANN101
+        secret = os.getenv("SHARP_USER_SECRET")
+        if not secret:
+            raise ValueError("SHARP_USER_SECRET env var not set")
+        self.secret = secret
+
+    def completion(self, model: str, messages: list, **kwargs: Any) -> Any:  # noqa: ANN101, ANN401
+        """Call the Sharp_Boe HTTP API for chat completions."""
+        # Expect model format "sharp_boe/<model_name>"
+        try:
+            _, model_name = model.split("/", 1)
+        except ValueError:
+            raise ValueError(f"Invalid custom model string: {model!r}")
+        url = f"{self.API_URL}/{model_name}/completions"
+        headers = {"Authorization": f"Bearer {self.secret}"}
+        payload = {"messages": messages, **kwargs}
+        resp = requests.post(url, json=payload, headers=headers)
+        resp.raise_for_status()
+        return resp.json()
+
+
 def chat_completion(
     *,
     model: Union[str, None] = None,
@@ -53,6 +85,10 @@ def chat_completion(
         raise ValueError("messages must be a non-empty list")
 
     _model = model or _DEFAULT_MODEL
+    # route custom Sharp_Boe provider
+    if _model.startswith("sharp_boe/"):
+        return MyCustomLLM().completion(_model, messages, **kwargs)
+
     if not isinstance(_model, str) or "/" not in _model:
         # Very lenient – just catch blatant mistakes; real validation is
         # delegated to LiteLLM which knows the registry.

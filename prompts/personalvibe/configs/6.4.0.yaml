@@ -8,6 +8,7 @@
 
 project_name: "personalvibe"
 mode: sprint
+model: openai/o4-mini
 code_context_paths:
   - "prompts/personalvibe/context/codefiles.txt"
 execution_details: |

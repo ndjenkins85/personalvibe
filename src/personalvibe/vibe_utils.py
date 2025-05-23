@@ -14,10 +14,10 @@ import pathspec
 import tiktoken
 from jinja2 import Environment, FileSystemLoader
 
+from personalvibe import llm_router  # ← LiteLLM shim (chunk-3)
+
 if TYPE_CHECKING:
     from personalvibe.run_pipeline import ConfigModel  # noqa: F401
-
-from openai import OpenAI
 
 from personalvibe.yaml_utils import sanitize_yaml_text
 
@@ -25,10 +25,7 @@ dotenv.load_dotenv()
 # -----------------------------------------------------------------
 # Ensure wheel smoke-tests never abort if the user forgot to export
 # an OPENAI key – we create a harmless placeholder *once*.
-if "OPENAI_API_KEY" not in os.environ:
-    os.environ["OPENAI_API_KEY"] = "DUMMY_KEY"
 
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 log = logging.getLogger(__name__)
 
@@ -122,13 +119,14 @@ def get_vibed(
     message_chars = len(str(messages))
     model = model or "o3"
     message_tokens = num_tokens(str(messages))
-    log.info("Prompt size – Tokens: %s, Chars: %s", message_tokens, message_chars)
+    log.info("Prompt size – Tokens: %s, Chars: %s, Model:%s", message_tokens, message_chars, model)
 
-    response = (
-        client.chat.completions.create(model=model, messages=messages, max_completion_tokens=max_completion_tokens)
-        .choices[0]
-        .message.content
+    resp = llm_router.chat_completion(
+        model=model,
+        messages=messages,
+        max_tokens=max_completion_tokens,
     )
+    response = resp["choices"][0]["message"]["content"]
 
     # -- save assistant reply --------------------------------------------
     base_output_path = get_data_dir(project_name, workspace) / "prompt_outputs"
