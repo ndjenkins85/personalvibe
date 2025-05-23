@@ -50,4 +50,4 @@ except Exception:  # pragma: no cover
 # --- end personalvibe monkeypatch shim ---
 
 
-__version__ = "2.5.0"  # 5.0.0 milestone, no revisions
+__version__ = "2.5.1"  # 5.0.0 milestone

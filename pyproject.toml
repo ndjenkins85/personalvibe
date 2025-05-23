@@ -3,7 +3,7 @@ name = "personalvibe"
 packages = [
     { include = "personalvibe", from = "src" }
 ]
-version = "2.5.0"
+version = "2.5.1"
 description = "My personal vibecoding."
 license = "MIT"
 authors = ["Nick Jenkins"]
@@ -23,7 +23,7 @@ classifiers = [
     "Programming Language :: Python :: 3 :: Only",
     "Topic :: Utilities",
 ]
-include = ["LICENSE", "README.md", "src/personalvibe/data/*.md"]
+include = ["LICENSE", "README.md", "src/personalvibe/data/*.md", "tests/personalvibe.sh"]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.13"
