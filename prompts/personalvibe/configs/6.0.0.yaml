@@ -1,0 +1,18 @@
+# pv run --config prompts/personalvibe/configs/6.0.0.yaml
+
+project_name: "personalvibe"
+mode: milestone
+code_context_paths:
+  - "prompts/personalvibe/context/documentation.txt"
+  - "prompts/personalvibe/context/codefiles.txt"
+execution_details: |
+
+  We want to integrate the python library `litellm` into our project.
+
+  The purpose is to enable different LLM models in future and be able to swap out easily
+
+  We need to replace the interface for OpenAI with litellm
+
+  We need to set default behaviour such as using OpenAI o3 by default
+
+  We need to change the config file settings to enable a 'model' field
