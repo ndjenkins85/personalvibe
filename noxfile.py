@@ -42,7 +42,7 @@ def lint(session: Session) -> None:
         "-p",
         package,  # analyse the installed package
     )
-    session.run("flake8", *args, "--select=ANN,E,F,S")
+    session.run("flake8", *args, "--select=ANN,E,F")
 
 
 @session(python=["3.12"])

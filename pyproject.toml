@@ -131,3 +131,4 @@ exclude_lines = [
     'if __name__ == "__main__":',
     "if TYPE_CHECKING:",
 ]
+include = ["LICENSE", "README.md", "src/personalvibe/data/*.md", "src/personalvibe/data/*.yaml"]

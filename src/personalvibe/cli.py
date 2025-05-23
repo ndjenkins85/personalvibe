@@ -29,11 +29,16 @@ Design notes
 from __future__ import annotations
 
 import argparse
+import os
+import platform
+import re
 import shlex
+import subprocess
 import sys
+from pathlib import Path
 from typing import List, Sequence
 
-from personalvibe import run_pipeline
+from personalvibe import run_pipeline, vibe_utils
 from personalvibe.parse_stage import extract_and_save_code_block
 
 
@@ -144,6 +149,18 @@ def _build_parser() -> argparse.ArgumentParser:
         _common(m_sp)
         m_sp.set_defaults(func=lambda ns, m=_mode: _cmd_mode(ns, m))
 
+    # new-milestone -------------------------------------------------
+    nm = sub.add_parser("new-milestone", help="Scaffold next milestone YAML")
+    nm.add_argument("--project_name", help="Override auto detection.")
+    nm.add_argument("--no-open", action="store_true", help="Skip opening editor/viewer.")
+    nm.set_defaults(func=_cmd_new_milestone)
+
+    # prepare-sprint -----------------------------------------------
+    pspr = sub.add_parser("prepare-sprint", help="Scaffold next sprint YAML")
+    pspr.add_argument("--project_name", help="Override auto detection.")
+    pspr.add_argument("--no-open", action="store_true")
+    pspr.set_defaults(func=_cmd_prepare_sprint)
+
     # parse-stage ---
     ps = sub.add_parser("parse-stage", help="Extract latest assistant code block.")
     ps.add_argument("--project_name", required=True)
@@ -158,6 +175,73 @@ def cli_main(argv: Sequence[str] | None = None) -> None:
     ns = parser.parse_args(argv)
     # dispatch
     ns.func(ns)  # type: ignore[arg-type]
+
+
+# ----------------------------------------------------------------- helpers
+def _open_in_editor(path: Path) -> None:
+    """Best-effort open *path* either in $EDITOR or OS default viewer."""
+    editor = os.getenv("EDITOR")
+    try:
+        if editor:
+            subprocess.call([editor, str(path)])
+        elif platform.system() == "Darwin":
+            subprocess.call(["open", str(path)])
+        else:
+            subprocess.call(["xdg-open", str(path)])
+    except Exception as exc:  # noqa: BLE001
+        print(f"[WARN] Unable to open {path}: {exc}", file=sys.stderr)
+
+
+def _scan_versions(stages_dir: Path) -> list[tuple[int, int, int]]:
+    vers: list[tuple[int, int, int]] = []
+    for f in stages_dir.glob("*.*"):
+        m = re.match(r"^(\d+)\.(\d+)\.(\d+)\..*$", f.name)
+        if m:
+            vers.append((int(m.group(1)), int(m.group(2)), int(m.group(3))))
+    return sorted(vers)
+
+
+# ----------------------------------------------------------------- NM
+def _cmd_new_milestone(ns: argparse.Namespace) -> None:
+    proj = ns.project_name or vibe_utils.detect_project_name()
+    stages = vibe_utils.get_base_path() / "prompts" / proj / "stages"
+    stages.mkdir(parents=True, exist_ok=True)
+    versions = _scan_versions(stages)
+    next_major = (versions[-1][0] + 1) if versions else 1
+    ver_str = f"{next_major}.0.0"
+    dest = Path.cwd() / f"{ver_str}.yaml"
+
+    # copy template
+    tmpl = vibe_utils._load_template("milestone_template.yaml")
+    dest.write_text(tmpl.replace("{{ project_name }}", proj), encoding="utf-8")
+    print(f"Created new milestone YAML: {dest}")
+    if not ns.no_open:
+        _open_in_editor(dest)
+
+
+# ----------------------------------------------------------------- PS
+def _cmd_prepare_sprint(ns: argparse.Namespace) -> None:
+    proj = ns.project_name or vibe_utils.detect_project_name()
+    stages = vibe_utils.get_base_path() / "prompts" / proj / "stages"
+    stages.mkdir(parents=True, exist_ok=True)
+    versions = _scan_versions(stages)
+
+    if not versions:
+        # no sprints yet – assume major 1
+        next_ver = "1.1.0"
+    else:
+        latest = versions[-1]
+        next_ver = f"{latest[0]}.{latest[1] + 1}.0"  # bump sprint
+
+    dest = Path.cwd() / f"{next_ver}.yaml"
+    tmpl = vibe_utils._load_template("sprint_template.yaml")
+    dest.write_text(tmpl.replace("{{ project_name }}", proj), encoding="utf-8")
+    print(f"Created sprint YAML: {dest}")
+    if not ns.no_open:
+        _open_in_editor(dest)
+
+
+# === CHUNK3_cli_helpers_cmds END ===
 
 
 # Entry-point for poetry console-script

@@ -31,35 +31,6 @@ def find_latest_log_file(project_name: str | None = None) -> Path:
     return log_files[0]
 
 
-def determine_next_version(project_name: str | None = None) -> str:
-    base_path = vibe_utils.get_base_path()
-
-    if project_name is None:
-        raise ValueError("project_name must be provided")
-    stages_dir = Path(base_path, "prompts", project_name, "stages")
-    stages_dir.mkdir(parents=True, exist_ok=True)
-
-    files = list(stages_dir.glob("*.py")) + list(stages_dir.glob("*.md"))
-    version_tuples = []
-
-    for f in files:
-        match = re.match(r"^(\d+)\.(\d+)\.(\d+)\..*$", f.name)
-        if match:
-            major, sprint, bugfix = map(int, match.groups())
-            version_tuples.append((major, sprint, bugfix))
-
-    if not version_tuples:
-        return "1.1.0"
-
-    # Get the latest milestone and sprint
-    version_tuples.sort()
-    latest_major, latest_sprint, _ = version_tuples[-1]
-
-    # Increment sprint under latest major
-    next_version = f"{latest_major}.{latest_sprint + 1}.0"
-    return next_version
-
-
 def extract_and_save_code_block(project_name: str | None = None) -> str:
     base_path = vibe_utils.get_base_path()
 
@@ -88,6 +59,51 @@ def extract_and_save_code_block(project_name: str | None = None) -> str:
     return str(output_file)
 
 
+# === helper added by chunk 2
+def _ensure_project_name(name: str | None) -> str:
+    if name:
+        return name
+    try:
+        return vibe_utils.detect_project_name()
+    except ValueError as e:  # re-raise with friendly msg
+        raise ValueError(str(e)) from e
+
+
+def determine_next_version(project_name: str | None = None) -> str:  # noqa: C901
+    """Return the *next* semantic version for **patch-files** (x.y.Z).
+
+    Rules
+    -----
+    • If **no** existing stage files ⇒ ``1.1.0`` (first sprint).
+    • Else **always increment the *bug-fix* component** of the latest
+      file found, e.g.  ``4.3.0 → 4.3.1``  or  ``2.7.4 → 2.7.5``.
+    • Version scan looks at ``prompts/<project>/stages/*.(md|py)``.
+
+    This fixes the long-standing bug where _determine_next_version()
+    bumped the *sprint* instead of the *bug-fix* number.
+    """
+    base_path = vibe_utils.get_base_path()
+    if project_name is None:
+        raise ValueError("project_name must be provided")
+    stages_dir = Path(base_path, "prompts", project_name, "stages")
+    stages_dir.mkdir(parents=True, exist_ok=True)
+
+    files = list(stages_dir.glob("*.py")) + list(stages_dir.glob("*.md"))
+    version_tuples: list[tuple[int, int, int]] = []
+    for f in files:
+        m = re.match(r"^(\d+)\.(\d+)\.(\d+)\..*$", f.name)
+        if m:
+            version_tuples.append((int(m.group(1)), int(m.group(2)), int(m.group(3))))
+
+    if not version_tuples:
+        # first ever sprint under major-1
+        return "1.1.0"
+
+    version_tuples.sort()
+    latest_major, latest_sprint, latest_bug = version_tuples[-1]
+    return f"{latest_major}.{latest_sprint}.{latest_bug + 1}"
+
+
 if __name__ == "__main__":
     """Parse and execute the latest sprint code generation.
 
@@ -105,13 +121,3 @@ if __name__ == "__main__":
     if args.run:
         print(f"Running extracted code from: {saved_file}")
         runpy.run_path(saved_file, run_name="__main__")
-
-
-# === helper added by chunk 2
-def _ensure_project_name(name: str | None) -> str:
-    if name:
-        return name
-    try:
-        return vibe_utils.detect_project_name()
-    except ValueError as e:  # re-raise with friendly msg
-        raise ValueError(str(e)) from e
