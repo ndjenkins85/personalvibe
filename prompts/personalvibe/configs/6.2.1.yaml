@@ -1,0 +1,916 @@
+# pv run --config prompts/personalvibe/configs/6.2.1.yaml
+
+# Chunk 1 lays the foundation others depend on; without the shim nothing compiles.
+# Chunk 2 propagates the new configuration so later migrations can compile.
+# Chunk 3 switches the core execution path—riskier, but isolated by earlier scaffolding.
+# Chunk 4 is optional functionality that proves pluggability without blocking migration.
+# Chunk 5 polishes and documents, safest to do after behaviour stabilises.
+
+project_name: "personalvibe"
+model: test/test
+mode: sprint
+code_context_paths:
+  - "prompts/personalvibe/context/codefiles.txt"
+execution_details: |
+
+  Create Chunk 2, however, be sure to avoid errors like the following, because sprint
+  the last time we attempted to run this, it failed!
+
+  Note that typing must be python 3.9 compatable
+
+  (personalvibe-py3.9) bytedance@C02H86S6Q05N personalvibe % bash tests/personalvibe.sh
+  🔍  Installing project dependencies (poetry)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  🧹  Running quality-gate via nox (lint + tests + smoke_dist)…
+  nox > Running session lint-3.9
+  nox > Re-using existing virtual environment at .nox/lint-3-9.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (2.5.7)
+  nox > black src/personalvibe tests noxfile.py docs/conf.py
+  reformatted /Users/bytedance/Documents/personalvibe/tests/test_model_field_schema.py
+  reformatted /Users/bytedance/Documents/personalvibe/src/personalvibe/run_pipeline.py
+
+  All done! ✨ 🍰 ✨
+  2 files reformatted, 37 files left unchanged.
+  nox > mypy -p personalvibe
+  src/personalvibe/run_pipeline.py:120: error: Argument "model" to "get_vibed" has incompatible type "str | None"; expected "str"  [arg-type]
+  Found 1 error in 1 file (checked 12 source files)
+  nox > Command mypy -p personalvibe failed with exit code 1
+  nox > Session lint-3.9 failed.
+  nox > Running session lint-3.12
+  nox > Re-using existing virtual environment at .nox/lint-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (2.5.7)
+  nox > black src/personalvibe tests noxfile.py docs/conf.py
+  All done! ✨ 🍰 ✨
+  39 files left unchanged.
+  nox > mypy -p personalvibe
+  src/personalvibe/run_pipeline.py:120: error: Argument "model" to "get_vibed" has incompatible type "str | None"; expected "str"  [arg-type]
+  Found 1 error in 1 file (checked 12 source files)
+  nox > Command mypy -p personalvibe failed with exit code 1
+  nox > Session lint-3.12 failed.
+  nox > Running session tests-3.9
+  nox > Re-using existing virtual environment at .nox/tests-3-9.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (2.5.7)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.9.9, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/bytedance/Documents/personalvibe
+  configfile: pyproject.toml
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 39 items / 1 deselected / 38 selected
+
+  tests/test_cli_basic.py .                                                [  2%]
+  tests/test_cli_new_cmds.py ..                                            [  7%]
+  tests/test_cli_run_delegate.py ..                                        [ 13%]
+  tests/test_cli_subcommands.py ..                                         [ 18%]
+  tests/test_config_schema_v2.py ...                                       [ 26%]
+  tests/test_determine_next_version.py .                                   [ 28%]
+  tests/test_llm_router.py ...                                             [ 36%]
+  tests/test_log_to_cm.py .                                                [ 39%]
+  tests/test_log_to_subprocess.py .                                        [ 42%]
+  tests/test_logger.py .                                                   [ 44%]
+  tests/test_logger_runid.py .                                             [ 47%]
+  tests/test_logging.py .                                                  [ 50%]
+  tests/test_model_field_schema.py FFF                                     [ 57%]
+  tests/test_project_detection.py ....                                     [ 68%]
+  tests/test_resource_fallback.py ..                                       [ 73%]
+  tests/test_retry_engine.py ...                                           [ 81%]
+  tests/test_run_context.py .                                              [ 84%]
+  tests/test_save_prompt_duplicate.py .                                    [ 86%]
+  tests/test_vibed_no_duplicates.py .                                      [ 89%]
+  tests/test_workspace_root.py ..                                          [ 94%]
+  tests/test_yaml_sanitiser.py ..                                          [100%]
+
+  =================================== FAILURES ===================================
+  _____________________________ test_model_optional ______________________________
+
+  tmp_path = PosixPath('/private/var/folders/30/cmv9c_5j3mq_kthx63sb1t5c0000gn/T/pytest-of-bytedance/pytest-18/test_model_optional0')
+
+      def test_model_optional(tmp_path: Path):
+          txt = """project_name: demo
+          mode: milestone
+          execution_details: ''
+          code_context_paths: []
+          """
+  >       cfg: ConfigModel = load_config(str(_yaml(tmp_path, txt)))
+
+  tests/test_model_field_schema.py:24:
+  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+  src/personalvibe/run_pipeline.py:57: in load_config
+      raw = yaml.safe_load(_yaml_txt)
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/__init__.py:125: in safe_load
+      return load(stream, SafeLoader)
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/__init__.py:81: in load
+      return loader.get_single_data()
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/constructor.py:49: in get_single_data
+      node = self.get_single_node()
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/composer.py:36: in get_single_node
+      document = self.compose_document()
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/composer.py:55: in compose_document
+      node = self.compose_node(None, None)
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/composer.py:84: in compose_node
+      node = self.compose_mapping_node(anchor)
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/composer.py:127: in compose_mapping_node
+      while not self.check_event(MappingEndEvent):
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/parser.py:98: in check_event
+      self.current_event = self.state()
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/parser.py:428: in parse_block_mapping_key
+      if self.check_token(KeyToken):
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/scanner.py:116: in check_token
+      self.fetch_more_tokens()
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/scanner.py:223: in fetch_more_tokens
+      return self.fetch_value()
+  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+  self = <yaml.loader.SafeLoader object at 0x118cb02b0>
+
+      def fetch_value(self):
+
+          # Do we determine a simple key?
+          if self.flow_level in self.possible_simple_keys:
+
+              # Add KEY.
+              key = self.possible_simple_keys[self.flow_level]
+              del self.possible_simple_keys[self.flow_level]
+              self.tokens.insert(key.token_number-self.tokens_taken,
+                      KeyToken(key.mark, key.mark))
+
+              # If this key starts a new block mapping, we need to add
+              # BLOCK-MAPPING-START.
+              if not self.flow_level:
+                  if self.add_indent(key.column):
+                      self.tokens.insert(key.token_number-self.tokens_taken,
+                              BlockMappingStartToken(key.mark, key.mark))
+
+              # There cannot be two simple keys one after another.
+              self.allow_simple_key = False
+
+          # It must be a part of a complex key.
+          else:
+
+              # Block context needs additional checks.
+              # (Do we really need them? They will be caught by the parser
+              # anyway.)
+              if not self.flow_level:
+
+                  # We are allowed to start a complex value if and only if
+                  # we can start a simple key.
+                  if not self.allow_simple_key:
+  >                   raise ScannerError(None, None,
+                              "mapping values are not allowed here",
+                              self.get_mark())
+  E                   yaml.scanner.ScannerError: mapping values are not allowed here
+  E                     in "<unicode string>", line 2, column 9:
+  E                           mode: milestone
+  E                               ^
+
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/scanner.py:577: ScannerError
+  _______________________________ test_model_valid _______________________________
+
+  tmp_path = PosixPath('/private/var/folders/30/cmv9c_5j3mq_kthx63sb1t5c0000gn/T/pytest-of-bytedance/pytest-18/test_model_valid0')
+
+      def test_model_valid(tmp_path: Path):
+          txt = """project_name: demo
+          mode: sprint
+          execution_details: ''
+          code_context_paths: []
+          model: openai/gpt-4o-mini
+          """
+  >       cfg = load_config(str(_yaml(tmp_path, txt)))
+
+  tests/test_model_field_schema.py:35:
+  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+  src/personalvibe/run_pipeline.py:57: in load_config
+      raw = yaml.safe_load(_yaml_txt)
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/__init__.py:125: in safe_load
+      return load(stream, SafeLoader)
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/__init__.py:81: in load
+      return loader.get_single_data()
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/constructor.py:49: in get_single_data
+      node = self.get_single_node()
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/composer.py:36: in get_single_node
+      document = self.compose_document()
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/composer.py:55: in compose_document
+      node = self.compose_node(None, None)
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/composer.py:84: in compose_node
+      node = self.compose_mapping_node(anchor)
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/composer.py:127: in compose_mapping_node
+      while not self.check_event(MappingEndEvent):
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/parser.py:98: in check_event
+      self.current_event = self.state()
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/parser.py:428: in parse_block_mapping_key
+      if self.check_token(KeyToken):
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/scanner.py:116: in check_token
+      self.fetch_more_tokens()
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/scanner.py:223: in fetch_more_tokens
+      return self.fetch_value()
+  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+  self = <yaml.loader.SafeLoader object at 0x118db96d0>
+
+      def fetch_value(self):
+
+          # Do we determine a simple key?
+          if self.flow_level in self.possible_simple_keys:
+
+              # Add KEY.
+              key = self.possible_simple_keys[self.flow_level]
+              del self.possible_simple_keys[self.flow_level]
+              self.tokens.insert(key.token_number-self.tokens_taken,
+                      KeyToken(key.mark, key.mark))
+
+              # If this key starts a new block mapping, we need to add
+              # BLOCK-MAPPING-START.
+              if not self.flow_level:
+                  if self.add_indent(key.column):
+                      self.tokens.insert(key.token_number-self.tokens_taken,
+                              BlockMappingStartToken(key.mark, key.mark))
+
+              # There cannot be two simple keys one after another.
+              self.allow_simple_key = False
+
+          # It must be a part of a complex key.
+          else:
+
+              # Block context needs additional checks.
+              # (Do we really need them? They will be caught by the parser
+              # anyway.)
+              if not self.flow_level:
+
+                  # We are allowed to start a complex value if and only if
+                  # we can start a simple key.
+                  if not self.allow_simple_key:
+  >                   raise ScannerError(None, None,
+                              "mapping values are not allowed here",
+                              self.get_mark())
+  E                   yaml.scanner.ScannerError: mapping values are not allowed here
+  E                     in "<unicode string>", line 2, column 9:
+  E                           mode: sprint
+  E                               ^
+
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/scanner.py:577: ScannerError
+  ______________________________ test_model_invalid ______________________________
+
+  tmp_path = PosixPath('/private/var/folders/30/cmv9c_5j3mq_kthx63sb1t5c0000gn/T/pytest-of-bytedance/pytest-18/test_model_invalid0')
+
+      def test_model_invalid(tmp_path: Path):
+          bad = """project_name: demo
+          mode: prd
+          execution_details: ''
+          code_context_paths: []
+          model: badformat
+          """
+          with pytest.raises(ValidationError):
+  >           load_config(str(_yaml(tmp_path, bad)))
+
+  tests/test_model_field_schema.py:47:
+  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+  src/personalvibe/run_pipeline.py:57: in load_config
+      raw = yaml.safe_load(_yaml_txt)
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/__init__.py:125: in safe_load
+      return load(stream, SafeLoader)
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/__init__.py:81: in load
+      return loader.get_single_data()
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/constructor.py:49: in get_single_data
+      node = self.get_single_node()
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/composer.py:36: in get_single_node
+      document = self.compose_document()
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/composer.py:55: in compose_document
+      node = self.compose_node(None, None)
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/composer.py:84: in compose_node
+      node = self.compose_mapping_node(anchor)
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/composer.py:127: in compose_mapping_node
+      while not self.check_event(MappingEndEvent):
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/parser.py:98: in check_event
+      self.current_event = self.state()
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/parser.py:428: in parse_block_mapping_key
+      if self.check_token(KeyToken):
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/scanner.py:116: in check_token
+      self.fetch_more_tokens()
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/scanner.py:223: in fetch_more_tokens
+      return self.fetch_value()
+  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+  self = <yaml.loader.SafeLoader object at 0x118e84dc0>
+
+      def fetch_value(self):
+
+          # Do we determine a simple key?
+          if self.flow_level in self.possible_simple_keys:
+
+              # Add KEY.
+              key = self.possible_simple_keys[self.flow_level]
+              del self.possible_simple_keys[self.flow_level]
+              self.tokens.insert(key.token_number-self.tokens_taken,
+                      KeyToken(key.mark, key.mark))
+
+              # If this key starts a new block mapping, we need to add
+              # BLOCK-MAPPING-START.
+              if not self.flow_level:
+                  if self.add_indent(key.column):
+                      self.tokens.insert(key.token_number-self.tokens_taken,
+                              BlockMappingStartToken(key.mark, key.mark))
+
+              # There cannot be two simple keys one after another.
+              self.allow_simple_key = False
+
+          # It must be a part of a complex key.
+          else:
+
+              # Block context needs additional checks.
+              # (Do we really need them? They will be caught by the parser
+              # anyway.)
+              if not self.flow_level:
+
+                  # We are allowed to start a complex value if and only if
+                  # we can start a simple key.
+                  if not self.allow_simple_key:
+  >                   raise ScannerError(None, None,
+                              "mapping values are not allowed here",
+                              self.get_mark())
+  E                   yaml.scanner.ScannerError: mapping values are not allowed here
+  E                     in "<unicode string>", line 2, column 9:
+  E                           mode: prd
+  E                               ^
+
+  .nox/tests-3-9/lib/python3.9/site-packages/yaml/scanner.py:577: ScannerError
+  =========================== short test summary info ============================
+  FAILED tests/test_model_field_schema.py::test_model_optional - yaml.scanner.S...
+  FAILED tests/test_model_field_schema.py::test_model_valid - yaml.scanner.Scan...
+  FAILED tests/test_model_field_schema.py::test_model_invalid - yaml.scanner.Sc...
+  ================== 3 failed, 35 passed, 1 deselected in 8.69s ==================
+  nox > Command pytest -m 'not advanced' '-W ignore::DeprecationWarning' failed with exit code 1
+  nox > Session tests-3.9 failed.
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (2.5.7)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/bytedance/Documents/personalvibe
+  configfile: pyproject.toml
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 39 items / 1 deselected / 38 selected
+
+  tests/test_cli_basic.py .                                                [  2%]
+  tests/test_cli_new_cmds.py ..                                            [  7%]
+  tests/test_cli_run_delegate.py ..                                        [ 13%]
+  tests/test_cli_subcommands.py ..                                         [ 18%]
+  tests/test_config_schema_v2.py ...                                       [ 26%]
+  tests/test_determine_next_version.py .                                   [ 28%]
+  tests/test_llm_router.py ...                                             [ 36%]
+  tests/test_log_to_cm.py .                                                [ 39%]
+  tests/test_log_to_subprocess.py .                                        [ 42%]
+  tests/test_logger.py .                                                   [ 44%]
+  tests/test_logger_runid.py .                                             [ 47%]
+  tests/test_logging.py .                                                  [ 50%]
+  tests/test_model_field_schema.py FFF                                     [ 57%]
+  tests/test_project_detection.py ....                                     [ 68%]
+  tests/test_resource_fallback.py ..                                       [ 73%]
+  tests/test_retry_engine.py ...                                           [ 81%]
+  tests/test_run_context.py .                                              [ 84%]
+  tests/test_save_prompt_duplicate.py .                                    [ 86%]
+  tests/test_vibed_no_duplicates.py .                                      [ 89%]
+  tests/test_workspace_root.py ..                                          [ 94%]
+  tests/test_yaml_sanitiser.py ..                                          [100%]
+
+  =================================== FAILURES ===================================
+  _____________________________ test_model_optional ______________________________
+
+  tmp_path = PosixPath('/private/var/folders/30/cmv9c_5j3mq_kthx63sb1t5c0000gn/T/pytest-of-bytedance/pytest-19/test_model_optional0')
+
+      def test_model_optional(tmp_path: Path):
+          txt = """project_name: demo
+          mode: milestone
+          execution_details: ''
+          code_context_paths: []
+          """
+  >       cfg: ConfigModel = load_config(str(_yaml(tmp_path, txt)))
+
+  tests/test_model_field_schema.py:24:
+  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+  src/personalvibe/run_pipeline.py:57: in load_config
+      raw = yaml.safe_load(_yaml_txt)
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/__init__.py:125: in safe_load
+      return load(stream, SafeLoader)
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/__init__.py:81: in load
+      return loader.get_single_data()
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/constructor.py:49: in get_single_data
+      node = self.get_single_node()
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/composer.py:36: in get_single_node
+      document = self.compose_document()
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/composer.py:55: in compose_document
+      node = self.compose_node(None, None)
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/composer.py:84: in compose_node
+      node = self.compose_mapping_node(anchor)
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/composer.py:127: in compose_mapping_node
+      while not self.check_event(MappingEndEvent):
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/parser.py:98: in check_event
+      self.current_event = self.state()
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/parser.py:428: in parse_block_mapping_key
+      if self.check_token(KeyToken):
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/scanner.py:116: in check_token
+      self.fetch_more_tokens()
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/scanner.py:223: in fetch_more_tokens
+      return self.fetch_value()
+  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+  self = <yaml.loader.SafeLoader object at 0x112fdd0a0>
+
+      def fetch_value(self):
+
+          # Do we determine a simple key?
+          if self.flow_level in self.possible_simple_keys:
+
+              # Add KEY.
+              key = self.possible_simple_keys[self.flow_level]
+              del self.possible_simple_keys[self.flow_level]
+              self.tokens.insert(key.token_number-self.tokens_taken,
+                      KeyToken(key.mark, key.mark))
+
+              # If this key starts a new block mapping, we need to add
+              # BLOCK-MAPPING-START.
+              if not self.flow_level:
+                  if self.add_indent(key.column):
+                      self.tokens.insert(key.token_number-self.tokens_taken,
+                              BlockMappingStartToken(key.mark, key.mark))
+
+              # There cannot be two simple keys one after another.
+              self.allow_simple_key = False
+
+          # It must be a part of a complex key.
+          else:
+
+              # Block context needs additional checks.
+              # (Do we really need them? They will be caught by the parser
+              # anyway.)
+              if not self.flow_level:
+
+                  # We are allowed to start a complex value if and only if
+                  # we can start a simple key.
+                  if not self.allow_simple_key:
+  >                   raise ScannerError(None, None,
+                              "mapping values are not allowed here",
+                              self.get_mark())
+  E                   yaml.scanner.ScannerError: mapping values are not allowed here
+  E                     in "<unicode string>", line 2, column 9:
+  E                           mode: milestone
+  E                               ^
+
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/scanner.py:577: ScannerError
+  _______________________________ test_model_valid _______________________________
+
+  tmp_path = PosixPath('/private/var/folders/30/cmv9c_5j3mq_kthx63sb1t5c0000gn/T/pytest-of-bytedance/pytest-19/test_model_valid0')
+
+      def test_model_valid(tmp_path: Path):
+          txt = """project_name: demo
+          mode: sprint
+          execution_details: ''
+          code_context_paths: []
+          model: openai/gpt-4o-mini
+          """
+  >       cfg = load_config(str(_yaml(tmp_path, txt)))
+
+  tests/test_model_field_schema.py:35:
+  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+  src/personalvibe/run_pipeline.py:57: in load_config
+      raw = yaml.safe_load(_yaml_txt)
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/__init__.py:125: in safe_load
+      return load(stream, SafeLoader)
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/__init__.py:81: in load
+      return loader.get_single_data()
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/constructor.py:49: in get_single_data
+      node = self.get_single_node()
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/composer.py:36: in get_single_node
+      document = self.compose_document()
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/composer.py:55: in compose_document
+      node = self.compose_node(None, None)
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/composer.py:84: in compose_node
+      node = self.compose_mapping_node(anchor)
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/composer.py:127: in compose_mapping_node
+      while not self.check_event(MappingEndEvent):
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/parser.py:98: in check_event
+      self.current_event = self.state()
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/parser.py:428: in parse_block_mapping_key
+      if self.check_token(KeyToken):
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/scanner.py:116: in check_token
+      self.fetch_more_tokens()
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/scanner.py:223: in fetch_more_tokens
+      return self.fetch_value()
+  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+  self = <yaml.loader.SafeLoader object at 0x112fde360>
+
+      def fetch_value(self):
+
+          # Do we determine a simple key?
+          if self.flow_level in self.possible_simple_keys:
+
+              # Add KEY.
+              key = self.possible_simple_keys[self.flow_level]
+              del self.possible_simple_keys[self.flow_level]
+              self.tokens.insert(key.token_number-self.tokens_taken,
+                      KeyToken(key.mark, key.mark))
+
+              # If this key starts a new block mapping, we need to add
+              # BLOCK-MAPPING-START.
+              if not self.flow_level:
+                  if self.add_indent(key.column):
+                      self.tokens.insert(key.token_number-self.tokens_taken,
+                              BlockMappingStartToken(key.mark, key.mark))
+
+              # There cannot be two simple keys one after another.
+              self.allow_simple_key = False
+
+          # It must be a part of a complex key.
+          else:
+
+              # Block context needs additional checks.
+              # (Do we really need them? They will be caught by the parser
+              # anyway.)
+              if not self.flow_level:
+
+                  # We are allowed to start a complex value if and only if
+                  # we can start a simple key.
+                  if not self.allow_simple_key:
+  >                   raise ScannerError(None, None,
+                              "mapping values are not allowed here",
+                              self.get_mark())
+  E                   yaml.scanner.ScannerError: mapping values are not allowed here
+  E                     in "<unicode string>", line 2, column 9:
+  E                           mode: sprint
+  E                               ^
+
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/scanner.py:577: ScannerError
+  ______________________________ test_model_invalid ______________________________
+
+  tmp_path = PosixPath('/private/var/folders/30/cmv9c_5j3mq_kthx63sb1t5c0000gn/T/pytest-of-bytedance/pytest-19/test_model_invalid0')
+
+      def test_model_invalid(tmp_path: Path):
+          bad = """project_name: demo
+          mode: prd
+          execution_details: ''
+          code_context_paths: []
+          model: badformat
+          """
+          with pytest.raises(ValidationError):
+  >           load_config(str(_yaml(tmp_path, bad)))
+
+  tests/test_model_field_schema.py:47:
+  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+  src/personalvibe/run_pipeline.py:57: in load_config
+      raw = yaml.safe_load(_yaml_txt)
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/__init__.py:125: in safe_load
+      return load(stream, SafeLoader)
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/__init__.py:81: in load
+      return loader.get_single_data()
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/constructor.py:49: in get_single_data
+      node = self.get_single_node()
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/composer.py:36: in get_single_node
+      document = self.compose_document()
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/composer.py:55: in compose_document
+      node = self.compose_node(None, None)
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/composer.py:84: in compose_node
+      node = self.compose_mapping_node(anchor)
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/composer.py:127: in compose_mapping_node
+      while not self.check_event(MappingEndEvent):
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/parser.py:98: in check_event
+      self.current_event = self.state()
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/parser.py:428: in parse_block_mapping_key
+      if self.check_token(KeyToken):
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/scanner.py:116: in check_token
+      self.fetch_more_tokens()
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/scanner.py:223: in fetch_more_tokens
+      return self.fetch_value()
+  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+  self = <yaml.loader.SafeLoader object at 0x112fde3c0>
+
+      def fetch_value(self):
+
+          # Do we determine a simple key?
+          if self.flow_level in self.possible_simple_keys:
+
+              # Add KEY.
+              key = self.possible_simple_keys[self.flow_level]
+              del self.possible_simple_keys[self.flow_level]
+              self.tokens.insert(key.token_number-self.tokens_taken,
+                      KeyToken(key.mark, key.mark))
+
+              # If this key starts a new block mapping, we need to add
+              # BLOCK-MAPPING-START.
+              if not self.flow_level:
+                  if self.add_indent(key.column):
+                      self.tokens.insert(key.token_number-self.tokens_taken,
+                              BlockMappingStartToken(key.mark, key.mark))
+
+              # There cannot be two simple keys one after another.
+              self.allow_simple_key = False
+
+          # It must be a part of a complex key.
+          else:
+
+              # Block context needs additional checks.
+              # (Do we really need them? They will be caught by the parser
+              # anyway.)
+              if not self.flow_level:
+
+                  # We are allowed to start a complex value if and only if
+                  # we can start a simple key.
+                  if not self.allow_simple_key:
+  >                   raise ScannerError(None, None,
+                              "mapping values are not allowed here",
+                              self.get_mark())
+  E                   yaml.scanner.ScannerError: mapping values are not allowed here
+  E                     in "<unicode string>", line 2, column 9:
+  E                           mode: prd
+  E                               ^
+
+  .nox/tests-3-12/lib/python3.12/site-packages/yaml/scanner.py:577: ScannerError
+  =========================== short test summary info ============================
+  FAILED tests/test_model_field_schema.py::test_model_optional - yaml.scanner.S...
+  FAILED tests/test_model_field_schema.py::test_model_valid - yaml.scanner.Scan...
+  FAILED tests/test_model_field_schema.py::test_model_invalid - yaml.scanner.Sc...
+  ================== 3 failed, 35 passed, 1 deselected in 8.34s ==================
+  nox > Command pytest -m 'not advanced' '-W ignore::DeprecationWarning' failed with exit code 1
+  nox > Session tests-3.12 failed.
+  nox > Running session smoke_dist-3.12
+  nox > Creating virtual environment (virtualenv) using python3.12 in .nox/smoke_dist-3-12
+  nox > poetry build -f wheel
+  Building personalvibe (2.5.7)
+    - Building wheel
+    - Built personalvibe-2.5.7-py3-none-any.whl
+
+  ====================
+  🏗️  Building wheel …
+  ====================
+
+  nox > python -m venv /var/folders/30/cmv9c_5j3mq_kthx63sb1t5c0000gn/T/pv_smoke_7f44sbvb
+
+  ================================================
+  Wheel built: personalvibe-2.5.7-py3-none-any.whl
+  ================================================
+
+
+  ===========================================================================================
+  🧪  Creating temp venv at /var/folders/30/cmv9c_5j3mq_kthx63sb1t5c0000gn/T/pv_smoke_7f44sbvb
+  ===========================================================================================
+
+  nox > /var/folders/30/cmv9c_5j3mq_kthx63sb1t5c0000gn/T/pv_smoke_7f44sbvb/bin/pip install dist/personalvibe-2.5.7-py3-none-any.whl
+  Processing ./dist/personalvibe-2.5.7-py3-none-any.whl
+  Collecting jinja2<4.0.0,>=3.1.6 (from personalvibe==2.5.7)
+    Using cached jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+  Collecting litellm>=1.40 (from personalvibe==2.5.7)
+    Using cached litellm-1.70.4-py3-none-any.whl.metadata (38 kB)
+  Collecting openai<2.0.0,>=1.77.0 (from personalvibe==2.5.7)
+    Using cached openai-1.82.0-py3-none-any.whl.metadata (25 kB)
+  Collecting pathspec<0.13.0,>=0.12.1 (from personalvibe==2.5.7)
+    Using cached pathspec-0.12.1-py3-none-any.whl.metadata (21 kB)
+  Collecting pydantic-settings<3.0.0,>=2.9.1 (from personalvibe==2.5.7)
+    Using cached pydantic_settings-2.9.1-py3-none-any.whl.metadata (3.8 kB)
+  Collecting python-dotenv<0.22,>=0.21 (from personalvibe==2.5.7)
+    Using cached python_dotenv-0.21.1-py3-none-any.whl.metadata (21 kB)
+  Collecting pytz<2026.0,>=2025.1 (from personalvibe==2.5.7)
+    Using cached pytz-2025.2-py2.py3-none-any.whl.metadata (22 kB)
+  Collecting pyyaml<7.0,>=6.0 (from personalvibe==2.5.7)
+    Using cached PyYAML-6.0.2-cp312-cp312-macosx_11_0_arm64.whl.metadata (2.1 kB)
+  Collecting requests<3.0,>=2.29 (from personalvibe==2.5.7)
+    Using cached requests-2.32.3-py3-none-any.whl.metadata (4.6 kB)
+  Collecting tenacity<10.0,>=9.0 (from personalvibe==2.5.7)
+    Using cached tenacity-9.1.2-py3-none-any.whl.metadata (1.2 kB)
+  Collecting tiktoken<0.10.0,>=0.9.0 (from personalvibe==2.5.7)
+    Using cached tiktoken-0.9.0-cp312-cp312-macosx_11_0_arm64.whl.metadata (6.7 kB)
+  Collecting tqdm<5.0,>=4.67 (from personalvibe==2.5.7)
+    Using cached tqdm-4.67.1-py3-none-any.whl.metadata (57 kB)
+  Collecting MarkupSafe>=2.0 (from jinja2<4.0.0,>=3.1.6->personalvibe==2.5.7)
+    Using cached MarkupSafe-3.0.2-cp312-cp312-macosx_11_0_arm64.whl.metadata (4.0 kB)
+  Collecting aiohttp (from litellm>=1.40->personalvibe==2.5.7)
+    Using cached aiohttp-3.11.18-cp312-cp312-macosx_11_0_arm64.whl.metadata (7.7 kB)
+  Collecting click (from litellm>=1.40->personalvibe==2.5.7)
+    Using cached click-8.2.1-py3-none-any.whl.metadata (2.5 kB)
+  Collecting httpx>=0.23.0 (from litellm>=1.40->personalvibe==2.5.7)
+    Using cached httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+  Collecting importlib-metadata>=6.8.0 (from litellm>=1.40->personalvibe==2.5.7)
+    Using cached importlib_metadata-8.7.0-py3-none-any.whl.metadata (4.8 kB)
+  Collecting jsonschema<5.0.0,>=4.22.0 (from litellm>=1.40->personalvibe==2.5.7)
+    Using cached jsonschema-4.23.0-py3-none-any.whl.metadata (7.9 kB)
+  Collecting pydantic<3.0.0,>=2.0.0 (from litellm>=1.40->personalvibe==2.5.7)
+    Using cached pydantic-2.11.5-py3-none-any.whl.metadata (67 kB)
+  Collecting tokenizers (from litellm>=1.40->personalvibe==2.5.7)
+    Using cached tokenizers-0.21.1-cp39-abi3-macosx_11_0_arm64.whl.metadata (6.8 kB)
+  Collecting anyio<5,>=3.5.0 (from openai<2.0.0,>=1.77.0->personalvibe==2.5.7)
+    Using cached anyio-4.9.0-py3-none-any.whl.metadata (4.7 kB)
+  Collecting distro<2,>=1.7.0 (from openai<2.0.0,>=1.77.0->personalvibe==2.5.7)
+    Using cached distro-1.9.0-py3-none-any.whl.metadata (6.8 kB)
+  Collecting jiter<1,>=0.4.0 (from openai<2.0.0,>=1.77.0->personalvibe==2.5.7)
+    Using cached jiter-0.10.0-cp312-cp312-macosx_11_0_arm64.whl.metadata (5.2 kB)
+  Collecting sniffio (from openai<2.0.0,>=1.77.0->personalvibe==2.5.7)
+    Using cached sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+  Collecting typing-extensions<5,>=4.11 (from openai<2.0.0,>=1.77.0->personalvibe==2.5.7)
+    Using cached typing_extensions-4.13.2-py3-none-any.whl.metadata (3.0 kB)
+  Collecting typing-inspection>=0.4.0 (from pydantic-settings<3.0.0,>=2.9.1->personalvibe==2.5.7)
+    Using cached typing_inspection-0.4.1-py3-none-any.whl.metadata (2.6 kB)
+  Collecting charset-normalizer<4,>=2 (from requests<3.0,>=2.29->personalvibe==2.5.7)
+    Using cached charset_normalizer-3.4.2-cp312-cp312-macosx_10_13_universal2.whl.metadata (35 kB)
+  Collecting idna<4,>=2.5 (from requests<3.0,>=2.29->personalvibe==2.5.7)
+    Using cached idna-3.10-py3-none-any.whl.metadata (10 kB)
+  Collecting urllib3<3,>=1.21.1 (from requests<3.0,>=2.29->personalvibe==2.5.7)
+    Using cached urllib3-2.4.0-py3-none-any.whl.metadata (6.5 kB)
+  Collecting certifi>=2017.4.17 (from requests<3.0,>=2.29->personalvibe==2.5.7)
+    Using cached certifi-2025.4.26-py3-none-any.whl.metadata (2.5 kB)
+  Collecting regex>=2022.1.18 (from tiktoken<0.10.0,>=0.9.0->personalvibe==2.5.7)
+    Using cached regex-2024.11.6-cp312-cp312-macosx_11_0_arm64.whl.metadata (40 kB)
+  Collecting httpcore==1.* (from httpx>=0.23.0->litellm>=1.40->personalvibe==2.5.7)
+    Using cached httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+  Collecting h11>=0.16 (from httpcore==1.*->httpx>=0.23.0->litellm>=1.40->personalvibe==2.5.7)
+    Using cached h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+  Collecting zipp>=3.20 (from importlib-metadata>=6.8.0->litellm>=1.40->personalvibe==2.5.7)
+    Using cached zipp-3.21.0-py3-none-any.whl.metadata (3.7 kB)
+  Collecting attrs>=22.2.0 (from jsonschema<5.0.0,>=4.22.0->litellm>=1.40->personalvibe==2.5.7)
+    Using cached attrs-25.3.0-py3-none-any.whl.metadata (10 kB)
+  Collecting jsonschema-specifications>=2023.03.6 (from jsonschema<5.0.0,>=4.22.0->litellm>=1.40->personalvibe==2.5.7)
+    Using cached jsonschema_specifications-2025.4.1-py3-none-any.whl.metadata (2.9 kB)
+  Collecting referencing>=0.28.4 (from jsonschema<5.0.0,>=4.22.0->litellm>=1.40->personalvibe==2.5.7)
+    Using cached referencing-0.36.2-py3-none-any.whl.metadata (2.8 kB)
+  Collecting rpds-py>=0.7.1 (from jsonschema<5.0.0,>=4.22.0->litellm>=1.40->personalvibe==2.5.7)
+    Using cached rpds_py-0.25.1-cp312-cp312-macosx_11_0_arm64.whl.metadata (4.1 kB)
+  Collecting annotated-types>=0.6.0 (from pydantic<3.0.0,>=2.0.0->litellm>=1.40->personalvibe==2.5.7)
+    Using cached annotated_types-0.7.0-py3-none-any.whl.metadata (15 kB)
+  Collecting pydantic-core==2.33.2 (from pydantic<3.0.0,>=2.0.0->litellm>=1.40->personalvibe==2.5.7)
+    Using cached pydantic_core-2.33.2-cp312-cp312-macosx_11_0_arm64.whl.metadata (6.8 kB)
+  Collecting aiohappyeyeballs>=2.3.0 (from aiohttp->litellm>=1.40->personalvibe==2.5.7)
+    Using cached aiohappyeyeballs-2.6.1-py3-none-any.whl.metadata (5.9 kB)
+  Collecting aiosignal>=1.1.2 (from aiohttp->litellm>=1.40->personalvibe==2.5.7)
+    Using cached aiosignal-1.3.2-py2.py3-none-any.whl.metadata (3.8 kB)
+  Collecting frozenlist>=1.1.1 (from aiohttp->litellm>=1.40->personalvibe==2.5.7)
+    Using cached frozenlist-1.6.0-cp312-cp312-macosx_11_0_arm64.whl.metadata (16 kB)
+  Collecting multidict<7.0,>=4.5 (from aiohttp->litellm>=1.40->personalvibe==2.5.7)
+    Using cached multidict-6.4.4-cp312-cp312-macosx_11_0_arm64.whl.metadata (5.3 kB)
+  Collecting propcache>=0.2.0 (from aiohttp->litellm>=1.40->personalvibe==2.5.7)
+    Using cached propcache-0.3.1-cp312-cp312-macosx_11_0_arm64.whl.metadata (10 kB)
+  Collecting yarl<2.0,>=1.17.0 (from aiohttp->litellm>=1.40->personalvibe==2.5.7)
+    Using cached yarl-1.20.0-cp312-cp312-macosx_11_0_arm64.whl.metadata (72 kB)
+  Collecting huggingface-hub<1.0,>=0.16.4 (from tokenizers->litellm>=1.40->personalvibe==2.5.7)
+    Using cached huggingface_hub-0.32.0-py3-none-any.whl.metadata (14 kB)
+  Collecting filelock (from huggingface-hub<1.0,>=0.16.4->tokenizers->litellm>=1.40->personalvibe==2.5.7)
+    Using cached filelock-3.18.0-py3-none-any.whl.metadata (2.9 kB)
+  Collecting fsspec>=2023.5.0 (from huggingface-hub<1.0,>=0.16.4->tokenizers->litellm>=1.40->personalvibe==2.5.7)
+    Using cached fsspec-2025.5.0-py3-none-any.whl.metadata (11 kB)
+  Collecting packaging>=20.9 (from huggingface-hub<1.0,>=0.16.4->tokenizers->litellm>=1.40->personalvibe==2.5.7)
+    Using cached packaging-25.0-py3-none-any.whl.metadata (3.3 kB)
+  Collecting hf-xet<2.0.0,>=1.1.2 (from huggingface-hub<1.0,>=0.16.4->tokenizers->litellm>=1.40->personalvibe==2.5.7)
+    Using cached hf_xet-1.1.2-cp37-abi3-macosx_11_0_arm64.whl.metadata (879 bytes)
+  Using cached jinja2-3.1.6-py3-none-any.whl (134 kB)
+  Using cached litellm-1.70.4-py3-none-any.whl (7.9 MB)
+  Using cached openai-1.82.0-py3-none-any.whl (720 kB)
+  Using cached pathspec-0.12.1-py3-none-any.whl (31 kB)
+  Using cached pydantic_settings-2.9.1-py3-none-any.whl (44 kB)
+  Using cached python_dotenv-0.21.1-py3-none-any.whl (19 kB)
+  Using cached pytz-2025.2-py2.py3-none-any.whl (509 kB)
+  Using cached PyYAML-6.0.2-cp312-cp312-macosx_11_0_arm64.whl (173 kB)
+  Using cached requests-2.32.3-py3-none-any.whl (64 kB)
+  Using cached tenacity-9.1.2-py3-none-any.whl (28 kB)
+  Using cached tiktoken-0.9.0-cp312-cp312-macosx_11_0_arm64.whl (1.0 MB)
+  Using cached tqdm-4.67.1-py3-none-any.whl (78 kB)
+  Using cached anyio-4.9.0-py3-none-any.whl (100 kB)
+  Using cached certifi-2025.4.26-py3-none-any.whl (159 kB)
+  Using cached charset_normalizer-3.4.2-cp312-cp312-macosx_10_13_universal2.whl (199 kB)
+  Using cached distro-1.9.0-py3-none-any.whl (20 kB)
+  Using cached httpx-0.28.1-py3-none-any.whl (73 kB)
+  Using cached httpcore-1.0.9-py3-none-any.whl (78 kB)
+  Using cached idna-3.10-py3-none-any.whl (70 kB)
+  Using cached importlib_metadata-8.7.0-py3-none-any.whl (27 kB)
+  Using cached jiter-0.10.0-cp312-cp312-macosx_11_0_arm64.whl (320 kB)
+  Using cached jsonschema-4.23.0-py3-none-any.whl (88 kB)
+  Using cached MarkupSafe-3.0.2-cp312-cp312-macosx_11_0_arm64.whl (12 kB)
+  Using cached pydantic-2.11.5-py3-none-any.whl (444 kB)
+  Using cached pydantic_core-2.33.2-cp312-cp312-macosx_11_0_arm64.whl (1.8 MB)
+  Using cached regex-2024.11.6-cp312-cp312-macosx_11_0_arm64.whl (284 kB)
+  Using cached sniffio-1.3.1-py3-none-any.whl (10 kB)
+  Using cached typing_extensions-4.13.2-py3-none-any.whl (45 kB)
+  Using cached typing_inspection-0.4.1-py3-none-any.whl (14 kB)
+  Using cached urllib3-2.4.0-py3-none-any.whl (128 kB)
+  Using cached aiohttp-3.11.18-cp312-cp312-macosx_11_0_arm64.whl (457 kB)
+  Using cached click-8.2.1-py3-none-any.whl (102 kB)
+  Using cached tokenizers-0.21.1-cp39-abi3-macosx_11_0_arm64.whl (2.7 MB)
+  Using cached aiohappyeyeballs-2.6.1-py3-none-any.whl (15 kB)
+  Using cached aiosignal-1.3.2-py2.py3-none-any.whl (7.6 kB)
+  Using cached annotated_types-0.7.0-py3-none-any.whl (13 kB)
+  Using cached attrs-25.3.0-py3-none-any.whl (63 kB)
+  Using cached frozenlist-1.6.0-cp312-cp312-macosx_11_0_arm64.whl (121 kB)
+  Using cached huggingface_hub-0.32.0-py3-none-any.whl (509 kB)
+  Using cached jsonschema_specifications-2025.4.1-py3-none-any.whl (18 kB)
+  Using cached multidict-6.4.4-cp312-cp312-macosx_11_0_arm64.whl (37 kB)
+  Using cached propcache-0.3.1-cp312-cp312-macosx_11_0_arm64.whl (46 kB)
+  Using cached referencing-0.36.2-py3-none-any.whl (26 kB)
+  Using cached rpds_py-0.25.1-cp312-cp312-macosx_11_0_arm64.whl (350 kB)
+  Using cached yarl-1.20.0-cp312-cp312-macosx_11_0_arm64.whl (95 kB)
+  Using cached zipp-3.21.0-py3-none-any.whl (9.6 kB)
+  Using cached fsspec-2025.5.0-py3-none-any.whl (196 kB)
+  Using cached h11-0.16.0-py3-none-any.whl (37 kB)
+  Using cached hf_xet-1.1.2-cp37-abi3-macosx_11_0_arm64.whl (2.5 MB)
+  Using cached packaging-25.0-py3-none-any.whl (66 kB)
+  Using cached filelock-3.18.0-py3-none-any.whl (16 kB)
+  Installing collected packages: pytz, zipp, urllib3, typing-extensions, tqdm, tenacity, sniffio, rpds-py, regex, pyyaml, python-dotenv, propcache, pathspec, packaging, multidict, MarkupSafe, jiter, idna, hf-xet, h11, fsspec, frozenlist, filelock, distro, click, charset-normalizer, certifi, attrs, annotated-types, aiohappyeyeballs, yarl, typing-inspection, requests, referencing, pydantic-core, jinja2, importlib-metadata, httpcore, anyio, aiosignal, tiktoken, pydantic, jsonschema-specifications, huggingface-hub, httpx, aiohttp, tokenizers, pydantic-settings, openai, jsonschema, litellm, personalvibe
+  Successfully installed MarkupSafe-3.0.2 aiohappyeyeballs-2.6.1 aiohttp-3.11.18 aiosignal-1.3.2 annotated-types-0.7.0 anyio-4.9.0 attrs-25.3.0 certifi-2025.4.26 charset-normalizer-3.4.2 click-8.2.1 distro-1.9.0 filelock-3.18.0 frozenlist-1.6.0 fsspec-2025.5.0 h11-0.16.0 hf-xet-1.1.2 httpcore-1.0.9 httpx-0.28.1 huggingface-hub-0.32.0 idna-3.10 importlib-metadata-8.7.0 jinja2-3.1.6 jiter-0.10.0 jsonschema-4.23.0 jsonschema-specifications-2025.4.1 litellm-1.70.4 multidict-6.4.4 openai-1.82.0 packaging-25.0 pathspec-0.12.1 personalvibe-2.5.7 propcache-0.3.1 pydantic-2.11.5 pydantic-core-2.33.2 pydantic-settings-2.9.1 python-dotenv-0.21.1 pytz-2025.2 pyyaml-6.0.2 referencing-0.36.2 regex-2024.11.6 requests-2.32.3 rpds-py-0.25.1 sniffio-1.3.1 tenacity-9.1.2 tiktoken-0.9.0 tokenizers-0.21.1 tqdm-4.67.1 typing-extensions-4.13.2 typing-inspection-0.4.1 urllib3-2.4.0 yarl-1.20.0 zipp-3.21.0
+
+  [notice] A new release of pip is available: 24.0 -> 25.1.1
+  [notice] To update, run: python3.12 -m pip install --upgrade pip
+
+  ====================================
+  📦  Installing wheel into temp venv …
+  ====================================
+
+  nox > /var/folders/30/cmv9c_5j3mq_kthx63sb1t5c0000gn/T/pv_smoke_7f44sbvb/bin/pv --help
+  usage: pv [-h] <command> ...
+
+  Personalvibe CLI – Command-Line Interface
+
+  positional arguments:
+    <command>
+      run           Determine mode from YAML then execute.
+      milestone     milestone workflow
+      sprint        sprint workflow
+      validate      validate workflow
+      prd           prd workflow
+      new-milestone
+                    Scaffold next milestone YAML
+      prepare-sprint
+                    Scaffold next sprint YAML
+      parse-stage   Extract latest assistant code block.
+
+  options:
+    -h, --help      show this help message and exit
+
+  ===================================
+  🚀  Running `pv --help` smoke test …
+  ===================================
+
+  nox > Session smoke_dist-3.12 was successful.
+  nox > Ran multiple sessions:
+  nox > * lint-3.9: failed
+  nox > * lint-3.12: failed
+  nox > * tests-3.9: failed
+  nox > * tests-3.12: failed
+  nox > * smoke_dist-3.12: success
+
+  ====================================
+  ✅  smoke_dist completed successfully
+  ====================================
+
+  (personalvibe-py3.9) bytedance@C02H86S6Q05N personalvibe %
+
+
+  CRITICAL ERROR with program after last attempt
+
+  (personalvibe-py3.9) bytedance@C02H86S6Q05N personalvibe % pv run --config prompts/personalvibe/configs/6.2.1.yaml
+  2025-05-23 12:45:37 | INFO | personalvibe.run_pipeline | P  E  R  S  O  N  A  L  V  I  B  E  – run_id=6.2.1_base
+  2025-05-23 12:45:38 | INFO | personalvibe.vibe_utils | Running config version: 6.2.1
+  2025-05-23 12:45:38 | INFO | personalvibe.vibe_utils | Running mode = sprint
+  2025-05-23 12:45:38 | INFO | personalvibe.vibe_utils | Prompt saved to: /Users/bytedance/Documents/personalvibe/data/personalvibe/prompt_inputs/2025-05-23_12-45-38_6b287ca39b.md
+  Traceback (most recent call last):
+    File "/Users/bytedance/Documents/personalvibe/.venv/bin/pv", line 6, in <module>
+      sys.exit(app())
+    File "/Users/bytedance/Documents/personalvibe/src/personalvibe/cli.py", line 250, in app
+      cli_main()
+    File "/Users/bytedance/Documents/personalvibe/src/personalvibe/cli.py", line 177, in cli_main
+      ns.func(ns)  # type: ignore[arg-type]
+    File "/Users/bytedance/Documents/personalvibe/src/personalvibe/cli.py", line 85, in _cmd_run
+      _call_run_pipeline(forwarded)
+    File "/Users/bytedance/Documents/personalvibe/src/personalvibe/cli.py", line 54, in _call_run_pipeline
+      run_pipeline.main()  # never returns on sys.exit()
+    File "/Users/bytedance/Documents/personalvibe/src/personalvibe/run_pipeline.py", line 116, in main
+      vibe_utils.get_vibed(
+    File "/Users/bytedance/Documents/personalvibe/src/personalvibe/vibe_utils.py", line 123, in get_vibed
+      message_tokens = num_tokens(str(messages), model=model)
+    File "/Users/bytedance/Documents/personalvibe/src/personalvibe/vibe_utils.py", line 305, in num_tokens
+      enc = tiktoken.encoding_for_model(model)
+    File "/Users/bytedance/Documents/personalvibe/.venv/lib/python3.9/site-packages/tiktoken/model.py", line 110, in encoding_for_model
+      return get_encoding(encoding_name_for_model(model_name))
+    File "/Users/bytedance/Documents/personalvibe/.venv/lib/python3.9/site-packages/tiktoken/model.py", line 93, in encoding_name_for_model
+      if model_name.startswith(model_prefix):
+  AttributeError: 'NoneType' object has no attribute 'startswith'
+  (personalvibe-py3.9) bytedance@C02H86S6Q05N personalvibe %

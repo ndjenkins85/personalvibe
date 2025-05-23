@@ -94,7 +94,7 @@ def get_vibed(
     prompt: str,
     contexts: Union[List[Path], None] = None,
     project_name: str = "",
-    model: str = "o3",
+    model: Union[str, None] = None,
     max_completion_tokens: int = 100_000,
     *,
     workspace: Union[Path, None] = None,
@@ -120,6 +120,7 @@ def get_vibed(
     messages.append({"role": "user", "content": [{"type": "text", "text": prompt}]})
 
     message_chars = len(str(messages))
+    model = model or "o3"
     message_tokens = num_tokens(str(messages), model=model)
     log.info("Prompt size – Tokens: %s, Chars: %s", message_tokens, message_chars)
 
@@ -301,7 +302,7 @@ def get_base_path(base: str = "personalvibe") -> Path:
     return Path(*new_parts)
 
 
-def num_tokens(text: str, model: str = "o3") -> int:
+def num_tokens(text: str, model: Union[str, None] = None) -> int:
     enc = tiktoken.encoding_for_model(model)
     return len(enc.encode(text))
 

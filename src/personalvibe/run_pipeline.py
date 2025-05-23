@@ -3,26 +3,37 @@
 
 import argparse
 import logging
+import re
+import textwrap
 from pathlib import Path
 from typing import List, Optional
 
 import yaml
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field, ValidationError, field_validator
 
 from personalvibe import logger, vibe_utils
 from personalvibe.yaml_utils import sanitize_yaml_text
 
 
 class ConfigModel(BaseModel):
+    # --- field validation --------------------------------------------------
+    @field_validator("model", mode="before")
+    def validate_model(cls, v: str) -> str:  # noqa: D401,N805,ANN101
+        if v in ("", None):
+            return ""
+        if isinstance(v, str) and re.match(r"^[^/]+/.+$", v.strip()):
+            return v.strip()
+        raise ValueError("model must be <provider>/<model_name>")
+
     """Schema **v2**
 
     • adds optional ``conversation_history`` (list of {role, content})
     • drops *required* ``milestone_file_name`` (legacy keys tolerated)
     """
-
     version: str
     project_name: str
     mode: str = Field(..., pattern="^(prd|milestone|sprint|validate)$")
+    model: Optional[str] = None
     execution_task: Optional[str] = None
     execution_details: str = ""
     code_context_paths: List[str]
@@ -39,7 +50,9 @@ def load_config(config_path: str) -> ConfigModel:
     """Load YAML then validate. Auto-fills *project_name* if missing."""
     try:
         with open(config_path, "r", encoding="utf-8") as f:
-            _yaml_txt = sanitize_yaml_text(f.read(), origin=config_path)
+            _raw = f.read()
+            _yaml_txt = textwrap.dedent(_raw)
+            _yaml_txt = sanitize_yaml_text(_yaml_txt, origin=config_path)
             raw = yaml.safe_load(_yaml_txt)
             raw["version"] = Path(config_path).stem
 
@@ -104,6 +117,7 @@ def main() -> None:
             project_name=config.project_name,
             max_completion_tokens=20_000,
             workspace=workspace,
+            model=(config.model or None),
         )
 
 
