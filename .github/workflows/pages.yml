@@ -2,7 +2,7 @@ name: Pages
 
 on:
   push:
-    branches: [master]   # or main
+    branches: [master]        # or main
 
 permissions:
   contents: read
@@ -14,22 +14,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: 3.12
 
       - run: pip install nox==2025.2.9 poetry==2.1.1
       - run: poetry install
-      - run: poetry run nox -s docs       # generates docs/_build/html
+      - run: poetry run nox -s docs          # ⇒ docs/_build/html
 
-      # Explicit, fully-qualified artefact upload
-      - uses: actions/upload-artifact@v4
+      # ① UPLOAD the site as a Pages artifact
+      - uses: actions/upload-pages-artifact@v2   # <── creates artifact ‘github-pages’
         with:
-          name: pages
           path: docs/_build/html
 
   deploy:
+    # ② Deploy must wait for build (same run_id)
     needs: build
     runs-on: ubuntu-latest
     environment:
@@ -37,5 +36,6 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
 
     steps:
+      # ③ DEPLOY the previously uploaded artifact
       - id: deploy
         uses: actions/deploy-pages@v3
