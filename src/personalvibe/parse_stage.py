@@ -48,6 +48,9 @@ def extract_and_save_code_block(project_name: Union[str, None] = None) -> str:
     extracted_code = match.group(1).strip()
 
     new_version = determine_next_version(project_name)
+    # Determine file extension based on mode (bugfix = .md, sprint = .py)
+    # For now, always use .py since we're extracting python code
+    # TODO: In future, support .md for bugfix documentation
     output_file = stages_dir / f"{new_version}.py"
 
     # Prepare final content with header
@@ -76,9 +79,10 @@ def determine_next_version(project_name: Union[str, None] = None) -> str:  # noq
     Rules
     -----
     • If **no** existing stage files ⇒ ``1.1.0`` (first sprint).
-    • Else **always increment the *bug-fix* component** of the latest
-      file found, e.g.  ``4.3.0 → 4.3.1``  or  ``2.7.4 → 2.7.5``.
+    • If a sprint, increment to `1.2.0`, if a bugfix, increment to `1.1.1.md`
     • Version scan looks at ``prompts/<project>/stages/*.(md|py)``.
+
+    # TODO update the below code and parameters (sprint or bugfix) to improve the naming
 
     This fixes the long-standing bug where _determine_next_version()
     bumped the *sprint* instead of the *bug-fix* number.

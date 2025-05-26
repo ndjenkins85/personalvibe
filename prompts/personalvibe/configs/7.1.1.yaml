@@ -1,0 +1,931 @@
+# pv run --config prompts/personalvibe/configs/7.1.1.yaml
+
+# Chunk 1: Bug Fixes and Infrastructure Improvements
+# Chunk 2: Bugfix Mode Implementation
+# Chunk 3: Developer Experience Enhancements
+# Chunk 4: Testing and Documentation
+
+project_name: "personalvibe"
+mode: sprint
+model: anthropic/claude-opus-4-20250514
+# model: openai/o3
+# model: openai/o4-mini
+# model: openai/gpt-4o
+code_context_paths:
+  - "prompts/personalvibe/context/documentation.txt"
+  - "prompts/personalvibe/context/codefiles.txt"
+execution_details: |
+  We need to perform some bugfixes following the attempted integration of "Chunk 1: Bug Fixes and Infrastructure Improvements"
+
+  Following the chunk we were given these instructions, along with these outputs
+
+
+  NOTE: sprint is still saving incorrectly to 7.0.1.py instead of 7.1.0.py!!
+
+  Saved extracted code to: /Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/7.0.1.py
+  Running extracted code from: /Users/nicholasjenkins/Documents/personalvibe/prompts/personalvibe/stages/7.0.1.py
+
+  ================================================================================
+  Sprint 7.1.0 - Chunk 1: Bug Fixes and Infrastructure Improvements
+  ================================================================================
+
+  COMPLETED FIXES:
+
+  1. ✅ Sprint File Naming Bug
+     - Updated parse_stage.py to clarify file extension logic
+     - Added TODO comment for future .md support for bugfix documentation
+     - Currently maintains .py extension for extracted code blocks
+
+  2. ✅ GitHub Pages Permission Error
+     - Added proper permissions block to .github/workflows/pages.yml
+     - Added: contents: read, pages: write, id-token: write
+     - This should resolve the CI/CD deployment failures
+
+  3. ✅ Max Tokens Parameter
+     - Added --max_tokens argument to CLI (default: 20000)
+     - Updated run_pipeline.py to accept and use the parameter
+     - Updated cli.py to pass through max_tokens in all commands
+     - Parameter now properly flows from CLI → run_pipeline → get_vibed
+
+  4. ✅ Prompt Only Smoke Test
+     - Created test_prompt_only_smoke.py with comprehensive tests
+     - Tests prompt_only mode with sprint template
+     - Tests max_tokens parameter functionality
+     - Created sprint_template.yaml if missing
+
+  TESTING REQUIRED:
+
+  1. Run the new smoke tests:
+     pytest tests/test_prompt_only_smoke.py -v
+
+  2. Test CLI max_tokens parameter:
+     pv run --config example.yaml --prompt_only --max_tokens 50000
+
+  3. Verify GitHub Pages deployment works after merge
+
+  4. Test parse-stage command still works correctly:
+
+
+  testing results:
+  (personalvibe-py3.12) bash-3.2$ pv run --config src/personalvibe/data/milestone_template.yaml --prompt_only --max_tokens 50000
+  2025-05-26 14:41:05 | INFO | personalvibe.run_pipeline | P  E  R  S  O  N  A  L  V  I  B  E  – run_id=milestone_template_base
+  2025-05-26 14:41:05 | INFO | personalvibe.vibe_utils | Running config version: milestone_template
+  2025-05-26 14:41:05 | INFO | personalvibe.vibe_utils | Running mode = milestone
+  2025-05-26 14:41:05 | INFO | personalvibe.vibe_utils | Duplicate prompt detected. Existing file: /Users/nicholasjenkins/Documents/personalvibe/data/personalvibe/prompt_inputs/2025-05-26_14-40-56_bfd5a8e4e7.md
+  (personalvibe-py3.12) bash-3.2$ pytest tests/test_prompt_only_smoke.py -v
+  =============================================================== test session starts ================================================================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0 -- /Users/nicholasjenkins/Documents/personalvibe/.venv/bin/python
+  cachedir: .pytest_cache
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  configfile: pyproject.toml
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 2 items
+
+  tests/test_prompt_only_smoke.py::test_prompt_only_sprint_template FAILED                                                                     [ 50%]
+  tests/test_prompt_only_smoke.py::test_prompt_only_with_max_tokens FAILED                                                                     [100%]
+
+  ===================================================================== FAILURES =====================================================================
+  _________________________________________________________ test_prompt_only_sprint_template _________________________________________________________
+
+  monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x114b46a50>
+  tmp_path = PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-1/test_prompt_only_sprint_templa0')
+
+      def test_prompt_only_sprint_template(monkeypatch, tmp_path):
+          """Verify prompt_only mode works with sprint_template.yaml."""
+          # Create minimal config using sprint template format
+          cfg_yaml = tmp_path / "1.1.0.yaml"
+          cfg_yaml.write_text(
+              """
+              project_name: smoketest
+              mode: sprint
+              execution_details: "Test sprint execution"
+              code_context_paths: []
+              """,
+              encoding="utf-8",
+          )
+
+          # Create required directory structure
+          prompts_dir = tmp_path / "prompts" / "smoketest"
+          stages_dir = prompts_dir / "stages"
+          stages_dir.mkdir(parents=True)
+
+          # Create PRD template
+          prd_path = prompts_dir / "prd.md"
+          prd_path.write_text(
+              """# {{ project_name }} PRD
+
+      Task: {{ execution_task }}
+
+      {{ instructions }}
+
+      Details: {{ execution_details }}
+
+      Code context:
+      {{ code_context }}
+      """,
+              encoding="utf-8",
+          )
+
+          # Create a minimal milestone file
+          milestone_path = stages_dir / "1.0.0.md"
+          milestone_path.write_text(
+              """# Milestone 1: Initial Setup
+
+              This milestone focuses on basic setup.
+
+              Sprint 1: Create basic structure
+              """,
+              encoding="utf-8",
+          )
+
+          # Mock get_base_path to return our temp directory
+          monkeypatch.setattr(vibe_utils, "get_base_path", lambda: tmp_path)
+
+          # Mock the template loader to return our test templates
+          def mock_load_template(fname):
+              if fname == "sprint.md":
+                  return "Sprint instructions: Execute the requested sprint."
+              elif fname == "milestone.md":
+                  return "Milestone instructions: Plan the next milestone."
+              elif fname == "validate.md":
+                  return "Validate instructions: Check the sprint results."
+              return ""
+
+          monkeypatch.setattr(vibe_utils, "_load_template", mock_load_template)
+
+          # Run with prompt_only
+          import sys
+          monkeypatch.setattr(sys, "argv", ["pv", "--config", str(cfg_yaml), "--prompt_only"])
+
+          try:
+              run_pipeline.main()
+          except SystemExit:
+              pass
+
+          # Verify prompt was saved
+          data_dir = tmp_path / "data" / "smoketest" / "prompt_inputs"
+  >       assert data_dir.exists()
+  E       AssertionError: assert False
+  E        +  where False = <bound method Path.exists of PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-1/test_prompt_only_sprint_templa0/data/smoketest/prompt_inputs')>()
+  E        +    where <bound method Path.exists of PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-1/test_prompt_only_sprint_templa0/data/smoketest/prompt_inputs')> = PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-1/test_prompt_only_sprint_templa0/data/smoketest/prompt_inputs').exists
+
+  tests/test_prompt_only_smoke.py:85: AssertionError
+  --------------------------------------------------------------- Captured stdout call ---------------------------------------------------------------
+  2025-05-26 14:41:11 | INFO | personalvibe.run_pipeline | P  E  R  S  O  N  A  L  V  I  B  E  – run_id=1.1.0_base
+  2025-05-26 14:41:11 | INFO | personalvibe.vibe_utils | Running config version: 1.1.0
+  2025-05-26 14:41:11 | INFO | personalvibe.vibe_utils | Running mode = sprint
+  2025-05-26 14:41:11 | INFO | personalvibe.vibe_utils | Duplicate prompt detected. Existing file: /Users/nicholasjenkins/Documents/personalvibe/data/smoketest/prompt_inputs/2025-05-26_14-38-13_50561aa564.md
+  _________________________________________________________ test_prompt_only_with_max_tokens _________________________________________________________
+
+  monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x114b47200>
+  tmp_path = PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-1/test_prompt_only_with_max_toke0')
+
+      def test_prompt_only_with_max_tokens(monkeypatch, tmp_path):
+          """Verify max_tokens parameter works with prompt_only."""
+          cfg_yaml = tmp_path / "1.0.0.yaml"
+          cfg_yaml.write_text(
+              """
+              project_name: tokentest
+              mode: milestone
+              execution_details: ""
+              code_context_paths: []
+              """,
+              encoding="utf-8",
+          )
+
+          # Create minimal structure
+          prompts_dir = tmp_path / "prompts" / "tokentest"
+          prompts_dir.mkdir(parents=True)
+
+          prd_path = prompts_dir / "prd.md"
+          prd_path.write_text("# Test PRD\n{{ execution_task }}", encoding="utf-8")
+
+          monkeypatch.setattr(vibe_utils, "get_base_path", lambda: tmp_path)
+          monkeypatch.setattr(vibe_utils, "_load_template", lambda x: "Test template")
+
+          # Run with custom max_tokens
+          import sys
+          monkeypatch.setattr(sys, "argv", [
+              "pv", "--config", str(cfg_yaml),
+              "--prompt_only", "--max_tokens", "50000"
+          ])
+
+          try:
+              run_pipeline.main()
+          except SystemExit:
+              pass
+
+          # Just verify it ran without error
+          data_dir = tmp_path / "data" / "tokentest" / "prompt_inputs"
+  >       assert data_dir.exists()
+  E       AssertionError: assert False
+  E        +  where False = <bound method Path.exists of PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-1/test_prompt_only_with_max_toke0/data/tokentest/prompt_inputs')>()
+  E        +    where <bound method Path.exists of PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-1/test_prompt_only_with_max_toke0/data/tokentest/prompt_inputs')> = PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-1/test_prompt_only_with_max_toke0/data/tokentest/prompt_inputs').exists
+
+  tests/test_prompt_only_smoke.py:135: AssertionError
+  --------------------------------------------------------------- Captured stdout call ---------------------------------------------------------------
+  2025-05-26 14:41:11 | INFO | personalvibe.run_pipeline | P  E  R  S  O  N  A  L  V  I  B  E  – run_id=1.0.0_base
+  2025-05-26 14:41:11 | INFO | personalvibe.vibe_utils | Running config version: 1.0.0
+  2025-05-26 14:41:11 | INFO | personalvibe.vibe_utils | Running mode = milestone
+  2025-05-26 14:41:11 | INFO | personalvibe.vibe_utils | Duplicate prompt detected. Existing file: /Users/nicholasjenkins/Documents/personalvibe/data/tokentest/prompt_inputs/2025-05-26_14-38-13_7822b76339.md
+  ---------------------------------------------------------------- Captured log call -----------------------------------------------------------------
+  INFO     personalvibe.run_pipeline:run_pipeline.py:99 P  E  R  S  O  N  A  L  V  I  B  E  – run_id=1.0.0_base
+  INFO     personalvibe.vibe_utils:vibe_utils.py:434 Running config version: 1.0.0
+  INFO     personalvibe.vibe_utils:vibe_utils.py:435 Running mode = milestone
+  INFO     personalvibe.vibe_utils:vibe_utils.py:68 Duplicate prompt detected. Existing file: /Users/nicholasjenkins/Documents/personalvibe/data/tokentest/prompt_inputs/2025-05-26_14-38-13_7822b76339.md
+  ================================================================= warnings summary =================================================================
+  .venv/lib/python3.12/site-packages/pydantic/_internal/_config.py:291
+    /Users/nicholasjenkins/Documents/personalvibe/.venv/lib/python3.12/site-packages/pydantic/_internal/_config.py:291: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.9/migration/
+      warnings.warn(DEPRECATION_MESSAGE, DeprecationWarning)
+
+  tests/test_prompt_only_smoke.py::test_prompt_only_sprint_template
+    /Users/nicholasjenkins/Documents/personalvibe/src/personalvibe/logger.py:88: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+      ts = datetime.utcnow().isoformat(timespec="seconds")
+
+  -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+  ============================================================= short test summary info ==============================================================
+  FAILED tests/test_prompt_only_smoke.py::test_prompt_only_sprint_template - AssertionError: assert False
+  FAILED tests/test_prompt_only_smoke.py::test_prompt_only_with_max_tokens - AssertionError: assert False
+  ========================================================== 2 failed, 2 warnings in 1.47s ===========================================================
+  (personalvibe-py3.12) bash-3.2$ ./tests/personalvibe.sh
+  🔍  Installing project dependencies (poetry)…
+  The `--sync` option is deprecated and slated for removal in the next minor release after June 2025, use the `poetry sync` command instead.
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  🧹  Running quality-gate via nox (lint + tests + smoke_dist)…
+  nox > Running session lint-3.9
+  nox > Re-using existing virtual environment at .nox/lint-3-9.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (2.6.1)
+  nox > black src/personalvibe tests noxfile.py docs/conf.py
+  reformatted /Users/nicholasjenkins/Documents/personalvibe/tests/test_prompt_only_smoke.py
+  reformatted /Users/nicholasjenkins/Documents/personalvibe/src/personalvibe/vibe_utils.py
+
+  All done! ✨ 🍰 ✨
+  2 files reformatted, 42 files left unchanged.
+  nox > mypy -p personalvibe
+  Success: no issues found in 13 source files
+  nox > flake8 src/personalvibe tests noxfile.py docs/conf.py --select=ANN,E,F
+  src/personalvibe/vibe_utils.py:438:5: E722 do not use bare 'except'
+  src/personalvibe/vibe_utils.py:439:9: F841 local variable 'milestone_ver' is assigned to but never used
+  src/personalvibe/vibe_utils.py:439:36: F841 local variable 'bugfix_ver' is assigned to but never used
+  nox > Command flake8 src/personalvibe tests noxfile.py docs/conf.py --select=ANN,E,F failed with exit code 1
+  nox > Session lint-3.9 failed.
+  nox > Running session lint-3.12
+  nox > Re-using existing virtual environment at .nox/lint-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (2.6.1)
+  nox > black src/personalvibe tests noxfile.py docs/conf.py
+  All done! ✨ 🍰 ✨
+  44 files left unchanged.
+  nox > mypy -p personalvibe
+  Success: no issues found in 13 source files
+  nox > flake8 src/personalvibe tests noxfile.py docs/conf.py --select=ANN,E,F
+  src/personalvibe/vibe_utils.py:438:5: E722 do not use bare 'except'
+  src/personalvibe/vibe_utils.py:439:9: F841 local variable 'milestone_ver' is assigned to but never used
+  src/personalvibe/vibe_utils.py:439:36: F841 local variable 'bugfix_ver' is assigned to but never used
+  nox > Command flake8 src/personalvibe tests noxfile.py docs/conf.py --select=ANN,E,F failed with exit code 1
+  nox > Session lint-3.12 failed.
+  nox > Running session tests-3.9
+  nox > Re-using existing virtual environment at .nox/tests-3-9.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (2.6.1)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.9.22, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  configfile: pyproject.toml
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 42 items / 1 deselected / 41 selected
+
+  tests/test_cli_basic.py .                                                [  2%]
+  tests/test_cli_new_cmds.py ..                                            [  7%]
+  tests/test_cli_run_delegate.py ..                                        [ 12%]
+  tests/test_cli_subcommands.py ..                                         [ 17%]
+  tests/test_config_schema_v2.py ...                                       [ 24%]
+  tests/test_custom_sharp_boe.py .                                         [ 26%]
+  tests/test_default_model.py .                                            [ 29%]
+  tests/test_determine_next_version.py .                                   [ 31%]
+  tests/test_get_vibed_router.py .                                         [ 34%]
+  tests/test_llm_router.py ...                                             [ 41%]
+  tests/test_log_to_cm.py .                                                [ 43%]
+  tests/test_log_to_subprocess.py .                                        [ 46%]
+  tests/test_logger.py .                                                   [ 48%]
+  tests/test_logger_runid.py .                                             [ 51%]
+  tests/test_logging.py .                                                  [ 53%]
+  tests/test_model_selection.py .                                          [ 56%]
+  tests/test_project_detection.py ....                                     [ 65%]
+  tests/test_prompt_only_smoke.py FF                                       [ 70%]
+  tests/test_resource_fallback.py ..                                       [ 75%]
+  tests/test_retry_engine.py ...                                           [ 82%]
+  tests/test_run_context.py .                                              [ 85%]
+  tests/test_save_prompt_duplicate.py .                                    [ 87%]
+  tests/test_vibed_no_duplicates.py .                                      [ 90%]
+  tests/test_workspace_root.py ..                                          [ 95%]
+  tests/test_yaml_sanitiser.py ..                                          [100%]
+
+  =================================== FAILURES ===================================
+  _______________________ test_prompt_only_sprint_template _______________________
+
+  monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x114601040>
+  tmp_path = PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-2/test_prompt_only_sprint_templa0')
+
+      def test_prompt_only_sprint_template(monkeypatch, tmp_path):
+          """Verify prompt_only mode works with sprint_template.yaml."""
+          # Create minimal config using sprint template format
+          cfg_yaml = tmp_path / "1.1.0.yaml"
+          cfg_yaml.write_text(
+              """
+              project_name: smoketest
+              mode: sprint
+              execution_details: "Test sprint execution"
+              code_context_paths: []
+              """,
+              encoding="utf-8",
+          )
+
+          # Create required directory structure
+          prompts_dir = tmp_path / "prompts" / "smoketest"
+          stages_dir = prompts_dir / "stages"
+          stages_dir.mkdir(parents=True)
+
+          # Create PRD template
+          prd_path = prompts_dir / "prd.md"
+          prd_path.write_text(
+              """# {{ project_name }} PRD
+
+      Task: {{ execution_task }}
+
+      {{ instructions }}
+
+      Details: {{ execution_details }}
+
+      Code context:
+      {{ code_context }}
+      """,
+              encoding="utf-8",
+          )
+
+          # Create a minimal milestone file
+          milestone_path = stages_dir / "1.0.0.md"
+          milestone_path.write_text(
+              """# Milestone 1: Initial Setup
+
+              This milestone focuses on basic setup.
+
+              Sprint 1: Create basic structure
+              """,
+              encoding="utf-8",
+          )
+
+          # Mock get_base_path to return our temp directory
+          monkeypatch.setattr(vibe_utils, "get_base_path", lambda: tmp_path)
+
+          # Mock the template loader to return our test templates
+          def mock_load_template(fname):
+              if fname == "sprint.md":
+                  return "Sprint instructions: Execute the requested sprint."
+              elif fname == "milestone.md":
+                  return "Milestone instructions: Plan the next milestone."
+              elif fname == "validate.md":
+                  return "Validate instructions: Check the sprint results."
+              return ""
+
+          monkeypatch.setattr(vibe_utils, "_load_template", mock_load_template)
+
+          # Run with prompt_only
+          import sys
+
+          monkeypatch.setattr(sys, "argv", ["pv", "--config", str(cfg_yaml), "--prompt_only"])
+
+          try:
+              run_pipeline.main()
+          except SystemExit:
+              pass
+
+          # Verify prompt was saved
+          data_dir = tmp_path / "data" / "smoketest" / "prompt_inputs"
+  >       assert data_dir.exists()
+  E       AssertionError: assert False
+  E        +  where False = <bound method Path.exists of PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-2/test_prompt_only_sprint_templa0/data/smoketest/prompt_inputs')>()
+  E        +    where <bound method Path.exists of PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-2/test_prompt_only_sprint_templa0/data/smoketest/prompt_inputs')> = PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-2/test_prompt_only_sprint_templa0/data/smoketest/prompt_inputs').exists
+
+  tests/test_prompt_only_smoke.py:86: AssertionError
+  ----------------------------- Captured stdout call -----------------------------
+  2025-05-26 14:42:30 | INFO | personalvibe.run_pipeline | P  E  R  S  O  N  A  L  V  I  B  E  – run_id=1.1.0_base
+  2025-05-26 14:42:30 | INFO | personalvibe.vibe_utils | Running config version: 1.1.0
+  2025-05-26 14:42:30 | INFO | personalvibe.vibe_utils | Running mode = sprint
+  2025-05-26 14:42:30 | INFO | personalvibe.vibe_utils | Duplicate prompt detected. Existing file: /Users/nicholasjenkins/Documents/personalvibe/data/smoketest/prompt_inputs/2025-05-26_14-38-13_50561aa564.md
+  ------------------------------ Captured log call -------------------------------
+  INFO     personalvibe.run_pipeline:run_pipeline.py:99 P  E  R  S  O  N  A  L  V  I  B  E  – run_id=1.1.0_base
+  INFO     personalvibe.vibe_utils:vibe_utils.py:434 Running config version: 1.1.0
+  INFO     personalvibe.vibe_utils:vibe_utils.py:435 Running mode = sprint
+  INFO     personalvibe.vibe_utils:vibe_utils.py:68 Duplicate prompt detected. Existing file: /Users/nicholasjenkins/Documents/personalvibe/data/smoketest/prompt_inputs/2025-05-26_14-38-13_50561aa564.md
+  _______________________ test_prompt_only_with_max_tokens _______________________
+
+  monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1145eedf0>
+  tmp_path = PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-2/test_prompt_only_with_max_toke0')
+
+      def test_prompt_only_with_max_tokens(monkeypatch, tmp_path):
+          """Verify max_tokens parameter works with prompt_only."""
+          cfg_yaml = tmp_path / "1.0.0.yaml"
+          cfg_yaml.write_text(
+              """
+              project_name: tokentest
+              mode: milestone
+              execution_details: ""
+              code_context_paths: []
+              """,
+              encoding="utf-8",
+          )
+
+          # Create minimal structure
+          prompts_dir = tmp_path / "prompts" / "tokentest"
+          prompts_dir.mkdir(parents=True)
+
+          prd_path = prompts_dir / "prd.md"
+          prd_path.write_text("# Test PRD\n{{ execution_task }}", encoding="utf-8")
+
+          monkeypatch.setattr(vibe_utils, "get_base_path", lambda: tmp_path)
+          monkeypatch.setattr(vibe_utils, "_load_template", lambda x: "Test template")
+
+          # Run with custom max_tokens
+          import sys
+
+          monkeypatch.setattr(sys, "argv", ["pv", "--config", str(cfg_yaml), "--prompt_only", "--max_tokens", "50000"])
+
+          try:
+              run_pipeline.main()
+          except SystemExit:
+              pass
+
+          # Just verify it ran without error
+          data_dir = tmp_path / "data" / "tokentest" / "prompt_inputs"
+  >       assert data_dir.exists()
+  E       AssertionError: assert False
+  E        +  where False = <bound method Path.exists of PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-2/test_prompt_only_with_max_toke0/data/tokentest/prompt_inputs')>()
+  E        +    where <bound method Path.exists of PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-2/test_prompt_only_with_max_toke0/data/tokentest/prompt_inputs')> = PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-2/test_prompt_only_with_max_toke0/data/tokentest/prompt_inputs').exists
+
+  tests/test_prompt_only_smoke.py:134: AssertionError
+  ----------------------------- Captured stdout call -----------------------------
+  2025-05-26 14:42:30 | INFO | personalvibe.run_pipeline | P  E  R  S  O  N  A  L  V  I  B  E  – run_id=1.0.0_base
+  2025-05-26 14:42:30 | INFO | personalvibe.vibe_utils | Running config version: 1.0.0
+  2025-05-26 14:42:30 | INFO | personalvibe.vibe_utils | Running mode = milestone
+  2025-05-26 14:42:30 | INFO | personalvibe.vibe_utils | Duplicate prompt detected. Existing file: /Users/nicholasjenkins/Documents/personalvibe/data/tokentest/prompt_inputs/2025-05-26_14-38-13_7822b76339.md
+  ------------------------------ Captured log call -------------------------------
+  INFO     personalvibe.run_pipeline:run_pipeline.py:99 P  E  R  S  O  N  A  L  V  I  B  E  – run_id=1.0.0_base
+  INFO     personalvibe.vibe_utils:vibe_utils.py:434 Running config version: 1.0.0
+  INFO     personalvibe.vibe_utils:vibe_utils.py:435 Running mode = milestone
+  INFO     personalvibe.vibe_utils:vibe_utils.py:68 Duplicate prompt detected. Existing file: /Users/nicholasjenkins/Documents/personalvibe/data/tokentest/prompt_inputs/2025-05-26_14-38-13_7822b76339.md
+  =========================== short test summary info ============================
+  FAILED tests/test_prompt_only_smoke.py::test_prompt_only_sprint_template - As...
+  FAILED tests/test_prompt_only_smoke.py::test_prompt_only_with_max_tokens - As...
+  ================= 2 failed, 39 passed, 1 deselected in 15.24s ==================
+  nox > Command pytest -m 'not advanced' '-W ignore::DeprecationWarning' failed with exit code 1
+  nox > Session tests-3.9 failed.
+  nox > Running session tests-3.12
+  nox > Re-using existing virtual environment at .nox/tests-3-12.
+  nox > poetry install
+  Installing dependencies from lock file
+
+  No dependencies to install or update
+
+  Installing the current project: personalvibe (2.6.1)
+  nox > pytest -m 'not advanced' '-W ignore::DeprecationWarning'
+  ============================= test session starts ==============================
+  platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.5.0
+  rootdir: /Users/nicholasjenkins/Documents/personalvibe
+  configfile: pyproject.toml
+  plugins: anyio-4.9.0, xdoctest-1.2.0
+  collected 42 items / 1 deselected / 41 selected
+
+  tests/test_cli_basic.py .                                                [  2%]
+  tests/test_cli_new_cmds.py ..                                            [  7%]
+  tests/test_cli_run_delegate.py ..                                        [ 12%]
+  tests/test_cli_subcommands.py ..                                         [ 17%]
+  tests/test_config_schema_v2.py ...                                       [ 24%]
+  tests/test_custom_sharp_boe.py .                                         [ 26%]
+  tests/test_default_model.py .                                            [ 29%]
+  tests/test_determine_next_version.py .                                   [ 31%]
+  tests/test_get_vibed_router.py .                                         [ 34%]
+  tests/test_llm_router.py ...                                             [ 41%]
+  tests/test_log_to_cm.py .                                                [ 43%]
+  tests/test_log_to_subprocess.py .                                        [ 46%]
+  tests/test_logger.py .                                                   [ 48%]
+  tests/test_logger_runid.py .                                             [ 51%]
+  tests/test_logging.py .                                                  [ 53%]
+  tests/test_model_selection.py .                                          [ 56%]
+  tests/test_project_detection.py ....                                     [ 65%]
+  tests/test_prompt_only_smoke.py FF                                       [ 70%]
+  tests/test_resource_fallback.py ..                                       [ 75%]
+  tests/test_retry_engine.py ...                                           [ 82%]
+  tests/test_run_context.py .                                              [ 85%]
+  tests/test_save_prompt_duplicate.py .                                    [ 87%]
+  tests/test_vibed_no_duplicates.py .                                      [ 90%]
+  tests/test_workspace_root.py ..                                          [ 95%]
+  tests/test_yaml_sanitiser.py ..                                          [100%]
+
+  =================================== FAILURES ===================================
+  _______________________ test_prompt_only_sprint_template _______________________
+
+  monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1144c3320>
+  tmp_path = PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-3/test_prompt_only_sprint_templa0')
+
+      def test_prompt_only_sprint_template(monkeypatch, tmp_path):
+          """Verify prompt_only mode works with sprint_template.yaml."""
+          # Create minimal config using sprint template format
+          cfg_yaml = tmp_path / "1.1.0.yaml"
+          cfg_yaml.write_text(
+              """
+              project_name: smoketest
+              mode: sprint
+              execution_details: "Test sprint execution"
+              code_context_paths: []
+              """,
+              encoding="utf-8",
+          )
+
+          # Create required directory structure
+          prompts_dir = tmp_path / "prompts" / "smoketest"
+          stages_dir = prompts_dir / "stages"
+          stages_dir.mkdir(parents=True)
+
+          # Create PRD template
+          prd_path = prompts_dir / "prd.md"
+          prd_path.write_text(
+              """# {{ project_name }} PRD
+
+      Task: {{ execution_task }}
+
+      {{ instructions }}
+
+      Details: {{ execution_details }}
+
+      Code context:
+      {{ code_context }}
+      """,
+              encoding="utf-8",
+          )
+
+          # Create a minimal milestone file
+          milestone_path = stages_dir / "1.0.0.md"
+          milestone_path.write_text(
+              """# Milestone 1: Initial Setup
+
+              This milestone focuses on basic setup.
+
+              Sprint 1: Create basic structure
+              """,
+              encoding="utf-8",
+          )
+
+          # Mock get_base_path to return our temp directory
+          monkeypatch.setattr(vibe_utils, "get_base_path", lambda: tmp_path)
+
+          # Mock the template loader to return our test templates
+          def mock_load_template(fname):
+              if fname == "sprint.md":
+                  return "Sprint instructions: Execute the requested sprint."
+              elif fname == "milestone.md":
+                  return "Milestone instructions: Plan the next milestone."
+              elif fname == "validate.md":
+                  return "Validate instructions: Check the sprint results."
+              return ""
+
+          monkeypatch.setattr(vibe_utils, "_load_template", mock_load_template)
+
+          # Run with prompt_only
+          import sys
+
+          monkeypatch.setattr(sys, "argv", ["pv", "--config", str(cfg_yaml), "--prompt_only"])
+
+          try:
+              run_pipeline.main()
+          except SystemExit:
+              pass
+
+          # Verify prompt was saved
+          data_dir = tmp_path / "data" / "smoketest" / "prompt_inputs"
+  >       assert data_dir.exists()
+  E       AssertionError: assert False
+  E        +  where False = <bound method Path.exists of PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-3/test_prompt_only_sprint_templa0/data/smoketest/prompt_inputs')>()
+  E        +    where <bound method Path.exists of PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-3/test_prompt_only_sprint_templa0/data/smoketest/prompt_inputs')> = PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-3/test_prompt_only_sprint_templa0/data/smoketest/prompt_inputs').exists
+
+  tests/test_prompt_only_smoke.py:86: AssertionError
+  ----------------------------- Captured stdout call -----------------------------
+  2025-05-26 14:42:48 | INFO | personalvibe.run_pipeline | P  E  R  S  O  N  A  L  V  I  B  E  – run_id=1.1.0_base
+  2025-05-26 14:42:48 | INFO | personalvibe.vibe_utils | Running config version: 1.1.0
+  2025-05-26 14:42:48 | INFO | personalvibe.vibe_utils | Running mode = sprint
+  2025-05-26 14:42:48 | INFO | personalvibe.vibe_utils | Duplicate prompt detected. Existing file: /Users/nicholasjenkins/Documents/personalvibe/data/smoketest/prompt_inputs/2025-05-26_14-38-13_50561aa564.md
+  ------------------------------ Captured log call -------------------------------
+  INFO     personalvibe.run_pipeline:run_pipeline.py:99 P  E  R  S  O  N  A  L  V  I  B  E  – run_id=1.1.0_base
+  INFO     personalvibe.vibe_utils:vibe_utils.py:434 Running config version: 1.1.0
+  INFO     personalvibe.vibe_utils:vibe_utils.py:435 Running mode = sprint
+  INFO     personalvibe.vibe_utils:vibe_utils.py:68 Duplicate prompt detected. Existing file: /Users/nicholasjenkins/Documents/personalvibe/data/smoketest/prompt_inputs/2025-05-26_14-38-13_50561aa564.md
+  _______________________ test_prompt_only_with_max_tokens _______________________
+
+  monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1144c3020>
+  tmp_path = PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-3/test_prompt_only_with_max_toke0')
+
+      def test_prompt_only_with_max_tokens(monkeypatch, tmp_path):
+          """Verify max_tokens parameter works with prompt_only."""
+          cfg_yaml = tmp_path / "1.0.0.yaml"
+          cfg_yaml.write_text(
+              """
+              project_name: tokentest
+              mode: milestone
+              execution_details: ""
+              code_context_paths: []
+              """,
+              encoding="utf-8",
+          )
+
+          # Create minimal structure
+          prompts_dir = tmp_path / "prompts" / "tokentest"
+          prompts_dir.mkdir(parents=True)
+
+          prd_path = prompts_dir / "prd.md"
+          prd_path.write_text("# Test PRD\n{{ execution_task }}", encoding="utf-8")
+
+          monkeypatch.setattr(vibe_utils, "get_base_path", lambda: tmp_path)
+          monkeypatch.setattr(vibe_utils, "_load_template", lambda x: "Test template")
+
+          # Run with custom max_tokens
+          import sys
+
+          monkeypatch.setattr(sys, "argv", ["pv", "--config", str(cfg_yaml), "--prompt_only", "--max_tokens", "50000"])
+
+          try:
+              run_pipeline.main()
+          except SystemExit:
+              pass
+
+          # Just verify it ran without error
+          data_dir = tmp_path / "data" / "tokentest" / "prompt_inputs"
+  >       assert data_dir.exists()
+  E       AssertionError: assert False
+  E        +  where False = <bound method Path.exists of PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-3/test_prompt_only_with_max_toke0/data/tokentest/prompt_inputs')>()
+  E        +    where <bound method Path.exists of PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-3/test_prompt_only_with_max_toke0/data/tokentest/prompt_inputs')> = PosixPath('/private/var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pytest-of-nicholasjenkins/pytest-3/test_prompt_only_with_max_toke0/data/tokentest/prompt_inputs').exists
+
+  tests/test_prompt_only_smoke.py:134: AssertionError
+  ----------------------------- Captured stdout call -----------------------------
+  2025-05-26 14:42:48 | INFO | personalvibe.run_pipeline | P  E  R  S  O  N  A  L  V  I  B  E  – run_id=1.0.0_base
+  2025-05-26 14:42:48 | INFO | personalvibe.vibe_utils | Running config version: 1.0.0
+  2025-05-26 14:42:48 | INFO | personalvibe.vibe_utils | Running mode = milestone
+  2025-05-26 14:42:48 | INFO | personalvibe.vibe_utils | Duplicate prompt detected. Existing file: /Users/nicholasjenkins/Documents/personalvibe/data/tokentest/prompt_inputs/2025-05-26_14-38-13_7822b76339.md
+  ------------------------------ Captured log call -------------------------------
+  INFO     personalvibe.run_pipeline:run_pipeline.py:99 P  E  R  S  O  N  A  L  V  I  B  E  – run_id=1.0.0_base
+  INFO     personalvibe.vibe_utils:vibe_utils.py:434 Running config version: 1.0.0
+  INFO     personalvibe.vibe_utils:vibe_utils.py:435 Running mode = milestone
+  INFO     personalvibe.vibe_utils:vibe_utils.py:68 Duplicate prompt detected. Existing file: /Users/nicholasjenkins/Documents/personalvibe/data/tokentest/prompt_inputs/2025-05-26_14-38-13_7822b76339.md
+  =========================== short test summary info ============================
+  FAILED tests/test_prompt_only_smoke.py::test_prompt_only_sprint_template - As...
+  FAILED tests/test_prompt_only_smoke.py::test_prompt_only_with_max_tokens - As...
+  ================= 2 failed, 39 passed, 1 deselected in 16.00s ==================
+  nox > Command pytest -m 'not advanced' '-W ignore::DeprecationWarning' failed with exit code 1
+  nox > Session tests-3.12 failed.
+  nox > Running session smoke_dist-3.12
+  nox > Creating virtual environment (virtualenv) using python3.12 in .nox/smoke_dist-3-12
+  nox > poetry build -f wheel
+  Building personalvibe (2.6.1)
+  Building wheel
+
+  ====================
+  🏗️  Building wheel …
+  ====================
+
+  nox > python -m venv /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_tk60yo0c
+
+  ================================================
+  Wheel built: personalvibe-2.6.1-py3-none-any.whl
+  ================================================
+
+
+  ===========================================================================================
+  🧪  Creating temp venv at /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_tk60yo0c
+  ===========================================================================================
+
+  nox > /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_tk60yo0c/bin/pip install dist/personalvibe-2.6.1-py3-none-any.whl
+  Processing ./dist/personalvibe-2.6.1-py3-none-any.whl
+  Collecting jinja2<4.0.0,>=3.1.6 (from personalvibe==2.6.1)
+    Using cached jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+  Collecting litellm>=1.40 (from personalvibe==2.6.1)
+    Downloading litellm-1.71.1-py3-none-any.whl.metadata (38 kB)
+  Collecting openai<2.0.0,>=1.77.0 (from personalvibe==2.6.1)
+    Using cached openai-1.82.0-py3-none-any.whl.metadata (25 kB)
+  Collecting pathspec<0.13.0,>=0.12.1 (from personalvibe==2.6.1)
+    Using cached pathspec-0.12.1-py3-none-any.whl.metadata (21 kB)
+  Collecting pydantic<3.0,>=2.0 (from personalvibe==2.6.1)
+    Using cached pydantic-2.11.5-py3-none-any.whl.metadata (67 kB)
+  Collecting pydantic-settings<3.0.0,>=2.9.1 (from personalvibe==2.6.1)
+    Using cached pydantic_settings-2.9.1-py3-none-any.whl.metadata (3.8 kB)
+  Collecting python-dotenv<0.22,>=0.21 (from personalvibe==2.6.1)
+    Using cached python_dotenv-0.21.1-py3-none-any.whl.metadata (21 kB)
+  Collecting pytz<2026.0,>=2025.1 (from personalvibe==2.6.1)
+    Using cached pytz-2025.2-py2.py3-none-any.whl.metadata (22 kB)
+  Collecting pyyaml<7.0,>=6.0 (from personalvibe==2.6.1)
+    Using cached PyYAML-6.0.2-cp312-cp312-macosx_10_9_x86_64.whl.metadata (2.1 kB)
+  Collecting requests<3.0,>=2.29 (from personalvibe==2.6.1)
+    Using cached requests-2.32.3-py3-none-any.whl.metadata (4.6 kB)
+  Collecting tenacity<10.0,>=9.0 (from personalvibe==2.6.1)
+    Using cached tenacity-9.1.2-py3-none-any.whl.metadata (1.2 kB)
+  Collecting tiktoken<0.10.0,>=0.9.0 (from personalvibe==2.6.1)
+    Using cached tiktoken-0.9.0-cp312-cp312-macosx_10_13_x86_64.whl.metadata (6.7 kB)
+  Collecting tqdm<5.0,>=4.67 (from personalvibe==2.6.1)
+    Using cached tqdm-4.67.1-py3-none-any.whl.metadata (57 kB)
+  Collecting MarkupSafe>=2.0 (from jinja2<4.0.0,>=3.1.6->personalvibe==2.6.1)
+    Using cached MarkupSafe-3.0.2-cp312-cp312-macosx_10_13_universal2.whl.metadata (4.0 kB)
+  Collecting aiohttp (from litellm>=1.40->personalvibe==2.6.1)
+    Downloading aiohttp-3.12.1-cp312-cp312-macosx_10_13_x86_64.whl.metadata (7.6 kB)
+  Collecting click (from litellm>=1.40->personalvibe==2.6.1)
+    Using cached click-8.2.1-py3-none-any.whl.metadata (2.5 kB)
+  Collecting httpx>=0.23.0 (from litellm>=1.40->personalvibe==2.6.1)
+    Using cached httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+  Collecting httpx-aiohttp>=0.1.4 (from litellm>=1.40->personalvibe==2.6.1)
+    Downloading httpx_aiohttp-0.1.4-py3-none-any.whl.metadata (4.5 kB)
+  Collecting importlib-metadata>=6.8.0 (from litellm>=1.40->personalvibe==2.6.1)
+    Using cached importlib_metadata-8.7.0-py3-none-any.whl.metadata (4.8 kB)
+  Collecting jsonschema<5.0.0,>=4.22.0 (from litellm>=1.40->personalvibe==2.6.1)
+    Using cached jsonschema-4.23.0-py3-none-any.whl.metadata (7.9 kB)
+  Collecting tokenizers (from litellm>=1.40->personalvibe==2.6.1)
+    Using cached tokenizers-0.21.1-cp39-abi3-macosx_10_12_x86_64.whl.metadata (6.8 kB)
+  Collecting anyio<5,>=3.5.0 (from openai<2.0.0,>=1.77.0->personalvibe==2.6.1)
+    Using cached anyio-4.9.0-py3-none-any.whl.metadata (4.7 kB)
+  Collecting distro<2,>=1.7.0 (from openai<2.0.0,>=1.77.0->personalvibe==2.6.1)
+    Using cached distro-1.9.0-py3-none-any.whl.metadata (6.8 kB)
+  Collecting jiter<1,>=0.4.0 (from openai<2.0.0,>=1.77.0->personalvibe==2.6.1)
+    Using cached jiter-0.10.0-cp312-cp312-macosx_10_12_x86_64.whl.metadata (5.2 kB)
+  Collecting sniffio (from openai<2.0.0,>=1.77.0->personalvibe==2.6.1)
+    Using cached sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+  Collecting typing-extensions<5,>=4.11 (from openai<2.0.0,>=1.77.0->personalvibe==2.6.1)
+    Using cached typing_extensions-4.13.2-py3-none-any.whl.metadata (3.0 kB)
+  Collecting annotated-types>=0.6.0 (from pydantic<3.0,>=2.0->personalvibe==2.6.1)
+    Using cached annotated_types-0.7.0-py3-none-any.whl.metadata (15 kB)
+  Collecting pydantic-core==2.33.2 (from pydantic<3.0,>=2.0->personalvibe==2.6.1)
+    Using cached pydantic_core-2.33.2-cp312-cp312-macosx_10_12_x86_64.whl.metadata (6.8 kB)
+  Collecting typing-inspection>=0.4.0 (from pydantic<3.0,>=2.0->personalvibe==2.6.1)
+    Using cached typing_inspection-0.4.1-py3-none-any.whl.metadata (2.6 kB)
+  Collecting charset-normalizer<4,>=2 (from requests<3.0,>=2.29->personalvibe==2.6.1)
+    Using cached charset_normalizer-3.4.2-cp312-cp312-macosx_10_13_universal2.whl.metadata (35 kB)
+  Collecting idna<4,>=2.5 (from requests<3.0,>=2.29->personalvibe==2.6.1)
+    Using cached idna-3.10-py3-none-any.whl.metadata (10 kB)
+  Collecting urllib3<3,>=1.21.1 (from requests<3.0,>=2.29->personalvibe==2.6.1)
+    Using cached urllib3-2.4.0-py3-none-any.whl.metadata (6.5 kB)
+  Collecting certifi>=2017.4.17 (from requests<3.0,>=2.29->personalvibe==2.6.1)
+    Using cached certifi-2025.4.26-py3-none-any.whl.metadata (2.5 kB)
+  Collecting regex>=2022.1.18 (from tiktoken<0.10.0,>=0.9.0->personalvibe==2.6.1)
+    Using cached regex-2024.11.6-cp312-cp312-macosx_10_13_x86_64.whl.metadata (40 kB)
+  Collecting httpcore==1.* (from httpx>=0.23.0->litellm>=1.40->personalvibe==2.6.1)
+    Using cached httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+  Collecting h11>=0.16 (from httpcore==1.*->httpx>=0.23.0->litellm>=1.40->personalvibe==2.6.1)
+    Using cached h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+  Collecting aiohappyeyeballs>=2.5.0 (from aiohttp->litellm>=1.40->personalvibe==2.6.1)
+    Using cached aiohappyeyeballs-2.6.1-py3-none-any.whl.metadata (5.9 kB)
+  Collecting aiosignal>=1.1.2 (from aiohttp->litellm>=1.40->personalvibe==2.6.1)
+    Using cached aiosignal-1.3.2-py2.py3-none-any.whl.metadata (3.8 kB)
+  Collecting attrs>=17.3.0 (from aiohttp->litellm>=1.40->personalvibe==2.6.1)
+    Using cached attrs-25.3.0-py3-none-any.whl.metadata (10 kB)
+  Collecting frozenlist>=1.1.1 (from aiohttp->litellm>=1.40->personalvibe==2.6.1)
+    Using cached frozenlist-1.6.0-cp312-cp312-macosx_10_13_x86_64.whl.metadata (16 kB)
+  Collecting multidict<7.0,>=4.5 (from aiohttp->litellm>=1.40->personalvibe==2.6.1)
+    Using cached multidict-6.4.4-cp312-cp312-macosx_10_13_x86_64.whl.metadata (5.3 kB)
+  Collecting propcache>=0.2.0 (from aiohttp->litellm>=1.40->personalvibe==2.6.1)
+    Using cached propcache-0.3.1-cp312-cp312-macosx_10_13_x86_64.whl.metadata (10 kB)
+  Collecting yarl<2.0,>=1.17.0 (from aiohttp->litellm>=1.40->personalvibe==2.6.1)
+    Using cached yarl-1.20.0-cp312-cp312-macosx_10_13_x86_64.whl.metadata (72 kB)
+  Collecting zipp>=3.20 (from importlib-metadata>=6.8.0->litellm>=1.40->personalvibe==2.6.1)
+    Downloading zipp-3.22.0-py3-none-any.whl.metadata (3.6 kB)
+  Collecting jsonschema-specifications>=2023.03.6 (from jsonschema<5.0.0,>=4.22.0->litellm>=1.40->personalvibe==2.6.1)
+    Using cached jsonschema_specifications-2025.4.1-py3-none-any.whl.metadata (2.9 kB)
+  Collecting referencing>=0.28.4 (from jsonschema<5.0.0,>=4.22.0->litellm>=1.40->personalvibe==2.6.1)
+    Using cached referencing-0.36.2-py3-none-any.whl.metadata (2.8 kB)
+  Collecting rpds-py>=0.7.1 (from jsonschema<5.0.0,>=4.22.0->litellm>=1.40->personalvibe==2.6.1)
+    Using cached rpds_py-0.25.1-cp312-cp312-macosx_10_12_x86_64.whl.metadata (4.1 kB)
+  Collecting huggingface-hub<1.0,>=0.16.4 (from tokenizers->litellm>=1.40->personalvibe==2.6.1)
+    Downloading huggingface_hub-0.32.1-py3-none-any.whl.metadata (14 kB)
+  Collecting filelock (from huggingface-hub<1.0,>=0.16.4->tokenizers->litellm>=1.40->personalvibe==2.6.1)
+    Using cached filelock-3.18.0-py3-none-any.whl.metadata (2.9 kB)
+  Collecting fsspec>=2023.5.0 (from huggingface-hub<1.0,>=0.16.4->tokenizers->litellm>=1.40->personalvibe==2.6.1)
+    Downloading fsspec-2025.5.1-py3-none-any.whl.metadata (11 kB)
+  Collecting packaging>=20.9 (from huggingface-hub<1.0,>=0.16.4->tokenizers->litellm>=1.40->personalvibe==2.6.1)
+    Using cached packaging-25.0-py3-none-any.whl.metadata (3.3 kB)
+  Collecting hf-xet<2.0.0,>=1.1.2 (from huggingface-hub<1.0,>=0.16.4->tokenizers->litellm>=1.40->personalvibe==2.6.1)
+    Using cached hf_xet-1.1.2-cp37-abi3-macosx_10_12_x86_64.whl.metadata (879 bytes)
+  Using cached jinja2-3.1.6-py3-none-any.whl (134 kB)
+  Downloading litellm-1.71.1-py3-none-any.whl (7.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.9/7.9 MB 3.7 MB/s eta 0:00:00
+  Using cached openai-1.82.0-py3-none-any.whl (720 kB)
+  Using cached pathspec-0.12.1-py3-none-any.whl (31 kB)
+  Using cached pydantic-2.11.5-py3-none-any.whl (444 kB)
+  Using cached pydantic_core-2.33.2-cp312-cp312-macosx_10_12_x86_64.whl (2.0 MB)
+  Using cached pydantic_settings-2.9.1-py3-none-any.whl (44 kB)
+  Using cached python_dotenv-0.21.1-py3-none-any.whl (19 kB)
+  Using cached pytz-2025.2-py2.py3-none-any.whl (509 kB)
+  Using cached PyYAML-6.0.2-cp312-cp312-macosx_10_9_x86_64.whl (183 kB)
+  Using cached requests-2.32.3-py3-none-any.whl (64 kB)
+  Using cached tenacity-9.1.2-py3-none-any.whl (28 kB)
+  Using cached tiktoken-0.9.0-cp312-cp312-macosx_10_13_x86_64.whl (1.1 MB)
+  Using cached tqdm-4.67.1-py3-none-any.whl (78 kB)
+  Using cached annotated_types-0.7.0-py3-none-any.whl (13 kB)
+  Using cached anyio-4.9.0-py3-none-any.whl (100 kB)
+  Using cached certifi-2025.4.26-py3-none-any.whl (159 kB)
+  Using cached charset_normalizer-3.4.2-cp312-cp312-macosx_10_13_universal2.whl (199 kB)
+  Using cached distro-1.9.0-py3-none-any.whl (20 kB)
+  Using cached httpx-0.28.1-py3-none-any.whl (73 kB)
+  Using cached httpcore-1.0.9-py3-none-any.whl (78 kB)
+  Downloading httpx_aiohttp-0.1.4-py3-none-any.whl (5.0 kB)
+  Downloading aiohttp-3.12.1-cp312-cp312-macosx_10_13_x86_64.whl (467 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 467.4/467.4 kB 5.7 MB/s eta 0:00:00
+  Using cached idna-3.10-py3-none-any.whl (70 kB)
+  Using cached importlib_metadata-8.7.0-py3-none-any.whl (27 kB)
+  Using cached jiter-0.10.0-cp312-cp312-macosx_10_12_x86_64.whl (312 kB)
+  Using cached jsonschema-4.23.0-py3-none-any.whl (88 kB)
+  Using cached MarkupSafe-3.0.2-cp312-cp312-macosx_10_13_universal2.whl (14 kB)
+  Using cached regex-2024.11.6-cp312-cp312-macosx_10_13_x86_64.whl (288 kB)
+  Using cached sniffio-1.3.1-py3-none-any.whl (10 kB)
+  Using cached typing_extensions-4.13.2-py3-none-any.whl (45 kB)
+  Using cached typing_inspection-0.4.1-py3-none-any.whl (14 kB)
+  Using cached urllib3-2.4.0-py3-none-any.whl (128 kB)
+  Using cached click-8.2.1-py3-none-any.whl (102 kB)
+  Using cached tokenizers-0.21.1-cp39-abi3-macosx_10_12_x86_64.whl (2.8 MB)
+  Using cached aiohappyeyeballs-2.6.1-py3-none-any.whl (15 kB)
+  Using cached aiosignal-1.3.2-py2.py3-none-any.whl (7.6 kB)
+  Using cached attrs-25.3.0-py3-none-any.whl (63 kB)
+  Using cached frozenlist-1.6.0-cp312-cp312-macosx_10_13_x86_64.whl (123 kB)
+  Downloading huggingface_hub-0.32.1-py3-none-any.whl (509 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 509.4/509.4 kB 5.5 MB/s eta 0:00:00
+  Using cached jsonschema_specifications-2025.4.1-py3-none-any.whl (18 kB)
+  Using cached multidict-6.4.4-cp312-cp312-macosx_10_13_x86_64.whl (38 kB)
+  Using cached propcache-0.3.1-cp312-cp312-macosx_10_13_x86_64.whl (46 kB)
+  Using cached referencing-0.36.2-py3-none-any.whl (26 kB)
+  Using cached rpds_py-0.25.1-cp312-cp312-macosx_10_12_x86_64.whl (364 kB)
+  Using cached yarl-1.20.0-cp312-cp312-macosx_10_13_x86_64.whl (97 kB)
+  Downloading zipp-3.22.0-py3-none-any.whl (9.8 kB)
+  Downloading fsspec-2025.5.1-py3-none-any.whl (199 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 199.1/199.1 kB 2.4 MB/s eta 0:00:00
+  Using cached h11-0.16.0-py3-none-any.whl (37 kB)
+  Using cached hf_xet-1.1.2-cp37-abi3-macosx_10_12_x86_64.whl (2.6 MB)
+  Using cached packaging-25.0-py3-none-any.whl (66 kB)
+  Using cached filelock-3.18.0-py3-none-any.whl (16 kB)
+  Installing collected packages: pytz, zipp, urllib3, typing-extensions, tqdm, tenacity, sniffio, rpds-py, regex, pyyaml, python-dotenv, propcache, pathspec, packaging, multidict, MarkupSafe, jiter, idna, hf-xet, h11, fsspec, frozenlist, filelock, distro, click, charset-normalizer, certifi, attrs, annotated-types, aiohappyeyeballs, yarl, typing-inspection, requests, referencing, pydantic-core, jinja2, importlib-metadata, httpcore, anyio, aiosignal, tiktoken, pydantic, jsonschema-specifications, huggingface-hub, httpx, aiohttp, tokenizers, pydantic-settings, openai, jsonschema, httpx-aiohttp, litellm, personalvibe
+  Successfully installed MarkupSafe-3.0.2 aiohappyeyeballs-2.6.1 aiohttp-3.12.1 aiosignal-1.3.2 annotated-types-0.7.0 anyio-4.9.0 attrs-25.3.0 certifi-2025.4.26 charset-normalizer-3.4.2 click-8.2.1 distro-1.9.0 filelock-3.18.0 frozenlist-1.6.0 fsspec-2025.5.1 h11-0.16.0 hf-xet-1.1.2 httpcore-1.0.9 httpx-0.28.1 httpx-aiohttp-0.1.4 huggingface-hub-0.32.1 idna-3.10 importlib-metadata-8.7.0 jinja2-3.1.6 jiter-0.10.0 jsonschema-4.23.0 jsonschema-specifications-2025.4.1 litellm-1.71.1 multidict-6.4.4 openai-1.82.0 packaging-25.0 pathspec-0.12.1 personalvibe-2.6.1 propcache-0.3.1 pydantic-2.11.5 pydantic-core-2.33.2 pydantic-settings-2.9.1 python-dotenv-0.21.1 pytz-2025.2 pyyaml-6.0.2 referencing-0.36.2 regex-2024.11.6 requests-2.32.3 rpds-py-0.25.1 sniffio-1.3.1 tenacity-9.1.2 tiktoken-0.9.0 tokenizers-0.21.1 tqdm-4.67.1 typing-extensions-4.13.2 typing-inspection-0.4.1 urllib3-2.4.0 yarl-1.20.0 zipp-3.22.0
+
+  [notice] A new release of pip is available: 24.0 -> 25.1.1
+  [notice] To update, run: python3.12 -m pip install --upgrade pip
+
+  ====================================
+  📦  Installing wheel into temp venv …
+  ====================================
+
+  nox > /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_tk60yo0c/bin/pv --help
+  usage: pv [-h] <command> ...
+
+  Personalvibe CLI – Command-Line Interface
+
+  positional arguments:
+    <command>
+      run           Determine mode from YAML then execute.
+      milestone     milestone workflow
+      sprint        sprint workflow
+      validate      validate workflow
+      prd           prd workflow
+      new-milestone
+                    Scaffold next milestone YAML
+      prepare-sprint
+                    Scaffold next sprint YAML
+      parse-stage   Extract latest assistant code block.
+
+  options:
+    -h, --help      show this help message and exit
+
+  ===================================
+  🚀  Running `pv --help` smoke test …
+  ===================================
+
+  nox > Session smoke_dist-3.12 was successful.
+  nox > Ran multiple sessions:
+  nox > * lint-3.9: failed
+  nox > * lint-3.12: failed
+  nox > * tests-3.9: failed
+  nox > * tests-3.12: failed
+  nox > * smoke_dist-3.12: success
+
+  ====================================
+  ✅  smoke_dist completed successfully
+  ====================================
+
+  (personalvibe-py3.12) bash-3.2$

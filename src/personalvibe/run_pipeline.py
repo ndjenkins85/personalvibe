@@ -82,6 +82,7 @@ def main() -> None:
     parser.add_argument("--verbosity", choices=["verbose", "none", "errors"], default="none", help="Console log level")
     parser.add_argument("--prompt_only", action="store_true", help="If set, only generate the prompt.")
     parser.add_argument("--max_retries", type=int, default=5, help="Maximum attempts for sprint validation")
+    parser.add_argument("--max_tokens", type=int, default=20000, help="Maximum completion tokens for LLM")
     args = parser.parse_args()
 
     # 1️⃣  Parse config first – we need the semver to derive run_id
@@ -115,7 +116,7 @@ def main() -> None:
         vibe_utils.get_vibed(
             prompt,
             project_name=config.project_name,
-            max_completion_tokens=20_000,
+            max_completion_tokens=args.max_tokens,
             workspace=workspace,
             model=(config.model or None),
         )

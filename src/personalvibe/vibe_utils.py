@@ -433,7 +433,12 @@ def get_replacements(config: "ConfigModel", code_context: str) -> dict:  # type:
 
     _log.info("Running config version: %s", config.version)
     _log.info("Running mode = %s", config.mode)
-    milestone_ver, sprint_ver, bugfix_ver = config.version.split(".")  # noqa: F841
+    try:
+
+        _, sprint_ver, _ = config.version.split(".")  # noqa: F841
+
+    except Exception:
+        _, sprint_ver, _ = 0, 0, 0  # We must be in testing mode!
 
     if config.mode == "prd":
         exec_task = config.execution_task

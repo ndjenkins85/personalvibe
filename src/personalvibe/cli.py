@@ -80,6 +80,8 @@ def _cmd_run(ns: argparse.Namespace) -> None:
             forwarded.append("--prompt_only")
         if ns.max_retries != 5:
             forwarded += ["--max_retries", str(ns.max_retries)]
+        if ns.max_tokens != 16000:
+            forwarded += ["--max_tokens", str(ns.max_tokens)]
 
     # Delegate straight away
     _call_run_pipeline(forwarded)
@@ -96,6 +98,8 @@ def _cmd_mode(ns: argparse.Namespace, mode: str) -> None:
         forwarded.append("--prompt_only")
     if ns.max_retries != 5:
         forwarded += ["--max_retries", str(ns.max_retries)]
+    if ns.max_tokens != 16000:
+        forwarded += ["--max_tokens", str(ns.max_tokens)]
 
     # Inject the correct mode directly into YAML?  – not needed, YAML already
     # holds it; we *trust* user passed the right sub-command.
@@ -136,6 +140,7 @@ def _build_parser() -> argparse.ArgumentParser:
         sp.add_argument("--verbosity", choices=["verbose", "none", "errors"], default="none")
         sp.add_argument("--prompt_only", action="store_true")
         sp.add_argument("--max_retries", type=int, default=5)
+        sp.add_argument("--max_tokens", type=int, default=16000, help="Maximum completion tokens")
 
     # run ----------
     run_sp = sub.add_parser("run", help="Determine mode from YAML then execute.")
