@@ -17,8 +17,11 @@ jobs:
         python-version: '3.9'
         architecture: x64
 
-    - name: Install poetry+nox
+    - name: Pip
       run: pip install nox==2025.2.9 poetry==2.1.1
+
+    - name: Install
+      run: poetry install
 
     - name: Build docs
       run: poetry run nox -s docs
