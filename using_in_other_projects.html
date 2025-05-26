@@ -1,0 +1,140 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Using Personalvibe in your project &mdash; personalvibe  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            personalvibe
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">personalvibe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Using Personalvibe in <em>your</em> project</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/using_in_other_projects.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="using-personalvibe-in-your-project">
+<h1>Using Personalvibe in <em>your</em> project<a class="headerlink" href="#using-personalvibe-in-your-project" title="Link to this heading"></a></h1>
+<section id="install">
+<h2>1 – Install<a class="headerlink" href="#install" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>add<span class="w"> </span>personalvibe<span class="w">    </span><span class="c1"># or  pip install personalvibe</span>
+</pre></div>
+</div>
+</section>
+<section id="create-a-yaml-config">
+<h2>2 – Create a YAML config<a class="headerlink" href="#create-a-yaml-config" title="Link to this heading"></a></h2>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1.0.0.yaml</span>
+<span class="nt">project_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my_cool_idea</span>
+<span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">milestone</span><span class="w">         </span><span class="c1"># prd | milestone | sprint | validate</span>
+<span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai/gpt-4o-mini</span><span class="w">  </span><span class="c1"># optional, defaults to gpt-4o-mini</span>
+<span class="nt">execution_details</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&#39;</span>
+<span class="nt">code_context_paths</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span><span class="w">  </span><span class="c1"># optional snippets fed into the prompt</span>
+</pre></div>
+</div>
+</section>
+<section id="run">
+<h2>3 – Run<a class="headerlink" href="#run" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pv<span class="w"> </span>run<span class="w"> </span>--config<span class="w"> </span><span class="m">1</span>.0.0.yaml<span class="w"> </span>--prompt_only<span class="w">   </span><span class="c1"># preview</span>
+pv<span class="w"> </span>run<span class="w"> </span>--config<span class="w"> </span><span class="m">1</span>.0.0.yaml<span class="w">                 </span><span class="c1"># full run</span>
+</pre></div>
+</div>
+</section>
+<section id="advanced">
+<h2>Advanced<a class="headerlink" href="#advanced" title="Link to this heading"></a></h2>
+<p>• Choose any <a class="reference internal" href="LLM_PROVIDERS.html"><span class="std std-doc">supported LLM provider</span></a>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">model:</span> <span class="pre">anthropic/claude-3-sonnet</span></code></p>
+<p>• Persist artefacts in a separate folder:</p>
+<p><code class="docutils literal notranslate"><span class="pre">PV_DATA_DIR=.pv_workspace</span> <span class="pre">pv</span> <span class="pre">sprint</span> <span class="pre">--config</span> <span class="pre">1.0.0.yaml</span></code></p>
+<p>• Extract the last assistant code block and run it:</p>
+<p><code class="docutils literal notranslate"><span class="pre">pv</span> <span class="pre">parse-stage</span> <span class="pre">--project_name</span> <span class="pre">my_cool_idea</span> <span class="pre">--run</span></code></p>
+<hr class="docutils" />
+<p><em>Happy vibecoding!</em>  — The Personalvibe team</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Copyright © 2025 by Nick Jenkins. All rights reserved
+.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
