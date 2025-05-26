@@ -50,13 +50,11 @@ def extract_and_save_code_block(project_name: Union[str, None] = None) -> str:
     new_version = determine_next_version(project_name)
     # Determine file extension based on mode (bugfix = .md, sprint = .py)
     # Check if this is a bugfix by looking at the version pattern
-    version_parts = new_version.split(".")
-    if len(version_parts) == 3 and int(version_parts[2]) > 0:
-        # This is a bugfix (patch version > 0)
-        file_extension = ".md"
-    else:
-        # This is a sprint
+    if extracted_code:
         file_extension = ".py"
+    else:
+        file_extension = ".md"
+
     output_file = stages_dir / f"{new_version}{file_extension}"
 
     # Prepare final content with header
@@ -112,7 +110,7 @@ def determine_next_version(project_name: Union[str, None] = None) -> str:  # noq
 
     version_tuples.sort()
     latest_major, latest_sprint, latest_bug = version_tuples[-1]
-    return f"{latest_major}.{latest_sprint}.{latest_bug + 1}"
+    return f"{latest_major}.{latest_sprint + 1}.{latest_bug}"
 
 
 if __name__ == "__main__":
