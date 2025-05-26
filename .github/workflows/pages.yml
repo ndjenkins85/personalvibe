@@ -26,7 +26,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: github-pages          # must be this exact name
-          path: docs/_build/html
+          path: docs/_build
 
   deploy:
     # ② Deploy must wait for build (same run_id)
