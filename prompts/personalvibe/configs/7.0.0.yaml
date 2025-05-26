@@ -1,0 +1,68 @@
+# pv run --config prompts/personalvibe/configs/7.0.0.yaml
+
+project_name: "personalvibe"
+mode: milestone
+code_context_paths: []
+  # - "prompts/personalvibe/context/documentation.txt"
+  # - "prompts/personalvibe/context/codefiles.txt"
+execution_details: |
+
+  At this stage personalvibe project is an effective developer tool to use vibecoding for working with codebases
+
+  This next milestone will add a few new quality of life features and continue to focus on 'developer experience' (DX)
+
+  New task mode: "bugfix"
+  We will create a new file src/personalvibe/data/bugfix.md to house the prompt elements of the bugfix mode
+
+  The yaml file will look very similar to the others we have, with project_name, mode, code_context_paths, and execution_details.
+
+  The purpose of this mode is for the user to get assistance in solving problems that arise while coding
+
+  Typically the developer will add execution logs, testing file outputs within the 'execution details'
+  portion of the yaml config files
+
+  The AI agent prompt needs to be drafted such that the AI is prepared to either...
+  - Directly solve the problem
+  - Provide guidance about where the problem exists
+  - Where there might be gaps in logs/testing to understand system state and failure,
+  and by having certain further information it may help bugfixing
+
+  We use something like semver version naming for our yaml naming as part of personalvibe
+
+  as in: milestone.sprint.bugfix
+
+  So a bugfix after attempting sprint one might look like 7.1.1.yaml
+
+  Related to this, currently there is a bug in personalvibe such that when sprint data is being saved
+  (after running `python -m personalvibe.parse_stage --project_name personalvive --run`)
+  that it is being saved with the wrong name, currently the second sprint file would be saved as
+  7.1.1.py instead of 7.2.0.py
+
+  only bugfixes should be saved, and saved as markdown as 7.1.1.md
+
+  Some further failures:
+
+  Currently the github based pages script is failing
+
+  Push the commit or tag
+    /usr/bin/git push origin gh-pages
+    remote: Permission to ndjenkins85/personalvibe.git denied to github-actions[bot].
+    fatal: unable to access 'https://github.com/ndjenkins85/personalvibe.git/': The requested URL returned error: 403
+    Error: Action failed with "The process '/usr/bin/git' failed with exit code 128"
+
+  In addition lets create a new smoke test of a prompt_only execution,
+  this will help ensure that the current codebase is working OK upon code imports
+  we can update and use `src/personalvibe/data/sprint_template.yaml` for this purpose
+
+
+  A further bugfix we need to address is
+  litellm.exceptions.BadRequestError: litellm.BadRequestError: OpenAIException - max_tokens is too large: 20000. This model supports at most 16384 completion tokens, whereas you provided 20000.
+  (bytedtramd-py3.9) bytedance@C02H86S6Q05N transparency_reporting %
+
+  Lets see if there is a way to fill in max_tokens automatically. Lets also set max_tokens to 16_000 for all models and usage
+  along with bubbling up the parameter to optional argparse with default 16_000
+
+  In my opinion this looks like around 3 sprint steps:
+  1. Fix existing bugs and add new smoke test
+  2. Create 'bugfix' task type
+  3. Consider and implement other developer experience needs
