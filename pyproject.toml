@@ -3,7 +3,7 @@ name = "personalvibe"
 packages = [
     { include = "personalvibe", from = "src" }
 ]
-version = "2.6.1"
+version = "2.7.0"
 description = "My personal vibecoding."
 license = "MIT"
 authors = ["Nick Jenkins"]
