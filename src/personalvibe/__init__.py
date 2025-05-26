@@ -50,4 +50,4 @@ except Exception:  # pragma: no cover
 # --- end personalvibe monkeypatch shim ---
 
 
-__version__ = "2.7.1"  # 7.0.0 milestone, alternative AI providers
+__version__ = "2.7.2"  # 7.0.0 milestone, alternative AI providers

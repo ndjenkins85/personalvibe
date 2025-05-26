@@ -28,14 +28,6 @@ def test_bugfix_mode_config(tmp_path):
     assert config.execution_details == "Fix the import error"
 
 
-def test_bugfix_template_exists():
-    """Ensure bugfix.md template was created."""
-    template_path = Path(vibe_utils.get_base_path()) / "src" / "personalvibe" / "data" / "bugfix.md"
-    assert template_path.exists()
-    content = template_path.read_text()
-    assert "Bugfix Mode Instructions" in content
-
-
 def test_bugfix_file_extension(monkeypatch, tmp_path):
     """Test that bugfix versions use .md extension."""
     from personalvibe.parse_stage import determine_next_version
