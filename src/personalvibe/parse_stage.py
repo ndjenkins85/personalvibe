@@ -108,7 +108,7 @@ def determine_next_version(project_name: Union[str, None] = None) -> str:  # noq
 if __name__ == "__main__":
     """Parse and execute the latest sprint code generation.
 
-    python -m personalvibe.parse_stage
+    python -m personalvibe.parse_stage --project_name personalvive --run
     """
     parser = argparse.ArgumentParser(description="Extract latest prompt output and save as versioned Python file.")
 
