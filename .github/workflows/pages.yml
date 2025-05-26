@@ -2,12 +2,12 @@ name: Pages
 
 on:
   push:
-    branches: [master]       # or 'main'
+    branches: [master]   # or main
 
 permissions:
   contents: read
-  pages: write        # lets the deploy action push
-  id-token: write     # OIDC for the deploy action
+  pages: write
+  id-token: write
 
 jobs:
   build:
@@ -17,15 +17,16 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: 3.12
 
       - run: pip install nox==2025.2.9 poetry==2.1.1
       - run: poetry install
-      - run: poetry run nox -s docs   # builds to docs/_build/html
+      - run: poetry run nox -s docs       # generates docs/_build/html
 
-      # 1) upload the static site as an artifact
-      - uses: actions/upload-pages-artifact@v2
+      # Explicit, fully-qualified artefact upload
+      - uses: actions/upload-artifact@v4
         with:
+          name: pages
           path: docs/_build/html
 
   deploy:
@@ -33,9 +34,8 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deploy.outputs.page_url }}
 
-    # 2) deploy the artifact to Pages
     steps:
-      - id: deployment
+      - id: deploy
         uses: actions/deploy-pages@v3
