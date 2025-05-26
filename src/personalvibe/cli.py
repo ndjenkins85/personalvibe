@@ -149,7 +149,7 @@ def _build_parser() -> argparse.ArgumentParser:
     run_sp.set_defaults(func=_cmd_run)
 
     # explicit modes -
-    for _mode in ("milestone", "sprint", "validate", "prd"):
+    for _mode in ("milestone", "sprint", "validate", "prd", "bugfix"):
         m_sp = sub.add_parser(_mode, help=f"{_mode} workflow")
         _common(m_sp)
         m_sp.set_defaults(func=lambda ns, m=_mode: _cmd_mode(ns, m))
@@ -165,6 +165,11 @@ def _build_parser() -> argparse.ArgumentParser:
     pspr.add_argument("--project_name", help="Override auto detection.")
     pspr.add_argument("--no-open", action="store_true")
     pspr.set_defaults(func=_cmd_prepare_sprint)
+    # prepare-bugfix -----------------------------------------------
+    pbug = sub.add_parser("prepare-bugfix", help="Scaffold next bugfix YAML")
+    pbug.add_argument("--project_name", help="Override auto detection.")
+    pbug.add_argument("--no-open", action="store_true")
+    pbug.set_defaults(func=_cmd_prepare_bugfix)
 
     # parse-stage ---
     ps = sub.add_parser("parse-stage", help="Extract latest assistant code block.")
@@ -242,6 +247,29 @@ def _cmd_prepare_sprint(ns: argparse.Namespace) -> None:
     tmpl = vibe_utils._load_template("sprint_template.yaml")
     dest.write_text(tmpl.replace("{{ project_name }}", proj), encoding="utf-8")
     print(f"Created sprint YAML: {dest}")
+    if not ns.no_open:
+        _open_in_editor(dest)
+
+
+# ----------------------------------------------------------------- PB
+def _cmd_prepare_bugfix(ns: argparse.Namespace) -> None:
+    proj = ns.project_name or vibe_utils.detect_project_name()
+    stages = vibe_utils.get_base_path() / "prompts" / proj / "stages"
+    stages.mkdir(parents=True, exist_ok=True)
+    versions = _scan_versions(stages)
+
+    if not versions:
+        # no files yet
+        next_ver = "1.0.1"
+    else:
+        latest = versions[-1]
+        # For bugfix, increment patch version
+        next_ver = f"{latest[0]}.{latest[1]}.{latest[2] + 1}"
+
+    dest = Path.cwd() / f"{next_ver}.yaml"
+    tmpl = vibe_utils._load_template("bugfix_template.yaml")
+    dest.write_text(tmpl.replace("{{ project_name }}", proj), encoding="utf-8")
+    print(f"Created bugfix YAML: {dest}")
     if not ns.no_open:
         _open_in_editor(dest)
 

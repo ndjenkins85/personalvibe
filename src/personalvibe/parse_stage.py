@@ -49,9 +49,15 @@ def extract_and_save_code_block(project_name: Union[str, None] = None) -> str:
 
     new_version = determine_next_version(project_name)
     # Determine file extension based on mode (bugfix = .md, sprint = .py)
-    # For now, always use .py since we're extracting python code
-    # TODO: In future, support .md for bugfix documentation
-    output_file = stages_dir / f"{new_version}.py"
+    # Check if this is a bugfix by looking at the version pattern
+    version_parts = new_version.split(".")
+    if len(version_parts) == 3 and int(version_parts[2]) > 0:
+        # This is a bugfix (patch version > 0)
+        file_extension = ".md"
+    else:
+        # This is a sprint
+        file_extension = ".py"
+    output_file = stages_dir / f"{new_version}{file_extension}"
 
     # Prepare final content with header
     header = f"# python prompts/{project_name}/stages/{new_version}.py\n"

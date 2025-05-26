@@ -454,6 +454,21 @@ def get_replacements(config: "ConfigModel", code_context: str) -> dict:  # type:
         instructions = (
             _load_template("validate.md") + "\n" + _get_milestone_text(config) + "\n" + _get_error_text(config)
         )
+    elif config.mode == "bugfix":
+        exec_task = f"fix the bug described in version {config.version}"
+        # Get error details from execution_details or a dedicated field
+        error_details = config.execution_details
+        instructions = _load_template("bugfix.md")
+
+        # Add error_details to replacements
+        return {
+            "execution_task": exec_task,
+            "execution_details": config.execution_details,
+            "instructions": instructions,
+            "code_context": code_context,
+            "error_details": error_details,
+            "project_name": config.project_name,
+        }
     else:  # pragma: no cover
         raise ValueError(f"Unsupported mode {config.mode}")
 

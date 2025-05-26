@@ -32,7 +32,7 @@ class ConfigModel(BaseModel):
     """
     version: str
     project_name: str
-    mode: str = Field(..., pattern="^(prd|milestone|sprint|validate)$")
+    mode: str = Field(..., pattern="^(prd|milestone|sprint|validate|bugfix)$")
     model: Optional[str] = None
     execution_task: Optional[str] = None
     execution_details: str = ""
