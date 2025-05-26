@@ -13,11 +13,11 @@ def _prep(tmp_path: Path):
     return root, stages
 
 
-def test_bugfix_increment(monkeypatch, tmp_path):
+def test_sprint_increment(monkeypatch, tmp_path):
     root, stages = _prep(tmp_path)
     # fake repo root lookup
     monkeypatch.patch.object(vibe_utils, "get_base_path", lambda: root)
     # existing sprint file 4.3.0.py
     (stages / "4.3.0.py").write_text("# dummy")
-    nxt = determine_next_version("demo")
-    assert nxt == "4.3.1"
+    nxt = determine_next_version("demo", "sprint")
+    assert nxt == "4.4.0"

@@ -50,5 +50,5 @@ def test_bugfix_file_extension(monkeypatch, tmp_path):
     monkeypatch.patch.object(vibe_utils, "get_base_path", lambda: root)
 
     # Next version should be a bugfix
-    next_ver = determine_next_version("demo")
+    next_ver = determine_next_version("demo", "bugfix")
     assert next_ver == "1.1.1"  # bugfix version

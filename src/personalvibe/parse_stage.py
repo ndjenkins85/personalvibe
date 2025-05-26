@@ -47,13 +47,16 @@ def extract_and_save_code_block(project_name: Union[str, None] = None) -> str:
 
     extracted_code = match.group(1).strip()
 
-    new_version = determine_next_version(project_name)
     # Determine file extension based on mode (bugfix = .md, sprint = .py)
     # Check if this is a bugfix by looking at the version pattern
     if extracted_code:
         file_extension = ".py"
+        style = "sprint"
     else:
         file_extension = ".md"
+        style = "bugfix"
+
+    new_version = determine_next_version(project_name, style=style)
 
     output_file = stages_dir / f"{new_version}{file_extension}"
 
@@ -77,7 +80,7 @@ def _ensure_project_name(name: Union[str, None]) -> str:
         raise ValueError(str(e)) from e
 
 
-def determine_next_version(project_name: Union[str, None] = None) -> str:  # noqa: C901
+def determine_next_version(project_name: Union[str, None] = None, style: str = "") -> str:  # noqa: C901
     """Return the *next* semantic version for **patch-files** (x.y.Z).
 
     Rules
@@ -108,9 +111,18 @@ def determine_next_version(project_name: Union[str, None] = None) -> str:  # noq
         # first ever sprint under major-1
         return "1.1.0"
 
+    sprint_inc = 0
+    bug_inc = 0
+    if style == "sprint":
+        sprint_inc = 1
+        bug_inc = 0
+    elif style == "bugfix":
+        sprint_inc = 0
+        bug_inc = 1
+
     version_tuples.sort()
     latest_major, latest_sprint, latest_bug = version_tuples[-1]
-    return f"{latest_major}.{latest_sprint + 1}.{latest_bug}"
+    return f"{latest_major}.{latest_sprint + sprint_inc}.{latest_bug + bug_inc}"
 
 
 if __name__ == "__main__":
