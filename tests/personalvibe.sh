@@ -51,7 +51,7 @@ touch "${LOG_FILE}"
 exec > >(tee -a "${LOG_FILE}") 2>&1
 
 echo "🔍  Installing project dependencies (poetry)…"
-poetry install --sync --no-interaction --no-root
+poetry install --no-interaction --no-root
 
 echo -e "\n🧹  Running quality-gate via nox (lint + tests + smoke_dist)…"
 poetry run nox -rs lint tests smoke_dist "$@"
