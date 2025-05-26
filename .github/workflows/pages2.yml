@@ -21,7 +21,7 @@ jobs:
       run: pip install nox==2025.2.9 poetry==2.1.1
 
     - name: Build docs
-      run: nox -s docs
+      run: poetry run nox -s docs
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
