@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: sudo apt-get update && sudo apt-get install -y meson ninja-build musl-tools
+      - run: sudo apt-get update && sudo apt-get install -y meson ninja-build musl-tools libcap-dev
       - run: |
           git clone https://github.com/containers/bubblewrap.git
           cd bubblewrap
