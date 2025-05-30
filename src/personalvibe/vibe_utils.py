@@ -5,6 +5,7 @@ import html
 import logging
 import logging as _pv_log
 import os
+import random
 from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, List, Union
@@ -32,6 +33,17 @@ log = logging.getLogger(__name__)
 
 def get_prompt_hash(prompt: str) -> str:
     return hashlib.sha256(prompt.encode("utf-8")).hexdigest()
+
+
+def rainbow(text: str) -> str:
+    """Return the text with each character wrapped in a cycling rainbow colour."""
+    RAINBOW_COLORS = [31, 33, 32, 36, 34, 35]  # red, yellow, green, cyan, blue, magenta
+    wrapped = []
+    color_count = len(RAINBOW_COLORS)
+    for ch in text:
+        color = random.choice(RAINBOW_COLORS)
+        wrapped.append(f"\033[{color}m{ch}\033[0m")
+    return "".join(wrapped)
 
 
 def find_existing_hash(root_dir: Union[str, Path], hash_str: str) -> Union[Path, None]:

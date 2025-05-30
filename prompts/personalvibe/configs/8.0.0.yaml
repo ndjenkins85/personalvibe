@@ -1,0 +1,59 @@
+# pv run --config prompts/personalvibe/configs/8.0.0.yaml
+
+project_name: "personalvibe"
+mode: milestone
+# model: anthropic/claude-opus-4-20250514
+model: anthropic/claude-sonnet-4-20250514
+# model: openai/o3
+# model: openai/o4-mini
+# model: openai/gpt-4o
+code_context_paths:
+  - "prompts/personalvibe/context/documentation.txt"
+  - "prompts/personalvibe/context/codefiles.txt"
+execution_details: |
+
+  At this stage personalvibe project is an effective developer tool to use vibecoding for working with codebases
+
+  This next milestone will add automated testing capabilities.
+
+  After generating a spring, a developer needs to do the following steps manually:
+
+  1. Execute the code patch
+  2. Ensure the code patch ran successfully
+  3. Run the test suite
+  4. If there is a problem, generate a bugfix patch with logs
+
+  This next milestone will look to handle the above four steps automatically, so that a code sprint
+  is automatically tested
+
+  It is possible for a codepatch and error correction to not work several times in a row,
+  if that is the case, we would want a maximum of five retry attempts, otherwise we will fail the sprint update
+
+  An important thing to note about our current process:
+  When we apply a codepatch, we are applying it to our native code environment
+  This is not a good idea, as it can cause corruption of our codebase on a partially effective patch
+
+  What would be more ideal is to sandbox the execution of the code patch to ensure that it applied correctly
+
+  To minimize enterprise friction, we’re replacing the originally-planned Docker sandbox with bubblewrap (bwrap).
+  Docker requires a privileged daemon, large images, and IT approval for OCI plumbing that is over-scoped
+  for our needs; bubblewrap delivers the same Linux-namespace, seccomp, and cgroup isolation
+  in a single ~100 kB userspace binary with no background service or root privileges,
+  dramatically reducing attack surface and start-up latency. To keep the developer experience one-step,
+  we will vendor a statically linked bwrap binary inside the PersonalVibe Python wheel; on install,
+  the platform discovers or extracts the correct binary automatically, so end-users never install
+  extra system packages while still benefiting from deterministic, Docker-level sandboxing.
+
+  So the order would be something like:
+
+  1. Generate code patch
+  2. Load sandbox environment
+  3. Execute code patch
+  4. If code did not run correctly, get error logs and return to step 1 (adding logs)
+  5. If code did run correctly, run test suite
+  6. If test suite fails, get error logs and return to step 1 (adding logs)
+
+  At this stage the user can handle actually running the code patch, the purpose is to ensure its tested to succeed
+
+  This also means that users need to specify a 'test suite' file, and this should have it's own
+  parameter in the config file to point to the test file (i.e. `tests/personalvibe.sh`)

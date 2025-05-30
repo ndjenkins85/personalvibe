@@ -96,7 +96,7 @@ def main() -> None:
     logger.configure_logging(args.verbosity, run_id=run_id, log_dir=workspace / "logs")
     logger.configure_logging(args.verbosity, run_id=run_id)
     log = logging.getLogger(__name__)
-    log.info("P  E  R  S  O  N  A  L  V  I  B  E  – run_id=%s", run_id)
+    log.info(vibe_utils.rainbow(f"P  E  R  S  O  N  A  L  V  I  B  E"))
 
     # 3️⃣  Render prompt template ------------------------------------------------
     code_context = vibe_utils.get_context(config.code_context_paths)
