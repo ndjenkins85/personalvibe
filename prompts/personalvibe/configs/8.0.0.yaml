@@ -35,14 +35,14 @@ execution_details: |
 
   What would be more ideal is to sandbox the execution of the code patch to ensure that it applied correctly
 
-  To minimize enterprise friction, we’re replacing the originally-planned Docker sandbox with bubblewrap (bwrap).
-  Docker requires a privileged daemon, large images, and IT approval for OCI plumbing that is over-scoped
-  for our needs; bubblewrap delivers the same Linux-namespace, seccomp, and cgroup isolation
-  in a single ~100 kB userspace binary with no background service or root privileges,
-  dramatically reducing attack surface and start-up latency. To keep the developer experience one-step,
-  we will vendor a statically linked bwrap binary inside the PersonalVibe Python wheel; on install,
-  the platform discovers or extracts the correct binary automatically, so end-users never install
-  extra system packages while still benefiting from deterministic, Docker-level sandboxing.
+  To remove the Docker hurdle entirely, we’ll adopt a Wasmtime-based WebAssembly sandbox,
+  Docker still demands a privileged daemon, heavy OCI images, and security exemptions,
+  while Wasmtime lets us execute Python-WASI tests in a hermetic userspace process that works on macOS,
+  Windows, and Linux with no kernel features or root access.
+  The full runtime shrinks to ≈ 3 MB by using the wasmtime-min build,
+  which we’ll vendor directly inside the PersonalVibe wheel for each OS/CPU pair;
+  the installer selects or extracts the right binary automatically,
+  so every developer enjoys one-command isolation without extra packages.
 
   So the order would be something like:
 

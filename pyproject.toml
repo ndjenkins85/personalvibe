@@ -23,7 +23,13 @@ classifiers = [
     "Programming Language :: Python :: 3 :: Only",
     "Topic :: Utilities",
 ]
-include = ["LICENSE", "README.md", "src/personalvibe/data/*.md", "tests/personalvibe.sh"]
+include = [
+    { path = "LICENSE"},
+    { path = "README.md"},
+    { path = "src/personalvibe/data/*.md"},
+    { path = "tests/personalvibe.sh"},
+    { path = "src/personalvibe/_bin/wasmtime-darwin-aarch64-min",  format = "wheel" }
+]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.13"
