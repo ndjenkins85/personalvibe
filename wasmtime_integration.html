@@ -1,0 +1,198 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wasmtime Integration &mdash; personalvibe  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            personalvibe
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">personalvibe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Wasmtime Integration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/wasmtime_integration.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="wasmtime-integration">
+<h1>Wasmtime Integration<a class="headerlink" href="#wasmtime-integration" title="Link to this heading"></a></h1>
+<p>Personalvibe includes integrated support for running code in isolated WebAssembly sandboxes using Wasmtime.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The Wasmtime integration provides:</p>
+<ul class="simple">
+<li><p>Cross-platform binary detection and loading</p></li>
+<li><p>Hermetic sandbox environments for code execution</p></li>
+<li><p>Python-WASI environment setup</p></li>
+<li><p>Automated testing support with timeout and error handling</p></li>
+</ul>
+</section>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">personalvibe.wasmtime_core</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_python_in_sandbox</span><span class="p">,</span> <span class="n">wasmtime_smoke_test</span>
+
+<span class="c1"># Execute Python code in sandbox</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">execute_python_in_sandbox</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">print(&quot;Hello from sandbox!&quot;)</span>
+<span class="s2">x = 2 + 2</span>
+<span class="s2">print(f&quot;2 + 2 = </span><span class="si">{x}</span><span class="s2">&quot;)</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exit code: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;exit_code&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Run smoke test</span>
+<span class="k">if</span> <span class="n">wasmtime_smoke_test</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Wasmtime integration working correctly&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="advanced-usage">
+<h2>Advanced Usage<a class="headerlink" href="#advanced-usage" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">personalvibe.wasmtime_core</span><span class="w"> </span><span class="kn">import</span> <span class="n">WasmtimeCore</span>
+
+<span class="c1"># Create core instance with custom workspace</span>
+<span class="n">core</span> <span class="o">=</span> <span class="n">WasmtimeCore</span><span class="p">(</span><span class="s2">&quot;/tmp/my_sandbox&quot;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Execute code with custom timeout</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">initialize_sandbox</span><span class="p">(</span>
+        <span class="n">python_code</span><span class="o">=</span><span class="s2">&quot;import time; time.sleep(1); print(&#39;done&#39;)&quot;</span><span class="p">,</span>
+        <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;exit_code&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Execution successful&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Execution failed: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;stderr&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">finally</span><span class="p">:</span>
+    <span class="c1"># Always cleanup</span>
+    <span class="n">core</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="platform-support">
+<h2>Platform Support<a class="headerlink" href="#platform-support" title="Link to this heading"></a></h2>
+<p>The integration automatically detects the platform and loads the appropriate Wasmtime binary:</p>
+<ul class="simple">
+<li><p>macOS (Intel/Apple Silicon)</p></li>
+<li><p>Linux (x86_64/ARM64)</p></li>
+<li><p>Windows (x86_64)</p></li>
+</ul>
+</section>
+<section id="binary-management">
+<h2>Binary Management<a class="headerlink" href="#binary-management" title="Link to this heading"></a></h2>
+<p>Wasmtime binaries are bundled with the package and automatically extracted to a temporary workspace.
+If package binaries are not available, the system will fallback to using a globally installed <code class="docutils literal notranslate"><span class="pre">wasmtime</span></code> binary.</p>
+</section>
+<section id="error-handling">
+<h2>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading"></a></h2>
+<p>The integration provides specific exception types:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">WasmtimeBinaryNotFoundError</span></code>: When binary cannot be found or extracted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">WasmtimeExecutionError</span></code>: When execution fails or times out</p></li>
+</ul>
+</section>
+<section id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Link to this heading"></a></h2>
+<p>Run the test suite to verify integration:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span>tests/test_wasmtime_core.py<span class="w"> </span>-v
+</pre></div>
+</div>
+</section>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python 3.9+</p></li>
+<li><p>Wasmtime binary (bundled or system-installed)</p></li>
+<li><p>Temporary filesystem access for workspace</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Copyright © 2025 by Nick Jenkins. All rights reserved
+.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
