@@ -40,7 +40,7 @@ def rainbow(text: str) -> str:
     """Return the text with each character wrapped in a cycling rainbow colour."""
     RAINBOW_COLORS = [31, 33, 32, 36, 34, 35]  # red, yellow, green, cyan, blue, magenta
     wrapped = []
-    color_count = len(RAINBOW_COLORS)
+    _ = len(RAINBOW_COLORS)
     for ch in text:
         color = random.choice(RAINBOW_COLORS)
         wrapped.append(f"\033[{color}m{ch}\033[0m")
@@ -210,7 +210,7 @@ def get_context(filenames: List[str], extension: str = ".txt") -> str:  # type: 
     # --------------------------------------------------------
     # ❷  Helper that applies *all* exclude logic in one place
     # --------------------------------------------------------
-    def _maybe_add(path: Path, *, rel: str | None = None) -> None:
+    def _maybe_add(path: Path, *, rel: Union[str, None] = None) -> None:
         nonlocal big_string
         rel = rel or str(path.relative_to(base_path))
         if (
