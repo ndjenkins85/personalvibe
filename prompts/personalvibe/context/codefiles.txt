@@ -1,6 +1,6 @@
 .flake8
 .pre-commit-config.yaml
-CONTRIBUTING.md
+X CONTRIBUTING.md
 LICENSE
 README.md
 docs/*

@@ -1,5 +1,6 @@
 # Copyright © 2025 by Nick Jenkins. All rights reserved
 # mypy: ignore-errors
+import fnmatch
 import hashlib
 import html
 import logging
@@ -8,7 +9,7 @@ import os
 import random
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, List, Union
+from typing import TYPE_CHECKING, Iterable, List, Union
 
 import dotenv
 import pathspec
@@ -148,56 +149,104 @@ def get_vibed(
     return response
 
 
-def get_context(filenames: List[str], extension: str = ".txt") -> str:
-    big_string = ""
-    base_path = get_base_path()
-    log.debug(f"Base path is {base_path}")
+COMMENT_PREFIX = "#"
+EXCLUDE_PREFIX = "X "
+WILDCARD_CHARS = "*?[]"
 
+
+def _expand_pattern(base: Path, pattern: str) -> Iterable[Path]:
+    """Return paths matching *pattern* relative to *base* (handles “…/**”)."""
+    pat = pattern.lstrip("/")
+    if pat.endswith("/**"):
+        pat = f"{pat}/*"
+    yield from base.glob(pat)
+
+
+def get_context(filenames: List[str], extension: str = ".txt") -> str:  # type: ignore[override]  # noqa: D401
+    """
+    Concatenate the contents of every file referenced in *filenames*.
+
+    Features
+    --------
+    • Comment lines (`# …`) and blanks ignored.
+    • Manual excludes:  `X <glob>` (evaluated *before* any include).
+    • Wildcards allowed; directories are recursed.
+    • Respects `.gitignore` via ``load_gitignore``.
+    • Never rewrites the config files in-place.
+    """
+    from personalvibe.vibe_utils import (  # late import avoids cycles
+        _process_file,
+        get_base_path,
+        load_gitignore,
+    )
+
+    base_path = get_base_path()
     gitignore_spec = load_gitignore(base_path)
 
-    for name in filenames:
-        file_path = base_path / name
+    manual_excludes: list[str] = []
+    include_lines: list[str] = []
 
-        if not file_path.exists():
-            print(f"Warning: {file_path} does not exist. {os.getcwd()}")
+    # --------------------------------------------------------
+    # ❶  Parse every config file – first collect, don’t act.
+    # --------------------------------------------------------
+    for name in filenames:
+        cfg_path = base_path / name
+        if not cfg_path.exists():
+            log.warning("Config file %s is missing (cwd=%s)", cfg_path, os.getcwd())
             continue
 
-        lines = file_path.read_text(encoding="utf-8").splitlines()
-        unique_lines = sorted(set(lines))
-        file_path.write_text("\n".join(unique_lines) + "\n", encoding="utf-8")
-
-        for line in unique_lines:
-            if not line.strip():
+        for raw in cfg_path.read_text("utf-8").splitlines():
+            line = raw.strip()
+            if not line or line.startswith(COMMENT_PREFIX):
                 continue
-
-            line_path = base_path / line
-            log.debug(f"Working on codepath {line_path}")
-
-            if any(char in line for char in "*?[]"):
-                matches = sorted(base_path.glob(line))
-                if not matches:
-                    log.warning(f"No matches found for wildcard pattern: {line}")
-                for match in matches:
-                    rel_match = str(match.relative_to(base_path))
-                    if gitignore_spec.match_file(rel_match):
-                        continue
-                    if match.is_file():
-                        try:
-                            big_string += _process_file(match)
-                        except UnicodeDecodeError:
-                            message = f"Unable to parse {line} in {name} - {match}"
-                            logging.error(message)
+            if line.startswith(EXCLUDE_PREFIX):
+                manual_excludes.append(line[len(EXCLUDE_PREFIX) :].strip().lstrip("/"))
             else:
-                if not line_path.exists():
-                    message = f"Warning: {line_path} does not exist. {os.getcwd()}"
-                    log.error(message)
-                    raise ValueError(message)
+                include_lines.append(line.lstrip("/"))
 
-                rel_line = str(line_path.relative_to(base_path))
-                if gitignore_spec.match_file(rel_line):
-                    continue
+    # normalise manual_excludes once
+    manual_excludes = [p or "**" for p in manual_excludes]
 
-                big_string += _process_file(line_path)
+    # --------------------------------------------------------
+    # ❷  Helper that applies *all* exclude logic in one place
+    # --------------------------------------------------------
+    def _maybe_add(path: Path, *, rel: str | None = None) -> None:
+        nonlocal big_string
+        rel = rel or str(path.relative_to(base_path))
+        if (
+            not path.is_file()
+            or gitignore_spec.match_file(rel)
+            or any(fnmatch.fnmatch(rel, pat) for pat in manual_excludes)
+        ):
+            return
+        try:
+            big_string += _process_file(path)
+        except UnicodeDecodeError:
+            log.error("Unicode error reading %s", rel)
+
+    # --------------------------------------------------------
+    # ❸  Process includes now that excludes are known
+    # --------------------------------------------------------
+    big_string = ""
+    for line in include_lines:
+        # glob / wildcard include
+        if any(ch in line for ch in WILDCARD_CHARS):
+            for match in _expand_pattern(base_path, line):
+                if match.is_dir():
+                    for f in match.rglob("*"):
+                        _maybe_add(f)
+                else:
+                    _maybe_add(match)
+        # explicit path include
+        else:
+            path = base_path / line
+            if not path.exists():
+                raise ValueError(f"Warning: {path} does not exist (cwd={os.getcwd()})")
+            if path.is_dir():
+                for f in path.rglob("*"):
+                    _maybe_add(f)
+            else:
+                _maybe_add(path)
 
     return big_string
 

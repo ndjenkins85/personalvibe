@@ -50,4 +50,15 @@ except Exception:  # pragma: no cover
 # --- end personalvibe monkeypatch shim ---
 
 
+__all__ = []
+
+# Wasmtime integration for automated testing
+try:
+    from personalvibe import wasmtime_core
+
+    __all__ += ["wasmtime_core"]
+except ImportError:
+    # wasmtime_core is optional
+    pass
+
 __version__ = "2.7.2"  # 7.0.0 milestone, alternative AI providers
