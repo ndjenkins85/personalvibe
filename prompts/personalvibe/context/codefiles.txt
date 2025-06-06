@@ -1,11 +1,20 @@
-.flake8
-.pre-commit-config.yaml
-X CONTRIBUTING.md
-LICENSE
-README.md
-docs/*
-noxfile.py
+# Docs
 prompts/code_style_guide.md
+docs/*
+README.md
+LICENSE
+
+# Tooling
 pyproject.toml
+noxfile.py
+.pre-commit-config.yaml
+.flake8
+
+# Project files
 src/personalvibe/*
+X src/personalvibe/data/*
+X src/personalvibe/_bin/*
+X src/personalvibe/py.typed
+
+# Tests
 tests/*
