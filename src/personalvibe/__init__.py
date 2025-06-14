@@ -54,4 +54,4 @@ except Exception:  # pragma: no cover
 
 __all__: List[str] = []
 
-__version__ = "2.7.2"  # 7.0.0 milestone, alternative AI providers
+__version__ = "2.7.4"
