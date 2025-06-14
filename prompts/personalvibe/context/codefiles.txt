@@ -1,19 +1,19 @@
-# Docs
+## Docs
+prompts/agentic_collaboration_approach.md
 prompts/code_style_guide.md
 docs/*
 README.md
 LICENSE
 
-# Tooling
+## Tooling
 pyproject.toml
 noxfile.py
 .pre-commit-config.yaml
 .flake8
 
-# Project files
+## Project files
 src/personalvibe/*
-X src/personalvibe/data/*
-X src/personalvibe/_bin/*
+# X src/personalvibe/data/*
 X src/personalvibe/py.typed
 
 # Tests

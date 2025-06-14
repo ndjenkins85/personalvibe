@@ -1,11 +1,5 @@
 # pv run --config prompts/personalvibe/configs/8.4.0.yaml
 
-# Chunk 1: Wasmtime Integration & Binary Management
-# Chunk 2: Sandbox Environment Core
-# Chunk 3: Test Suite Integration
-# Chunk 4: Automated Retry Logic
-# Chunk 5: CLI Integration & Workflow Automation
-
 project_name: "personalvibe"
 mode: sprint
 # model: anthropic/claude-opus-4-20250514
@@ -14,7 +8,6 @@ model: anthropic/claude-sonnet-4-20250514
 # model: openai/o4-mini
 # model: openai/gpt-4o
 code_context_paths:
-  - "prompts/personalvibe/context/documentation.txt"
   - "prompts/personalvibe/context/codefiles.txt"
 execution_details: |
-  Perform work for Chunk 4: Automated Retry Logic
+  Perform work for
