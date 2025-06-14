@@ -5,6 +5,8 @@
 This sub-package is intentionally left minimal.
 """
 
+from typing import List
+
 # ------------------------------------------------------------------
 # pytest <7.5> MonkeyPatch helper — adds missing `.patch` alias used
 # by legacy tests.  No-op if upstream already implements it.
@@ -50,15 +52,6 @@ except Exception:  # pragma: no cover
 # --- end personalvibe monkeypatch shim ---
 
 
-__all__ = []
-
-# Wasmtime integration for automated testing
-try:
-    from personalvibe import wasmtime_core
-
-    __all__ += ["wasmtime_core"]
-except ImportError:
-    # wasmtime_core is optional
-    pass
+__all__: List[str] = []
 
 __version__ = "2.7.2"  # 7.0.0 milestone, alternative AI providers
