@@ -2,7 +2,7 @@
 
 project_name: "personalvibe"
 task: streamline
-model: openai/o4-mini
+model: openai/o3-pro
 project_context_paths:
   - "prompts/personalvibe/context/codefiles.txt"
 user_instructions: |

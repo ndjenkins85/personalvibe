@@ -1,4 +1,4 @@
-# Release guide – Personalvibe 2.1.0
+# Release guide
 
 This is a *living* checklist to cut an **Independence Day** style
 release.  Nothing here enforces policy – it is a reminder that the
@@ -18,6 +18,3 @@ human-in-the-loop must still sanity-check artefacts.
 6. GitHub Actions will build & upload the wheel.
 7. Verify **PyPI** and **docs** artefacts.
 8. Tweet the release, grab ☕.
-
----
-*Generated automatically by chunk_e_release.py.*
