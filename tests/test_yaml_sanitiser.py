@@ -16,12 +16,14 @@ def _mk_cfg(tmp_path: Path, body: str) -> Path:
 
 
 def test_control_chars_stripped(tmp_path: Path):
-    txt = "project_name: demo\n" "mode: milestone\n" 'execution_details: "bad\x07value"\n' "code_context_paths: []\n"
+    txt = "project_name: demo\n" "task: milestone\n" 'user_instructions: "bad\x07value"\n' "project_context_paths: []\n"
     cfg = load_config(str(_mk_cfg(tmp_path, txt)))
-    assert cfg.execution_details == "bad value"
+    assert cfg.user_instructions == "bad value"
 
 
 def test_invalid_surrogate_raises(tmp_path: Path):
-    bad = "project_name: demo\n" "mode: milestone\n" 'execution_details: "oops\ud800oops"\n' "code_context_paths: []\n"
+    bad = (
+        "project_name: demo\n" "task: milestone\n" 'user_instructions: "oops\ud800oops"\n' "project_context_paths: []\n"
+    )
     with pytest.raises(ValueError):
         load_config(str(_mk_cfg(tmp_path, bad)))

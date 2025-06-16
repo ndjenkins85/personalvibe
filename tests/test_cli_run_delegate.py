@@ -13,13 +13,13 @@ from unittest import mock
 import personalvibe.cli as cli
 
 
-def _tmp_cfg(tmp_path: Path, mode: str) -> Path:
-    cfg = tmp_path / f"{mode}.yaml"
+def _tmp_cfg(tmp_path: Path, task: str) -> Path:
+    cfg = tmp_path / f"{task}.yaml"
     cfg.write_text(
         f"""project_name: demo
-mode: {mode}
-execution_details: ''
-code_context_paths: []""",
+task: {task}
+user_instructions: ''
+project_context_paths: []""",
         encoding="utf-8",
     )
     return cfg

@@ -1,9 +1,10 @@
 # Copyright © 2025 by Nick Jenkins. All rights reserved
 """Task configuration loading and management."""
 
+from __future__ import annotations
+
 import logging
-from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict
 
 import yaml
 from jinja2 import BaseLoader, Environment
@@ -26,10 +27,10 @@ class TaskConfig(BaseModel):
 class TaskManager:
     """Manages loading and rendering of task configurations."""
 
-    def __init__(self):
+    def __init__(self: TaskManager) -> None:
         self._task_cache: Dict[str, TaskConfig] = {}
 
-    def load_task_config(self, task_name: str) -> TaskConfig:
+    def load_task_config(self: TaskManager, task_name: str) -> TaskConfig:
         """Load task configuration from bundled data."""
         if task_name in self._task_cache:
             return self._task_cache[task_name]
@@ -53,13 +54,13 @@ class TaskManager:
             log.error("Failed to load task config '%s': %s", task_name, e)
             raise ValueError(f"Unknown task: {task_name}") from e
 
-    def render_task_instructions(self, task_config: TaskConfig, context: dict) -> str:
+    def render_task_instructions(self: TaskManager, task_config: TaskConfig, context: dict) -> str:
         """Render task instructions with Jinja2 templating."""
         env = Environment(loader=BaseLoader())
         template = env.from_string(task_config.task_instructions)
         return template.render(**context)
 
-    def get_semver_type(self, task_name: str) -> str:
+    def get_semver_type(self: TaskManager, task_name: str) -> str:
         """Get the semver increment type for a task."""
         config = self.load_task_config(task_name)
         return config.semver

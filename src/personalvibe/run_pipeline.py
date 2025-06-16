@@ -10,7 +10,7 @@ from typing import List, Optional
 
 import yaml
 from jinja2 import Template
-from pydantic import BaseModel, Field, ValidationError, field_validator
+from pydantic import BaseModel, ValidationError, field_validator
 
 from personalvibe import logger, vibe_utils
 from personalvibe.yaml_utils import sanitize_yaml_text

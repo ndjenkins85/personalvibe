@@ -16,9 +16,9 @@ def test_default_model_fallback(monkeypatch, tmp_path):
     cfg_yaml.write_text(
         """
         project_name: smoketest
-        mode: milestone
-        execution_details: ""
-        code_context_paths: []
+        task: milestone
+        user_instructions: ""
+        project_context_paths: []
         """,
         encoding="utf-8",
     )

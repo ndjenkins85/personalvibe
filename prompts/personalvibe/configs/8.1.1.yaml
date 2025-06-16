@@ -1,0 +1,29 @@
+# pv run --config prompts/personalvibe/configs/8.1.1.yaml
+
+project_name: "personalvibe"
+task: naked
+model: openai/o4-mini
+project_context_paths:
+  - "prompts/personalvibe/context/codefiles.txt"
+user_instructions: |
+  I recently made large changes to my codebase.
+
+  The happy path of using `pv run --config prompts/personalvibe/configs/8.1.1.yaml`
+  is working well and as intended
+
+  However, many of the tests are likely pointing to a stale schema
+
+  Can you help me work through what updates are needed to my test files
+  so that they are using the latest schema arrangements.
+
+  For example, this is what the modern user template schema looks liked:
+
+  ```user_yaml.yaml
+  project_name: myproject
+  task: naked
+  model: openai/o4-mini
+  project_context_paths:
+    - "prompts/personalvibe/context/codefiles.txt"
+  user_instructions: |
+    Example instructions
+  ```

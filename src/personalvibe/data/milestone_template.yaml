@@ -1,7 +1,6 @@
 # Personalvibe milestone configuration
-# pv run --config src/personalvibe/data/milestone_template.yaml --prompt_only --max_tokens 50000
-
-project_name: personalvibe
+project_name: "{{ project_name }}"
 mode: milestone
-execution_details: ''
-code_context_paths: []
+model: openai/o3  # optional, defaults to o3
+project_context_paths: []
+user_instructions: ''

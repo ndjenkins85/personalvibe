@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 
 from personalvibe import run_pipeline, vibe_utils
+from personalvibe.task_config import TaskConfig, task_manager
 
 
 def test_prompt_only_sprint_template(monkeypatch, tmp_path):
@@ -15,9 +16,9 @@ def test_prompt_only_sprint_template(monkeypatch, tmp_path):
     cfg_yaml.write_text(
         """
         project_name: smoketest
-        mode: sprint
-        execution_details: "Test smoketest sprint execution"
-        code_context_paths: []
+        task: sprint
+        user_instructions: "Test smoketest sprint execution"
+        project_context_paths: []
         """,
         encoding="utf-8",
     )
@@ -59,17 +60,17 @@ Code context:
     # Mock get_base_path to return our temp directory
     monkeypatch.setattr(vibe_utils, "get_base_path", lambda: tmp_path)
 
-    # Mock the template loader to return our test templates
-    def mock_load_template(fname):
-        if fname == "sprint.md":
-            return "Sprint instructions: Execute the requested sprint."
-        elif fname == "milestone.md":
-            return "Milestone instructions: Plan the next milestone."
-        elif fname == "validate.md":
-            return "Validate instructions: Check the sprint results."
-        return ""
-
-    monkeypatch.setattr(vibe_utils, "_load_template", mock_load_template)
+    # 1) stub out the TaskConfig so that task_instructions is exactly what we want
+    fake_tc = TaskConfig(
+        task_name="sprint",
+        task_summary="run a smoke sprint",
+        semver="minor",
+        task_instructions="Sprint instructions: Execute the requested sprint.",
+    )
+    monkeypatch.setattr(task_manager, "load_task_config", lambda t: fake_tc)
+    # 2) stub only the master.md so we control how it combines user_ and task_
+    master_template = "{{ project_name }}|{{ user_instructions }}|{{ task_instructions }}|{{ project_context }}"
+    monkeypatch.setattr(vibe_utils, "_load_template", lambda fname: master_template if fname == "master.md" else "")
 
     # IMPORTANT: Set PV_DATA_DIR to use our temp directory for data files
     monkeypatch.setenv("PV_DATA_DIR", str(tmp_path))
@@ -93,10 +94,11 @@ Code context:
     assert len(prompt_files) > 0, "No prompt files were created"
 
     # Verify the prompt contains expected content
-    prompt_content = prompt_files[0].read_text(encoding="utf-8")
-    assert "smoketest" in prompt_content
-    assert "sprint number marked 1" in prompt_content
-    assert "Sprint instructions" in prompt_content
+    content = prompt_files[0].read_text(encoding="utf-8")
+    # now the master_template was `{{ project_name }}|{{ user_instructions }}|{{ task_instructions }}`
+    assert "smoketest" in content
+    assert "Test smoketest sprint execution" in content
+    assert "Sprint instructions: Execute the requested sprint." in content
 
 
 def test_prompt_only_with_max_tokens(monkeypatch, tmp_path):
@@ -105,9 +107,9 @@ def test_prompt_only_with_max_tokens(monkeypatch, tmp_path):
     cfg_yaml.write_text(
         """
         project_name: tokentest
-        mode: milestone
-        execution_details: ""
-        code_context_paths: []
+        task: milestone
+        user_instructions: ""
+        project_context_paths: []
         """,
         encoding="utf-8",
     )

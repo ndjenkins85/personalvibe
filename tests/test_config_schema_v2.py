@@ -18,9 +18,9 @@ def _tmp_cfg(tmp_path: Path, yaml_txt: str) -> Path:
 def test_valid_history(tmp_path: Path):
     yaml_txt = """
     project_name: personalvibe
-    mode: milestone
-    execution_details: ""
-    code_context_paths: []
+    task: milestone
+    user_instructions: ""
+    project_context_paths: []
     conversation_history:
       - role: user
         content: hi
@@ -35,9 +35,9 @@ def test_valid_history(tmp_path: Path):
 def test_history_optional(tmp_path: Path):
     yaml_txt = """
     project_name: personalvibe
-    mode: prd
-    execution_details: ""
-    code_context_paths: []
+    task: prd
+    user_instructions: ""
+    project_context_paths: []
     """
     cfg = load_config(str(_tmp_cfg(tmp_path, yaml_txt)))
     assert cfg.conversation_history is None
@@ -46,9 +46,9 @@ def test_history_optional(tmp_path: Path):
 def test_legacy_milestone_file_name_ignored(tmp_path: Path):
     yaml_txt = """
     project_name: personalvibe
-    mode: sprint
-    execution_details: ""
-    code_context_paths: []
+    task: sprint
+    user_instructions: ""
+    project_context_paths: []
     milestone_file_name: legacy.txt  # obsolete
     """
     cfg = load_config(str(_tmp_cfg(tmp_path, yaml_txt)))

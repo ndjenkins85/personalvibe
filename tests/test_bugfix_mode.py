@@ -16,16 +16,16 @@ def test_bugfix_mode_config(tmp_path):
     cfg_yaml.write_text(
         """
         project_name: testproject
-        mode: bugfix
-        execution_details: "Fix the import error"
-        code_context_paths: []
+        task: bugfix
+        user_instructions: "Fix the import error"
+        project_context_paths: []
     """,
         encoding="utf-8",
     )
 
     config = load_config(str(cfg_yaml))
-    assert config.mode == "bugfix"
-    assert config.execution_details == "Fix the import error"
+    assert config.task == "bugfix"
+    assert config.user_instructions == "Fix the import error"
 
 
 def test_bugfix_file_extension(monkeypatch, tmp_path):

@@ -17,10 +17,10 @@ def test_model_field_passed_to_router(monkeypatch, tmp_path):
     cfg_yaml.write_text(
         """
         project_name: smoketest
-        mode: milestone
+        task: milestone
         model: sharp_boe/sharp_gemma3_12k_128b
-        execution_details: ""
-        code_context_paths: []
+        user_instructions: ""
+        project_context_paths: []
         """,
         encoding="utf-8",
     )

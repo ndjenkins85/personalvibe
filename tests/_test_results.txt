@@ -16,7 +16,7 @@ nox > black src/personalvibe tests noxfile.py docs/conf.py
 All done! ✨ 🍰 ✨
 46 files left unchanged.
 nox > mypy -p personalvibe
-Success: no issues found in 13 source files
+Success: no issues found in 14 source files
 nox > flake8 src/personalvibe tests noxfile.py docs/conf.py --select=ANN,E,F
 nox > Session lint-3.9 was successful.
 nox > Running session lint-3.12
@@ -31,7 +31,7 @@ nox > black src/personalvibe tests noxfile.py docs/conf.py
 All done! ✨ 🍰 ✨
 46 files left unchanged.
 nox > mypy -p personalvibe
-Success: no issues found in 13 source files
+Success: no issues found in 14 source files
 nox > flake8 src/personalvibe tests noxfile.py docs/conf.py --select=ANN,E,F
 nox > Session lint-3.12 was successful.
 nox > Running session tests-3.9
@@ -78,7 +78,7 @@ tests/test_vibed_no_duplicates.py .                                      [ 90%]
 tests/test_workspace_root.py ..                                          [ 95%]
 tests/test_yaml_sanitiser.py ..                                          [100%]
 
-====================== 44 passed, 1 deselected in 11.53s =======================
+====================== 44 passed, 1 deselected in 11.80s =======================
 nox > Session tests-3.9 was successful.
 nox > Running session tests-3.12
 nox > Re-using existing virtual environment at .nox/tests-3-12.
@@ -124,7 +124,7 @@ tests/test_vibed_no_duplicates.py .                                      [ 90%]
 tests/test_workspace_root.py ..                                          [ 95%]
 tests/test_yaml_sanitiser.py ..                                          [100%]
 
-====================== 44 passed, 1 deselected in 11.89s =======================
+====================== 44 passed, 1 deselected in 12.26s =======================
 nox > Session tests-3.12 was successful.
 nox > Running session smoke_dist-3.12
 nox > Creating virtual environment (virtualenv) using python3.12 in .nox/smoke_dist-3-12
@@ -136,7 +136,7 @@ Building wheel
 🏗️  Building wheel …
 ====================
 
-nox > python -m venv /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_frxvjmpo
+nox > python -m venv /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_57ipy0fw
 
 ================================================
 Wheel built: personalvibe-2.7.4-py3-none-any.whl
@@ -144,15 +144,15 @@ Wheel built: personalvibe-2.7.4-py3-none-any.whl
 
 
 ===========================================================================================
-🧪  Creating temp venv at /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_frxvjmpo
+🧪  Creating temp venv at /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_57ipy0fw
 ===========================================================================================
 
-nox > /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_frxvjmpo/bin/pip install dist/personalvibe-2.7.4-py3-none-any.whl
+nox > /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_57ipy0fw/bin/pip install dist/personalvibe-2.7.4-py3-none-any.whl
 Processing ./dist/personalvibe-2.7.4-py3-none-any.whl
 Collecting jinja2<4.0.0,>=3.1.6 (from personalvibe==2.7.4)
   Using cached jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
 Collecting litellm>=1.40 (from personalvibe==2.7.4)
-  Using cached litellm-1.72.4-py3-none-any.whl.metadata (39 kB)
+  Using cached litellm-1.72.6-py3-none-any.whl.metadata (39 kB)
 Collecting nox-poetry<2.0.0,>=1.2.0 (from personalvibe==2.7.4)
   Using cached nox_poetry-1.2.0-py3-none-any.whl.metadata (9.0 kB)
 Collecting openai<2.0.0,>=1.77.0 (from personalvibe==2.7.4)
@@ -222,7 +222,7 @@ Collecting idna<4,>=2.5 (from requests<3.0,>=2.29->personalvibe==2.7.4)
 Collecting urllib3<3,>=1.21.1 (from requests<3.0,>=2.29->personalvibe==2.7.4)
   Using cached urllib3-2.4.0-py3-none-any.whl.metadata (6.5 kB)
 Collecting certifi>=2017.4.17 (from requests<3.0,>=2.29->personalvibe==2.7.4)
-  Using cached certifi-2025.4.26-py3-none-any.whl.metadata (2.5 kB)
+  Using cached certifi-2025.6.15-py3-none-any.whl.metadata (2.4 kB)
 Collecting regex>=2022.1.18 (from tiktoken<0.10.0,>=0.9.0->personalvibe==2.7.4)
   Using cached regex-2024.11.6-cp312-cp312-macosx_10_13_x86_64.whl.metadata (40 kB)
 Collecting pyproject_hooks (from build>=1.2->nox-poetry<2.0.0,>=1.2.0->personalvibe==2.7.4)
@@ -274,7 +274,7 @@ Collecting distlib<1,>=0.3.7 (from virtualenv>=20.14.1->nox>=2020.8.22->nox-poet
 Collecting platformdirs<5,>=3.9.1 (from virtualenv>=20.14.1->nox>=2020.8.22->nox-poetry<2.0.0,>=1.2.0->personalvibe==2.7.4)
   Using cached platformdirs-4.3.8-py3-none-any.whl.metadata (12 kB)
 Using cached jinja2-3.1.6-py3-none-any.whl (134 kB)
-Using cached litellm-1.72.4-py3-none-any.whl (8.0 MB)
+Using cached litellm-1.72.6-py3-none-any.whl (8.3 MB)
 Using cached nox_poetry-1.2.0-py3-none-any.whl (11 kB)
 Using cached openai-1.86.0-py3-none-any.whl (730 kB)
 Using cached pathspec-0.12.1-py3-none-any.whl (31 kB)
@@ -291,7 +291,7 @@ Using cached tqdm-4.67.1-py3-none-any.whl (78 kB)
 Using cached annotated_types-0.7.0-py3-none-any.whl (13 kB)
 Using cached anyio-4.9.0-py3-none-any.whl (100 kB)
 Using cached build-1.2.2.post1-py3-none-any.whl (22 kB)
-Using cached certifi-2025.4.26-py3-none-any.whl (159 kB)
+Using cached certifi-2025.6.15-py3-none-any.whl (157 kB)
 Using cached charset_normalizer-3.4.2-cp312-cp312-macosx_10_13_universal2.whl (199 kB)
 Using cached distro-1.9.0-py3-none-any.whl (20 kB)
 Using cached httpx-0.28.1-py3-none-any.whl (73 kB)
@@ -336,7 +336,7 @@ Using cached h11-0.16.0-py3-none-any.whl (37 kB)
 Using cached hf_xet-1.1.3-cp37-abi3-macosx_10_12_x86_64.whl (2.3 MB)
 Using cached platformdirs-4.3.8-py3-none-any.whl (18 kB)
 Installing collected packages: pytz, distlib, zipp, urllib3, typing-extensions, tqdm, tomlkit, tenacity, sniffio, rpds-py, regex, pyyaml, python-dotenv, pyproject_hooks, propcache, platformdirs, pathspec, packaging, multidict, MarkupSafe, jiter, idna, hf-xet, h11, fsspec, frozenlist, filelock, distro, colorlog, click, charset_normalizer, certifi, attrs, argcomplete, annotated-types, aiohappyeyeballs, yarl, virtualenv, typing-inspection, requests, referencing, pydantic-core, jinja2, importlib-metadata, httpcore, dependency-groups, build, anyio, aiosignal, tiktoken, pydantic, nox, jsonschema-specifications, huggingface-hub, httpx, aiohttp, tokenizers, pydantic-settings, openai, nox-poetry, jsonschema, litellm, personalvibe
-Successfully installed MarkupSafe-3.0.2 aiohappyeyeballs-2.6.1 aiohttp-3.12.13 aiosignal-1.3.2 annotated-types-0.7.0 anyio-4.9.0 argcomplete-3.6.2 attrs-25.3.0 build-1.2.2.post1 certifi-2025.4.26 charset_normalizer-3.4.2 click-8.2.1 colorlog-6.9.0 dependency-groups-1.3.1 distlib-0.3.9 distro-1.9.0 filelock-3.18.0 frozenlist-1.7.0 fsspec-2025.5.1 h11-0.16.0 hf-xet-1.1.3 httpcore-1.0.9 httpx-0.28.1 huggingface-hub-0.33.0 idna-3.10 importlib-metadata-8.7.0 jinja2-3.1.6 jiter-0.10.0 jsonschema-4.24.0 jsonschema-specifications-2025.4.1 litellm-1.72.4 multidict-6.4.4 nox-2025.5.1 nox-poetry-1.2.0 openai-1.86.0 packaging-25.0 pathspec-0.12.1 personalvibe-2.7.4 platformdirs-4.3.8 propcache-0.3.2 pydantic-2.11.7 pydantic-core-2.33.2 pydantic-settings-2.9.1 pyproject_hooks-1.2.0 python-dotenv-0.21.1 pytz-2025.2 pyyaml-6.0.2 referencing-0.36.2 regex-2024.11.6 requests-2.32.4 rpds-py-0.25.1 sniffio-1.3.1 tenacity-9.1.2 tiktoken-0.9.0 tokenizers-0.21.1 tomlkit-0.13.3 tqdm-4.67.1 typing-extensions-4.14.0 typing-inspection-0.4.1 urllib3-2.4.0 virtualenv-20.31.2 yarl-1.20.1 zipp-3.23.0
+Successfully installed MarkupSafe-3.0.2 aiohappyeyeballs-2.6.1 aiohttp-3.12.13 aiosignal-1.3.2 annotated-types-0.7.0 anyio-4.9.0 argcomplete-3.6.2 attrs-25.3.0 build-1.2.2.post1 certifi-2025.6.15 charset_normalizer-3.4.2 click-8.2.1 colorlog-6.9.0 dependency-groups-1.3.1 distlib-0.3.9 distro-1.9.0 filelock-3.18.0 frozenlist-1.7.0 fsspec-2025.5.1 h11-0.16.0 hf-xet-1.1.3 httpcore-1.0.9 httpx-0.28.1 huggingface-hub-0.33.0 idna-3.10 importlib-metadata-8.7.0 jinja2-3.1.6 jiter-0.10.0 jsonschema-4.24.0 jsonschema-specifications-2025.4.1 litellm-1.72.6 multidict-6.4.4 nox-2025.5.1 nox-poetry-1.2.0 openai-1.86.0 packaging-25.0 pathspec-0.12.1 personalvibe-2.7.4 platformdirs-4.3.8 propcache-0.3.2 pydantic-2.11.7 pydantic-core-2.33.2 pydantic-settings-2.9.1 pyproject_hooks-1.2.0 python-dotenv-0.21.1 pytz-2025.2 pyyaml-6.0.2 referencing-0.36.2 regex-2024.11.6 requests-2.32.4 rpds-py-0.25.1 sniffio-1.3.1 tenacity-9.1.2 tiktoken-0.9.0 tokenizers-0.21.1 tomlkit-0.13.3 tqdm-4.67.1 typing-extensions-4.14.0 typing-inspection-0.4.1 urllib3-2.4.0 virtualenv-20.31.2 yarl-1.20.1 zipp-3.23.0
 
 [notice] A new release of pip is available: 24.0 -> 25.1.1
 [notice] To update, run: python3.12 -m pip install --upgrade pip
@@ -345,7 +345,7 @@ Successfully installed MarkupSafe-3.0.2 aiohappyeyeballs-2.6.1 aiohttp-3.12.13 a
 📦  Installing wheel into temp venv …
 ====================================
 
-nox > /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_frxvjmpo/bin/pv --help
+nox > /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_57ipy0fw/bin/pv --help
 usage: pv [-h] <command> ...
 
 Personalvibe CLI – Command-Line Interface

@@ -9,8 +9,8 @@ from personalvibe import vibe_utils
 
 
 def test_load_template_package():
-    txt = vibe_utils._load_template("milestone.md")
-    assert "language model" in txt.lower() or len(txt) > 20
+    txt = vibe_utils._load_template("master.md")
+    assert "you will be given the following information" in txt.lower()
 
 
 def test_load_template_legacy(monkeypatch):
@@ -20,5 +20,5 @@ def test_load_template_legacy(monkeypatch):
         raise FileNotFoundError
 
     with mock.patch.object(importlib.resources, "files", _raise):
-        txt = vibe_utils._load_template("milestone.md")
-        assert "language model" in txt.lower() or len(txt) > 20
+        txt = vibe_utils._load_template("master.md")
+        assert "you will be given the following information" in txt.lower()

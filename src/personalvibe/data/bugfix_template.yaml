@@ -1,11 +1,8 @@
+# Personalvibe bugfix configuration
 project_name: "{{ project_name }}"
-mode: bugfix
+task: bugfix
 model: openai/o3  # optional, defaults to o3
-execution_details: |
+project_context_paths: []
+user_instructions: |
   # Describe the bug or issue to fix here
   # Include error messages, stack traces, or unexpected behavior
-
-code_context_paths:
-  # List relevant files that need to be examined or fixed
-  # - src/module/file.py
-  # - tests/test_file.py

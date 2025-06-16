@@ -419,7 +419,7 @@ def _load_template(fname: str) -> str:
         pkg_file = resources.files("personalvibe.data").joinpath(fname)
         return pkg_file.read_text(encoding="utf-8")
     except Exception:  # noqa: BLE001
-        legacy = _Path(__file__).parent / "data" / fname
+        legacy = Path(__file__).parent / "data" / fname
         if legacy.exists():
             log.debug("Template %s loaded from legacy path %s", fname, legacy)
             return legacy.read_text(encoding="utf-8")
