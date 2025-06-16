@@ -13,8 +13,8 @@ noxfile.py
 
 ## Project files
 src/personalvibe/*
-# X src/personalvibe/data/*
+src/personalvibe/data/*
 X src/personalvibe/py.typed
 
-# Tests
+## Tests
 tests/*
