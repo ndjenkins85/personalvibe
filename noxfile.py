@@ -10,7 +10,7 @@ import sys
 import tempfile
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Iterator, List
+from typing import List
 
 import nox
 from nox.sessions import Session
@@ -80,89 +80,6 @@ def docs(session: Session) -> None:
 def _print_step(msg: str) -> None:
     session_log = "=" * len(msg)
     print(f"\n{session_log}\n{msg}\n{session_log}\n")
-
-
-@contextmanager
-def _log_to_legacy(path: Path):  # type: ignore[override]  # noqa: F401
-    """
-    Context-manager that *appends* **all** stdout/stderr – including output
-    from spawned sub-processes – to ``path`` using a persistent ``tee -a``.
-    """
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.touch(exist_ok=True)
-
-    # 1) spawn tee ----------------------------------------------------------------
-    tee_proc = subprocess.Popen(
-        ["tee", "-a", str(path)],
-        stdin=subprocess.PIPE,
-        text=False,  # binary stream
-    )
-    if tee_proc.stdin is None:  # pragma: no cover
-        raise RuntimeError("Failed to open tee stdin")
-
-    # 2) low-level FD hijack -------------------------------------------------------
-    saved_out_fd = os.dup(1)
-    saved_err_fd = os.dup(2)
-    os.dup2(tee_proc.stdin.fileno(), 1)
-    os.dup2(tee_proc.stdin.fileno(), 2)
-
-    # 3) wrap in Python TextIO so `print()` still works ----------------------------
-    new_stdout = io.TextIOWrapper(os.fdopen(1, "wb", buffering=0), encoding="utf-8", line_buffering=True)
-    new_stderr = io.TextIOWrapper(os.fdopen(2, "wb", buffering=0), encoding="utf-8", line_buffering=True)
-
-    saved_stdout_obj, saved_stderr_obj = sys.stdout, sys.stderr
-    sys.stdout, sys.stderr = new_stdout, new_stderr
-    try:
-        yield
-    finally:
-        # flush buffers ------------------------------------------------------------
-        try:
-            sys.stdout.flush()  # type: ignore[union-attr]
-            sys.stderr.flush()  # type: ignore[union-attr]
-        except Exception:  # noqa: BLE001
-            pass
-
-        # restore original fds -----------------------------------------------------
-        os.dup2(saved_out_fd, 1)
-        os.dup2(saved_err_fd, 2)
-        os.close(saved_out_fd)
-        os.close(saved_err_fd)
-
-        # close tee + wait ---------------------------------------------------------
-        tee_proc.stdin.close()
-        tee_proc.wait()
-
-        # restore Python objects ---------------------------------------------------
-        sys.stdout, sys.stderr = saved_stdout_obj, saved_stderr_obj
-    """Duplicate *all* stdout/stderr to **append** mode log file.
-
-    The implementation purposefully:
-    • opens the target file beforehand so it is never truncated
-    • spawns one long-lived ``tee -a`` process
-    • restores sys.std* even if exceptions occur
-    """
-    path.parent.mkdir(parents=True, exist_ok=True)
-    # Ensure file exists so tee -a never complains
-    path.touch(exist_ok=True)
-
-    proc = subprocess.Popen(
-        ["tee", "-a", str(path)],
-        stdin=subprocess.PIPE,
-        text=True,
-    )  # type: ignore[arg-type]
-    saved_out, saved_err = sys.stdout, sys.stderr
-    sys.stdout = sys.stderr = proc.stdin  # type: ignore[assignment]
-    try:
-        yield
-    finally:
-        # Flush and close the tee input; restore
-        try:
-            sys.stdout.flush()  # type: ignore[union-attr]
-            sys.stderr.flush()  # type: ignore[union-attr]
-        finally:
-            proc.stdin.close()  # type: ignore[attr-defined]
-            proc.wait()
-            sys.stdout, sys.stderr = saved_out, saved_err
 
 
 @session(python=["3.12"], reuse_venv=True)
