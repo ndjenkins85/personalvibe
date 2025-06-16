@@ -362,29 +362,6 @@ def num_tokens(text: str) -> int:
     return len(enc.encode(text))
 
 
-def render_prompt_template(template_path: str, replacements: dict) -> str:
-    """
-    Renders a prompt template using Jinja2.
-
-    Args:
-        template_path (str): Path to the Jinja2 template file, relative to templates_base.
-        replacements (dict): Variables to inject into the template.
-
-    Returns:
-        str: Rendered prompt as a string.
-    """
-    prompt_base = Path(get_base_path(), "prompts")
-    env = Environment(
-        loader=FileSystemLoader(prompt_base),
-        autoescape=False,
-        trim_blocks=True,
-        lstrip_blocks=True,
-    )
-
-    template = env.get_template(template_path)
-    return template.render(**replacements)
-
-
 def _get_error_text(config: "ConfigModel") -> str:
     error_path = Path(get_base_path(), "prompts", config.project_name, "errors", config.error_file_name)
     # NOTE TO LLM: improve the handling here as per my usual codestyle
@@ -450,13 +427,12 @@ def get_replacements(config: "ConfigModel", project_context: str) -> dict:
     if config.task == "validate" and config.error_file_name:
         task_context["error_details"] = _get_error_text(config)
 
-    if config.task in ("sprint", "validate"):
-        log.debug(config)
-        try:
-            task_context["milestone_text"] = _get_milestone_text(config)
-        except Exception as e:
-            log.warning("Could not load milestone text: %s", e)
-            task_context["milestone_text"] = ""
+    # Attempt to get milestone text
+    try:
+        task_context["milestone_text"] = _get_milestone_text(config)
+    except Exception as e:
+        log.warning("Could not load milestone text: %s", e)
+        task_context["milestone_text"] = ""
 
     # Render task instructions with context
     task_instructions = task_manager.render_task_instructions(task_config, task_context)

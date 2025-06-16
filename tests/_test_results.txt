@@ -14,9 +14,9 @@ No dependencies to install or update
 Installing the current project: personalvibe (2.7.4)
 nox > black src/personalvibe tests noxfile.py docs/conf.py
 All done! ✨ 🍰 ✨
-46 files left unchanged.
+42 files left unchanged.
 nox > mypy -p personalvibe
-Success: no issues found in 14 source files
+Success: no issues found in 13 source files
 nox > flake8 src/personalvibe tests noxfile.py docs/conf.py --select=ANN,E,F
 nox > Session lint-3.9 was successful.
 nox > Running session lint-3.12
@@ -29,9 +29,9 @@ No dependencies to install or update
 Installing the current project: personalvibe (2.7.4)
 nox > black src/personalvibe tests noxfile.py docs/conf.py
 All done! ✨ 🍰 ✨
-46 files left unchanged.
+42 files left unchanged.
 nox > mypy -p personalvibe
-Success: no issues found in 14 source files
+Success: no issues found in 13 source files
 nox > flake8 src/personalvibe tests noxfile.py docs/conf.py --select=ANN,E,F
 nox > Session lint-3.12 was successful.
 nox > Running session tests-3.9
@@ -48,37 +48,34 @@ platform darwin -- Python 3.9.22, pytest-7.4.4, pluggy-1.6.0
 rootdir: /Users/nicholasjenkins/Documents/personalvibe
 configfile: pyproject.toml
 plugins: anyio-4.9.0, xdoctest-1.2.0
-collected 45 items / 1 deselected / 44 selected
+collected 41 items / 1 deselected / 40 selected
 
-tests/test_bugfix_mode.py ..                                             [  4%]
-tests/test_cli_basic.py .                                                [  6%]
-tests/test_cli_new_cmds.py ..                                            [ 11%]
-tests/test_cli_run_delegate.py ..                                        [ 15%]
-tests/test_cli_subcommands.py ..                                         [ 20%]
-tests/test_config_schema_v2.py ...                                       [ 27%]
-tests/test_context_loader.py .                                           [ 29%]
-tests/test_custom_sharp_boe.py .                                         [ 31%]
-tests/test_default_model.py .                                            [ 34%]
-tests/test_determine_next_version.py .                                   [ 36%]
-tests/test_get_vibed_router.py .                                         [ 38%]
-tests/test_llm_router.py ...                                             [ 45%]
-tests/test_log_to_cm.py .                                                [ 47%]
-tests/test_log_to_subprocess.py .                                        [ 50%]
-tests/test_logger.py .                                                   [ 52%]
-tests/test_logger_runid.py .                                             [ 54%]
-tests/test_logging.py .                                                  [ 56%]
-tests/test_model_selection.py .                                          [ 59%]
-tests/test_project_detection.py ....                                     [ 68%]
-tests/test_prompt_only_smoke.py ..                                       [ 72%]
-tests/test_resource_fallback.py ..                                       [ 77%]
-tests/test_retry_engine.py ...                                           [ 84%]
-tests/test_run_context.py .                                              [ 86%]
-tests/test_save_prompt_duplicate.py .                                    [ 88%]
+tests/test_bugfix_mode.py ..                                             [  5%]
+tests/test_cli_basic.py .                                                [  7%]
+tests/test_cli_new_cmds.py ..                                            [ 12%]
+tests/test_cli_run_delegate.py ..                                        [ 17%]
+tests/test_cli_subcommands.py ..                                         [ 22%]
+tests/test_config_schema_v2.py ...                                       [ 30%]
+tests/test_context_loader.py .                                           [ 32%]
+tests/test_custom_sharp_boe.py .                                         [ 35%]
+tests/test_determine_next_version.py .                                   [ 37%]
+tests/test_get_vibed_router.py .                                         [ 40%]
+tests/test_llm_router.py ...                                             [ 47%]
+tests/test_log_to_cm.py .                                                [ 50%]
+tests/test_log_to_subprocess.py .                                        [ 52%]
+tests/test_logger.py .                                                   [ 55%]
+tests/test_logger_runid.py .                                             [ 57%]
+tests/test_logging.py .                                                  [ 60%]
+tests/test_project_detection.py ....                                     [ 70%]
+tests/test_resource_fallback.py ..                                       [ 75%]
+tests/test_retry_engine.py ...                                           [ 82%]
+tests/test_run_context.py .                                              [ 85%]
+tests/test_save_prompt_duplicate.py .                                    [ 87%]
 tests/test_vibed_no_duplicates.py .                                      [ 90%]
 tests/test_workspace_root.py ..                                          [ 95%]
 tests/test_yaml_sanitiser.py ..                                          [100%]
 
-====================== 44 passed, 1 deselected in 11.80s =======================
+====================== 40 passed, 1 deselected in 11.78s =======================
 nox > Session tests-3.9 was successful.
 nox > Running session tests-3.12
 nox > Re-using existing virtual environment at .nox/tests-3-12.
@@ -94,37 +91,34 @@ platform darwin -- Python 3.12.3, pytest-7.4.4, pluggy-1.6.0
 rootdir: /Users/nicholasjenkins/Documents/personalvibe
 configfile: pyproject.toml
 plugins: anyio-4.9.0, xdoctest-1.2.0
-collected 45 items / 1 deselected / 44 selected
+collected 41 items / 1 deselected / 40 selected
 
-tests/test_bugfix_mode.py ..                                             [  4%]
-tests/test_cli_basic.py .                                                [  6%]
-tests/test_cli_new_cmds.py ..                                            [ 11%]
-tests/test_cli_run_delegate.py ..                                        [ 15%]
-tests/test_cli_subcommands.py ..                                         [ 20%]
-tests/test_config_schema_v2.py ...                                       [ 27%]
-tests/test_context_loader.py .                                           [ 29%]
-tests/test_custom_sharp_boe.py .                                         [ 31%]
-tests/test_default_model.py .                                            [ 34%]
-tests/test_determine_next_version.py .                                   [ 36%]
-tests/test_get_vibed_router.py .                                         [ 38%]
-tests/test_llm_router.py ...                                             [ 45%]
-tests/test_log_to_cm.py .                                                [ 47%]
-tests/test_log_to_subprocess.py .                                        [ 50%]
-tests/test_logger.py .                                                   [ 52%]
-tests/test_logger_runid.py .                                             [ 54%]
-tests/test_logging.py .                                                  [ 56%]
-tests/test_model_selection.py .                                          [ 59%]
-tests/test_project_detection.py ....                                     [ 68%]
-tests/test_prompt_only_smoke.py ..                                       [ 72%]
-tests/test_resource_fallback.py ..                                       [ 77%]
-tests/test_retry_engine.py ...                                           [ 84%]
-tests/test_run_context.py .                                              [ 86%]
-tests/test_save_prompt_duplicate.py .                                    [ 88%]
+tests/test_bugfix_mode.py ..                                             [  5%]
+tests/test_cli_basic.py .                                                [  7%]
+tests/test_cli_new_cmds.py ..                                            [ 12%]
+tests/test_cli_run_delegate.py ..                                        [ 17%]
+tests/test_cli_subcommands.py ..                                         [ 22%]
+tests/test_config_schema_v2.py ...                                       [ 30%]
+tests/test_context_loader.py .                                           [ 32%]
+tests/test_custom_sharp_boe.py .                                         [ 35%]
+tests/test_determine_next_version.py .                                   [ 37%]
+tests/test_get_vibed_router.py .                                         [ 40%]
+tests/test_llm_router.py ...                                             [ 47%]
+tests/test_log_to_cm.py .                                                [ 50%]
+tests/test_log_to_subprocess.py .                                        [ 52%]
+tests/test_logger.py .                                                   [ 55%]
+tests/test_logger_runid.py .                                             [ 57%]
+tests/test_logging.py .                                                  [ 60%]
+tests/test_project_detection.py ....                                     [ 70%]
+tests/test_resource_fallback.py ..                                       [ 75%]
+tests/test_retry_engine.py ...                                           [ 82%]
+tests/test_run_context.py .                                              [ 85%]
+tests/test_save_prompt_duplicate.py .                                    [ 87%]
 tests/test_vibed_no_duplicates.py .                                      [ 90%]
 tests/test_workspace_root.py ..                                          [ 95%]
 tests/test_yaml_sanitiser.py ..                                          [100%]
 
-====================== 44 passed, 1 deselected in 12.26s =======================
+====================== 40 passed, 1 deselected in 12.01s =======================
 nox > Session tests-3.12 was successful.
 nox > Running session smoke_dist-3.12
 nox > Creating virtual environment (virtualenv) using python3.12 in .nox/smoke_dist-3-12
@@ -136,7 +130,7 @@ Building wheel
 🏗️  Building wheel …
 ====================
 
-nox > python -m venv /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_57ipy0fw
+nox > python -m venv /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_eekzpp_k
 
 ================================================
 Wheel built: personalvibe-2.7.4-py3-none-any.whl
@@ -144,10 +138,10 @@ Wheel built: personalvibe-2.7.4-py3-none-any.whl
 
 
 ===========================================================================================
-🧪  Creating temp venv at /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_57ipy0fw
+🧪  Creating temp venv at /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_eekzpp_k
 ===========================================================================================
 
-nox > /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_57ipy0fw/bin/pip install dist/personalvibe-2.7.4-py3-none-any.whl
+nox > /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_eekzpp_k/bin/pip install dist/personalvibe-2.7.4-py3-none-any.whl
 Processing ./dist/personalvibe-2.7.4-py3-none-any.whl
 Collecting jinja2<4.0.0,>=3.1.6 (from personalvibe==2.7.4)
   Using cached jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
@@ -345,7 +339,7 @@ Successfully installed MarkupSafe-3.0.2 aiohappyeyeballs-2.6.1 aiohttp-3.12.13 a
 📦  Installing wheel into temp venv …
 ====================================
 
-nox > /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_57ipy0fw/bin/pv --help
+nox > /var/folders/tp/5smflv0964j4q9b8fdxnf_3h0000gn/T/pv_smoke_eekzpp_k/bin/pv --help
 usage: pv [-h] <command> ...
 
 Personalvibe CLI – Command-Line Interface

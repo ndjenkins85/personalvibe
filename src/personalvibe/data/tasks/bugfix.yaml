@@ -28,3 +28,9 @@ task_instructions: |
   5. Add or update tests to prevent regression
 
   Remember: This is a bugfix, so keep changes minimal and focused.
+
+  The following is the most recent milestone information for context
+
+  <milestone_information>
+  {{ milestone_text }}
+  </milestone_information>

@@ -15,7 +15,7 @@ noxfile.py
 ## Project files
 src/personalvibe/*
 src/personalvibe/data/*
-src/personalvibe/data/tasks/*
+X src/personalvibe/data/tasks/*
 X src/personalvibe/py.typed
 
 ## Tests

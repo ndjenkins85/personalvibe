@@ -1,9 +1,9 @@
-# pv run --config prompts/personalvibe/configs/8.1.1.yaml
+# pv run --config prompts/personalvibe/configs/8.1.2.yaml
 
 project_name: "personalvibe"
-task: bugfix
+task: streamline
 model: openai/o4-mini
 project_context_paths:
   - "prompts/personalvibe/context/codefiles.txt"
 user_instructions: |
-  Propose fixes for test failure
+  Perform streamlining analysis

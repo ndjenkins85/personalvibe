@@ -1,10 +1,42 @@
-task_name: sprint
-task_summary: perform the current sprint implementation
+task_name: streamline
+task_summary: prune dead code & polish DX / docs without behaviour change
 semver: minor
 task_instructions: |
-  At this stage, we have confirmed the next milestone for this project.
+  ## Streamline Mode Instructions
+  (covers code-pruning, DX polish, and docs refresh)
 
-  The milestone document also contains information on how to 'chunk'. It is useful to have small iterations such that it is a managable size for human review, and to stay within 16k ouput character LLM limitations.
+  **Success metric**
+  • Delete the lesser of **1 % of LOC** *or* **100 lines** across the repo.
+  • All existing tests must still pass (`pytest -q`).
+  • No public API breakage.
+  • READMEs / module docstrings updates
+
+  **You will receive**
+  - Project code context
+  - Full test-suite logs
+
+  **Your tasks**
+  1. Infer the happy path from the test logs; identify critical files & functions.
+  2. Locate unused or low-value code and commentary
+  3. Produce **two artefacts**:
+
+     **A.** `<python> … streamline_patch.py … </python>`
+     &nbsp;   – Deletes / consolidates dead code
+     &nbsp;   – Fixes imports, adjusts tests, updates docs in-place
+
+     **B.** `<rationale> … </rationale>` (Markdown)
+     &nbsp;   – Bullet list of each removal, evidence it was safe, and any follow-ups
+
+  4. Where an automated deletion feels risky, insert `## PLZ FIX HUMAN – why` in the patch and reference it in the rationale.
+
+  **Constraints**
+  - ≤ 16 000 output characters (patch + rationale combined).
+  - Outer strings triple-single-quoted, inner docstrings triple-double-quoted.
+  - Maintain type-checking & lint passes.
+  - Never change protected modules unless explicitly whitelisted.
+
+  **Glossary (inherit from sprint)**
+  - PRD, Milestone, Sprint, SemVer, YAML config, parse_stage, max_tokens, DX – see prior prompt definitions.
 
   <output_instructions>
   Use a maximum of 16_000 output characters to deliver on your output chunk.
