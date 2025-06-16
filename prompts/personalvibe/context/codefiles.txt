@@ -1,8 +1,9 @@
 ## Docs
-prompts/agentic_collaboration_approach.md
+prompts/agent_collaboration_approach.md
 prompts/code_style_guide.md
-docs/*
+prompts/personalvibe/prd.md
 README.md
+docs/*
 LICENSE
 
 ## Tooling
@@ -14,6 +15,7 @@ noxfile.py
 ## Project files
 src/personalvibe/*
 src/personalvibe/data/*
+src/personalvibe/data/tasks/*
 X src/personalvibe/py.typed
 
 ## Tests

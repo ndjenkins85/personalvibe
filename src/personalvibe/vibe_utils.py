@@ -8,6 +8,7 @@ import logging as _pv_log
 import os
 import random
 from datetime import datetime
+from importlib import resources
 from pathlib import Path
 from typing import TYPE_CHECKING, Iterable, List, Union
 
@@ -55,9 +56,6 @@ def find_existing_hash(root_dir: Union[str, Path], hash_str: str) -> Union[Path,
     return None
 
 
-# ------------------------------------------------------------------
-# --- PERSONALVIBE PATCH C ANCHOR: save_prompt (do not delete) -----
-# ------------------------------------------------------------------
 def save_prompt(prompt: str, root_dir: Path, input_hash: str = "") -> Path:
     """Persist *one* prompt to disk and return its Path.
 
@@ -296,9 +294,6 @@ def load_gitignore(base_path: Path) -> pathspec.PathSpec:
     return pathspec.PathSpec([])  # Empty spec if no .gitignore
 
 
-# ----------------------------------------------------------------------
-# ✨  New workspace-root helpers  (Chunk B)
-# ----------------------------------------------------------------------
 _SENTINEL_PROMPTS_DIR = Path(__file__).resolve().parent.parent / "prompts"
 
 
@@ -403,12 +398,6 @@ def _get_milestone_text(config: "ConfigModel") -> str:
 
     milestone_files = [Path(stages_path, f"{current_major}.0.0.md")]
 
-    # No longer use multi
-    # milestone_files = sorted(
-    #     [p for p in stages_path.glob("*.0.0.md") if p.is_file() and int(p.stem.split(".")[0]) <= current_major],
-    #     key=lambda x: int(x.stem.split(".")[0]),
-    # )
-
     if not milestone_files:
         raise ValueError(f"No valid milestone files found in {stages_path} for major <= {current_major}")
     data = """The following are all milestones related to this project.
@@ -416,57 +405,6 @@ def _get_milestone_text(config: "ConfigModel") -> str:
     """
     data += "\n\n".join(p.read_text() for p in milestone_files)
     return data
-
-
-def _get_replacements_v1(config: "ConfigModel", code_context: str) -> dict:
-    """
-    Build the Jinja replacement map once.
-
-    * Milestone mode injects a standard execution task by default
-      unless the YAML overrides it.
-    """
-    log.info(f"Running config version: {config.version}")
-    log.info(f"Running mode = {config.mode}")
-    milestone_ver, sprint_ver, bugfix_ver = config.version.split(".")
-    if config.mode == "prd":
-        exec_task = config.execution_task
-        instructions = ""
-    elif config.mode == "milestone":
-        exec_task = "conduct milestone analysis according to guidelines"
-        # Note to AI assistant: src works for now, but what about for an installed version?
-        instructions = Path(get_base_path(), "src/personalvibe/data", "milestone.md").read_text()
-    elif config.mode == "sprint":
-        exec_task = f"perform the sprint number marked {sprint_ver}"
-        instructions = (
-            Path(get_base_path(), "src/personalvibe/data", "sprint.md").read_text() + "\n" + _get_milestone_text(config)
-        )
-    elif config.mode == "validate":
-        exec_task = f"validate the following logs following the generation of sprint {sprint_ver}"
-        instructions = (
-            Path(get_base_path(), "src/personalvibe/data", "validate.md").read_text()
-            + "\n"
-            + _get_milestone_text(config)
-            + "\n"
-            + _get_error_text(config)
-        )
-
-    return {
-        "execution_task": exec_task,
-        "execution_details": config.execution_details,
-        "instructions": instructions,
-        "code_context": code_context,
-    }
-
-
-import logging as _logging
-
-# ----------------------------------------------------------------------
-# PERSONALVIBE CHUNK 2 – Resource loader
-# ----------------------------------------------------------------------
-from importlib import resources
-from pathlib import Path as _Path
-
-_log = _logging.getLogger(__name__)
 
 
 def _load_template(fname: str) -> str:
@@ -483,61 +421,51 @@ def _load_template(fname: str) -> str:
     except Exception:  # noqa: BLE001
         legacy = _Path(__file__).parent / "data" / fname
         if legacy.exists():
-            _log.debug("Template %s loaded from legacy path %s", fname, legacy)
+            log.debug("Template %s loaded from legacy path %s", fname, legacy)
             return legacy.read_text(encoding="utf-8")
         raise FileNotFoundError(f"Template {fname!s} not found in package or legacy path")
 
 
-# -----------------------------
-def get_replacements(config: "ConfigModel", code_context: str) -> dict:  # type: ignore[override]
-    """Build the Jinja replacement map (rev-2 using _load_template)."""
+def get_replacements(config: "ConfigModel", project_context: str) -> dict:
+    """Build the Jinja replacement map using task-based configuration."""
+    from personalvibe.task_config import task_manager
 
-    _log.info("Running config version: %s", config.version)
-    _log.info("Running mode = %s", config.mode)
+    log.info("Running config version: %s", config.version)
+    log.info("Running task: %s", config.task)
+
+    # Load task configuration
     try:
+        task_config = task_manager.load_task_config(config.task)
+    except ValueError as e:
+        log.error("Failed to load task config: %s", e)
+        raise
 
-        _, sprint_ver, _ = config.version.split(".")  # noqa: F841
+    # Build context for task instruction rendering
+    task_context = {
+        "project_name": config.project_name,
+        "version": config.version,
+    }
 
-    except Exception:
-        _, sprint_ver, _ = 0, 0, 0  # We must be in testing mode!
+    # Handle task-specific context requirements
+    if config.task == "validate" and config.error_file_name:
+        task_context["error_details"] = _get_error_text(config)
 
-    if config.mode == "prd":
-        exec_task = config.execution_task
-        instructions = ""
-    elif config.mode == "milestone":
-        exec_task = "conduct milestone analysis according to guidelines"
-        instructions = _load_template("milestone.md")
-    elif config.mode == "sprint":
-        exec_task = f"perform the sprint number marked {sprint_ver}"
-        instructions = _load_template("sprint.md") + "\n" + _get_milestone_text(config)
-    elif config.mode == "validate":
-        exec_task = f"validate the following logs following the generation of sprint {sprint_ver}"
-        instructions = (
-            _load_template("validate.md") + "\n" + _get_milestone_text(config) + "\n" + _get_error_text(config)
-        )
-    elif config.mode == "bugfix":
-        exec_task = f"fix the bug described in version {config.version}"
-        # Get error details from execution_details or a dedicated field
-        error_details = config.execution_details
-        instructions = _load_template("bugfix.md")
+    if config.task in ("sprint", "validate"):
+        try:
+            task_context["milestone_text"] = _get_milestone_text(config)
+        except Exception as e:
+            log.warning("Could not load milestone text: %s", e)
+            task_context["milestone_text"] = ""
 
-        # Add error_details to replacements
-        return {
-            "execution_task": exec_task,
-            "execution_details": config.execution_details,
-            "instructions": instructions,
-            "code_context": code_context,
-            "error_details": error_details,
-            "project_name": config.project_name,
-        }
-    else:  # pragma: no cover
-        raise ValueError(f"Unsupported mode {config.mode}")
+    # Render task instructions with context
+    task_instructions = task_manager.render_task_instructions(task_config, task_context)
 
     return {
-        "execution_task": exec_task,
-        "execution_details": config.execution_details,
-        "instructions": instructions,
-        "code_context": code_context,
+        "project_name": config.project_name,
+        "task_summary": task_config.task_summary,
+        "user_instructions": config.user_instructions,
+        "task_instructions": task_instructions,
+        "project_context": project_context,
     }
 
 

@@ -1,22 +1,21 @@
 # pv run --config prompts/personalvibe/configs/8.0.0.yaml
 
 project_name: "personalvibe"
-mode: milestone
-model: anthropic/claude-opus-4-20250514
-# model: anthropic/claude-sonnet-4-20250514
+task: milestone
+# model: anthropic/claude-opus-4-20250514
+model: anthropic/claude-sonnet-4-20250514
 # model: openai/o3
 # model: openai/o4-mini
 # model: openai/gpt-4o
-code_context_paths:
+project_context_paths:
   - "prompts/personalvibe/context/codefiles.txt"
-execution_details: |
+user_instructions: |
 
   At this stage personalvibe project is an effective developer tool to use vibecoding for working with codebases
 
   This next milestone will continue to improve the developer experience in a couple of key areas:
 
   1. Sandboxing and automated testing approach
-  2. Improve tasks handling
 
   Sandboxing...
 
@@ -55,42 +54,3 @@ execution_details: |
 
   This also means that users need to specify a 'test suite' file, and this should have it's own
   parameter in the config file to point to the test file (i.e. `tests/personalvibe.sh`)
-
-  For 'improve tasks handling', I have some ideas to change how we approach tasks.
-
-  Currently we have several pre-created tasks which are useful for users such as
-  Milestone, sprint, bugfix
-
-  I want to make it much easier to extend to more tasks types.
-  We need to identify what elements make up a task - it seems that the following
-  might be required but this is not an exhaustive list:
-
-  - Task name
-  - Task summary
-  - Task instructions
-  - Should the task trigger a major, minor or bugfix increment
-
-  The final change I'd like to make with you is to decenter the 'prd' document
-  as being the structure/scaffolding by which the different text files and parameters are drawn together
-
-  It seems to me, that the PRD contains four elements that can be rehomed.
-  That way, PRD can act as a simple code context import.
-
-  <new_structure>
-  You are tasked with {{ task_summary }}.
-
-  {{ user_overrides }}
-
-  {{ task_instructions }}
-
-  {{ code_context }}
-
-  </new_structure>
-
-  In the above, the following would occur:
-  - task_summary: A few words to frame the overall task to be executed
-  - user_overrides: specific user instructions are placed first, these come from the context file
-  - task_instructions: pre-created task with explicit instructions on how to perform the operation, think of these as pre-configured recipes for actions
-  - code_context: A string pathlike to a list of ordered files/folders to read and include (and exclude) - this is where the PRD should be entered, as general context rather than a process controller.
-
-  This will mean the config file becomes more central to the execution (rather than PRD)

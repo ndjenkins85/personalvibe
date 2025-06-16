@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import List, Optional
 
 import yaml
+from jinja2 import Template
 from pydantic import BaseModel, Field, ValidationError, field_validator
 
 from personalvibe import logger, vibe_utils
@@ -16,7 +17,24 @@ from personalvibe.yaml_utils import sanitize_yaml_text
 
 
 class ConfigModel(BaseModel):
-    # --- field validation --------------------------------------------------
+    """Schema v3 - Task-based configuration
+
+    • Replaces mode-specific fields with task-based approach
+    • Uses project_context_paths instead of code_context_paths
+    • Uses user_instructions instead of execution_details
+    """
+
+    version: str
+    project_name: str
+    task: str
+    model: Optional[str] = None
+    user_instructions: str = ""
+    project_context_paths: List[str]
+    # ---- still used by validate flow --------------------------------
+    error_file_name: str = ""
+    # ---- optional conversation history ------------------------------
+    conversation_history: Optional[List[dict[str, str]]] = None
+
     @field_validator("model", mode="before")
     def validate_model(cls, v: str) -> str:  # noqa: D401,N805,ANN101
         if v in ("", None):
@@ -24,23 +42,6 @@ class ConfigModel(BaseModel):
         if isinstance(v, str) and re.match(r"^[^/]+/.+$", v.strip()):
             return v.strip()
         raise ValueError("model must be <provider>/<model_name>")
-
-    """Schema **v2**
-
-    • adds optional ``conversation_history`` (list of {role, content})
-    • drops *required* ``milestone_file_name`` (legacy keys tolerated)
-    """
-    version: str
-    project_name: str
-    mode: str = Field(..., pattern="^(prd|milestone|sprint|validate|bugfix)$")
-    model: Optional[str] = None
-    execution_task: Optional[str] = None
-    execution_details: str = ""
-    code_context_paths: List[str]
-    # ---- NEW --------------------------------------------------------
-    conversation_history: Optional[List[dict[str, str]]] = None
-    # ---- still used by validate flow --------------------------------
-    error_file_name: str = ""
 
     class Config:
         extra = "ignore"  # silently discard unknown legacy fields
@@ -71,12 +72,7 @@ def load_config(config_path: str) -> ConfigModel:
 
 
 def main() -> None:
-    """Run an iteration of personal vibe based on a config file.
-
-    i.e. subl prompts/personalvibe/configs/2.1.0.yaml
-
-    python -m personalvibe.run_pipeline --config prompts/personalvibe/configs/2.1.0.yaml --prompt_only
-    """
+    """Run an iteration of personal vibe based on a config file."""
     parser = argparse.ArgumentParser(description="Run the Personalvibe Workflow.")
     parser.add_argument("--config", required=True, help="Path to YAML config file.")
     parser.add_argument("--verbosity", choices=["verbose", "none", "errors"], default="none", help="Console log level")
@@ -99,14 +95,13 @@ def main() -> None:
     log.info(vibe_utils.rainbow("P  E  R  S  O  N  A  L  V  I  B  E"))
 
     # 3️⃣  Render prompt template ------------------------------------------------
-    code_context = vibe_utils.get_context(config.code_context_paths)
-    replacements = vibe_utils.get_replacements(config, code_context)
-    template_path = f"{config.project_name}/prd.md"
-    if not template_path:
-        log.error("Unsupported mode '%s'.", config.mode)
-        return
+    project_context = vibe_utils.get_context(config.project_context_paths)
+    replacements = vibe_utils.get_replacements(config, project_context)
 
-    prompt = vibe_utils.render_prompt_template(template_path, replacements=replacements)
+    # Use master template for all tasks
+    # SRC will need to be updated!
+    master_template = Template(vibe_utils._load_template("master.md"))
+    prompt = master_template.render(**replacements)
 
     if args.prompt_only:
         base_input_path = vibe_utils.get_data_dir(config.project_name, workspace) / "prompt_inputs"

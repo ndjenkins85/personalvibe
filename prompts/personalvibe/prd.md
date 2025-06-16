@@ -1,13 +1,5 @@
 # Personalvibe product requirements document
 
-You are tasked with {{ execution_task }} related to the personalvibe project.
-
-{{ execution_details }}
-
-{{ instructions }}
-
-You will be given the following information:
-
 * Project background
 * Using ChatGPT o3
 * Design phases
@@ -28,11 +20,6 @@ AI services can help us flesh out the project design, major milestones, and the 
 
 By completing many sprint tasks we can gradually build the product.
 
-<!-- I am still thinking through approaches to performing vibe coding. -->
-<!-- I have been able to generate a MVP / scaffold of a good application. -->
-<!-- While I started with cursor, I ended up rolling-my-own approach. -->
-<!-- Ultimately it is what works best for you to have control of your project, code generation, and feedback loop. -->
-
 ## Using ChatGPT o3
 
 ChatGPT o3 is an impressive vibecoding assistant.
@@ -47,10 +34,6 @@ I recommend capping out at 150k project input tokens, then you need to consider 
 
 **Web**: I also have the OpenAI ChatGPT plus subscription, which is great for informal/disposable discussions.
 These are best for early non-technical discussions, one-off bug hunts, and side-channel questions, that do not need the full project context.
-
-<!-- ## Broader considerations of the personalvibe project
-
-include "design/personalvibe.md" -->
 
 ## Design phases
 
@@ -139,11 +122,3 @@ The following are answers to some common questions
 
 3 · Rationale
 These edits translate tacit decisions into explicit, version-controlled artefacts. Freezing the persistence layer and semver rules reduces cognitive overhead for every sprint. Splitting prompt drafts from production avoids accidental context inflation without stifling creativity. A permissive cost-tracking warning keeps finances visible while respecting your “not an issue yet” stance. Lastly, codifying the rename pathway preserves repository hygiene without breaching the no-delete guarantee.
-
-## Code context
-
-The following is the relevant existing code context, including file names and file contents, for use in your deliberations.
-
-<code_context>
-{{ code_context }}
-</code_context>

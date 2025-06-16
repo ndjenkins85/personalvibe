@@ -22,18 +22,6 @@ This document distills recurring patterns from our codebases and previous intern
 
 ## 2. Project Layout
 
-```
-repo_root/
-│
-├── sharp.py              # Thin orchestrator
-├── tasks/                # Top‑level user intents
-│   └── <task>/run.py     # Each exposes `run(**kwargs)` with docstring contract
-├── config/               # YAML + .env templates
-├── tr/server/            # Flask routes & Jinja templates
-│   └── templates/
-└── tests/                # Pytest suites mirror src structure
-```
-
 * **One responsibility per folder**. Don’t mix API handlers with business logic.
 * **Docstrings at module top** explain intent, deps, and env vars.
 
@@ -73,7 +61,6 @@ from tasks.video_misinfo.run import run
 
 * **Black** (line length `120`).
 * **isort** for import order.
-* **ruff** ruleset `pyproject.toml`.
 
 ### 3.4 Typing & Docstrings
 
@@ -206,52 +193,3 @@ sharp_active_<host>_<port>        -> INT counter
 2. PR template must include **context**, **screenshots/logs**, and **roll‑back plan**.
 3. At least one reviewer outside author’s team.
 4. CI **must pass** before merge.
-
----
-
-## 13. Appendix
-
-### 13.1 Example Config Precedence
-
-```yaml
-# config/default.yaml
-max_connections: 50
-```
-
-```dotenv
-# .env
-MAX_CONNECTIONS=100
-```
-
-In Python:
-
-```python
-class Settings(BaseSettings):
-    max_connections: int = 25  # fallback
-
-settings = Settings(_env_file=".env", _secrets_dir="config")
-```
-
-*Effective value → `100`*
-
-### 13.2 Sample Logging Config (YAML)
-
-```yaml
-version: 1
-formatters:
-  concise:
-    format: "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
-handlers:
-  console:
-    class: logging.StreamHandler
-    formatter: concise
-root:
-  level: INFO
-  handlers: [console]
-```
-
----
-
-### Keep It Evolving 🚀
-
-If you hit patterns not covered here, propose an addition via PR.  Our best code is the code we can **understand, test, and safely change**.
