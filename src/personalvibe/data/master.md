@@ -6,7 +6,6 @@ You will be given the following information:
 
 * User instructions
 * Task instructions
-* General context
 * Project context
 
 ## User instruction
@@ -29,15 +28,6 @@ Task instructions also specify output requirements.
 <task_instructions>
 {{ task_instructions }}
 </task_instructions>
-
-## General context
-
-The general context section adds evergreen instructions and context which is
-relevant for all possible users and use cases of these kinds of briefs.
-
-<general_context>
-{{ general_context }}
-</general_context>
 
 ## Project context
 

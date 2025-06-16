@@ -451,6 +451,7 @@ def get_replacements(config: "ConfigModel", project_context: str) -> dict:
         task_context["error_details"] = _get_error_text(config)
 
     if config.task in ("sprint", "validate"):
+        log.debug(config)
         try:
             task_context["milestone_text"] = _get_milestone_text(config)
         except Exception as e:

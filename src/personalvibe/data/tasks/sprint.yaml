@@ -129,3 +129,9 @@ task_instructions: |
   - Prompt-only execution – A smoke-test mode that renders a prompt without hitting external APIs; verifies import paths.
   - max_tokens – Upper bound on LLM completion tokens; default 16_000, override via CLI --max_tokens.
   - DX – Developer Experience; all efforts that shorten feedback loops, improve clarity, or reduce cognitive load.
+
+  The following is the specific milestone information
+
+  <milestone_information>
+  {{ milestone_text }}
+  </milestone_information>
